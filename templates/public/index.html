@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Golden Touch Car Wash{% endblock %}
+
+{% block content %}
+
+<section id="hero" class="hero-section container py-5 mt-5">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <h1 class="hero-title">WELCOME TO<br>OUR CAR WASH</h1>
+      <p class="hero-text">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      </p>
+      <div class="mt-4 d-flex gap-3">
+        <a href="#booking" class="btn btn-gold">BOOK SLOT</a>
+        <a href="#contact" class="btn btn-outline-gold">CONTACT US</a>
+      </div>
+    </div>
+    <div class="col-md-6 text-center mt-4 mt-md-0">
+      <img src="{{ url_for('static', filename='img/hero-car.jpg') }}" class="img-fluid hero-image" alt="Car wash">
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section-dark container py-5">
+  <h2 class="section-title">About Us</h2>
+  <p class="body-text">
+    At Golden Touch Car Wash, we believe your car deserves the finest care. Our team of detailing
+    professionals is dedicated to restoring that brand-new shine — every single time.
+  </p>
+  <p class="body-text">
+    From quick washes to premium ceramic coatings, we use top-quality products and modern techniques
+    to ensure your vehicle looks stunning and stays protected.
+  </p>
+  <p class="body-text">
+    We’re more than just a car wash — we’re your car’s spa.
+  </p>
+</section>
+
+<section id="services" class="section-dark container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">Services</h2>
+    <a href="#services" class="see-all-link">see all</a>
+  </div>
+
+  <div class="row g-4">
+    {% if services %}
+      {% for service in services %}
+      <div class="col-6 col-md-3">
+        <div class="service-card">
+          <div class="service-image-wrapper">
+            <img src="{{ service.image_url or url_for('static', filename='img/service-1.jpg') }}"
+                 class="img-fluid" alt="{{ service.name }}">
+          </div>
+          <h3 class="service-title">{{ service.name }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-6 col-md-3">
+        <div class="service-card">
+          <div class="service-image-wrapper">
+            <img src="{{ url_for('static', filename='img/service-1.jpg') }}" class="img-fluid" alt="Deep Clean">
+          </div>
+          <h3 class="service-title">Deep Clean</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="service-card">
+          <div class="service-image-wrapper">
+            <img src="{{ url_for('static', filename='img/service-2.jpg') }}" class="img-fluid" alt="Exterior Washing">
+          </div>
+          <h3 class="service-title">Exterior Washing</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="service-card">
+          <div class="service-image-wrapper">
+            <img src="{{ url_for('static', filename='img/service-3.jpg') }}" class="img-fluid" alt="Interior Washing">
+          </div>
+          <h3 class="service-title">Interior Washing</h3>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="service-card">
+          <div class="service-image-wrapper">
+            <img src="{{ url_for('static', filename='img/service-4.jpg') }}" class="img-fluid" alt="Ceramic Coating">
+          </div>
+          <h3 class="service-title">Ceramic Coating</h3>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="gallery" class="section-dark container py-5">
+  <h2 class="section-title mb-4">Gallery</h2>
+  <div class="row g-3">
+    {% for i in range(1,5) %}
+      <div class="col-6 col-md-3">
+        <div class="gallery-item">
+          <img src="{{ url_for('static', filename='img/service-' ~ (i if i <= 4 else 1) ~ '.jpg') }}"
+               class="img-fluid" alt="Gallery image {{ i }}">
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="contact" class="section-dark container py-5">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <h2 class="section-title">Get in touch</h2>
+      <form method="post" class="dark-form">
+        {{ contact_form.hidden_tag() }}
+        <div class="mb-3">
+          {{ contact_form.name(class_="form-control dark-input", placeholder="Name") }}
+        </div>
+        <div class="mb-3">
+          {{ contact_form.email(class_="form-control dark-input", placeholder="Email") }}
+        </div>
+        <div class="mb-3">
+          {{ contact_form.phone(class_="form-control dark-input", placeholder="Phone") }}
+        </div>
+        <div class="mb-3">
+          {{ contact_form.message(class_="form-control dark-input", placeholder="Your Message", rows="4") }}
+        </div>
+        {{ contact_form.submit(class_="btn btn-gold") }}
+      </form>
+    </div>
+    <div class="col-md-6">
+      <h2 class="section-title">Contact us</h2>
+      <div class="contact-card">
+        <p><span class="contact-icon">✉</span> example@gmail.com</p>
+        <p><span class="contact-icon">☎</span> +91 1234567890</p>
+        <p><span class="contact-icon">📍</span> Address.......</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="booking" class="section-dark container py-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-md-6">
+      <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
+           class="img-fluid booking-image" alt="Booking">
+    </div>
+    <div class="col-md-6">
+      <h2 class="section-title">Book a slot</h2>
+      <form method="post" class="dark-form">
+        {{ booking_form.hidden_tag() }}
+        <div class="mb-3">
+          {{ booking_form.full_name(class_="form-control dark-input", placeholder="Full Name") }}
+        </div>
+        <div class="mb-3">
+          {{ booking_form.phone(class_="form-control dark-input", placeholder="Phone Number") }}
+        </div>
+        <div class="mb-3">
+          {{ booking_form.email(class_="form-control dark-input", placeholder="Email") }}
+        </div>
+        <div class="mb-3">
+          {{ booking_form.service_id(class_="form-select dark-input") }}
+        </div>
+        <div class="mb-3">
+          {{ booking_form.date(class_="form-control dark-input", placeholder="dd/mm/yyyy") }}
+        </div>
+        <div class="mb-3">
+          {{ booking_form.time(class_="form-control dark-input", placeholder="-- : -- --") }}
+        </div>
+        {{ booking_form.submit(class_="btn btn-gold w-100") }}
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

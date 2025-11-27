@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container py-5 mt-5">
+  <div class="d-flex justify-content-between mb-4">
+    <h2 class="section-title">Dashboard</h2>
+    <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-gold">Logout</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="admin-card">
+        <h4>Total Bookings</h4>
+        <p class="big-number">{{ booking_count }}</p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="admin-card">
+        <h4>Notifications</h4>
+        {% if unread_notifications %}
+          <ul class="list-unstyled">
+            {% for note in unread_notifications %}
+              <li class="d-flex justify-content-between align-items-center mb-2">
+                <span>{{ note.message }}</span>
+                <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
+                   class="btn btn-sm btn-gold">Mark as read</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No new notifications.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-3">
+    <a href="{{ url_for('admin.manage_services') }}" class="btn btn-gold">Manage Services</a>
+    <a href="{{ url_for('admin.manage_packages') }}" class="btn btn-gold">Manage Packages</a>
+    <a href="{{ url_for('admin.bookings') }}" class="btn btn-gold">View Bookings</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Admin Bookings{% endblock %}
+{% block content %}
+<div class="container py-5 mt-5">
+  <h2 class="section-title mb-4">Bookings</h2>
+  <table class="table table-dark table-striped align-middle">
+    <thead>
+      <tr>
+        <th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Service</th>
+        <th>Date</th><th>Time</th><th>Status</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ b.id }}</td>
+        <td>{{ b.full_name }}</td>
+        <td>{{ b.phone }}</td>
+        <td>{{ b.email }}</td>
+        <td>{{ b.service.name if b.service else '-' }}</td>
+        <td>{{ b.date }}</td>
+        <td>{{ b.time }}</td>
+        <td>{{ b.status }}</td>
+        <td class="d-flex gap-2">
+          <a href="{{ url_for('admin.update_booking_status', booking_id=b.id, status='Contacted') }}"
+             class="btn btn-sm btn-gold">Contacted</a>
+          <a href="{{ url_for('admin.update_booking_status', booking_id=b.id, status='Completed') }}"
+             class="btn btn-sm btn-outline-gold">Completed</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
