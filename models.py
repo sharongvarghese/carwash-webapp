@@ -82,3 +82,10 @@ class ContactMessage(db.Model):
     phone = db.Column(db.String(20), nullable=True)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class GalleryImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_url = db.Column(db.String(255), nullable=False)
+    caption = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

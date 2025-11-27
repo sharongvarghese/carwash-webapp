@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Book a Slot - Golden Touch Car Wash{% endblock %}
+
+{% block content %}
+
+<section class="booking-section container py-5">
+
+  <div class="row g-5 align-items-center">
+
+    <!-- LEFT IMAGE (LARGER, PREMIUM) -->
+    <div class="col-lg-6 text-center fade-in">
+      <div class="booking-image-box">
+        <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
+             class="img-fluid booking-premium-img"
+             alt="Booking Image">
+      </div>
+    </div>
+
+    <!-- RIGHT FORM (PREMIUM CARD) -->
+    <div class="col-lg-6 fade-in">
+      <div class="booking-card shadow-soft">
+
+        <h2 class="section-title mb-4 text-center">Book Your Premium Slot</h2>
+
+        <form method="POST" class="dark-form">
+          {{ booking_form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ booking_form.full_name(class_="form-control dark-input booking-input", placeholder="Full Name") }}
+          </div>
+
+          <div class="mb-3">
+            {{ booking_form.phone(class_="form-control dark-input booking-input", placeholder="Phone Number") }}
+          </div>
+
+          <div class="mb-3">
+            {{ booking_form.email(class_="form-control dark-input booking-input", placeholder="Email") }}
+          </div>
+
+          <div class="mb-3">
+            {{ booking_form.service_id(class_="form-select dark-input booking-input") }}
+          </div>
+
+          <div class="mb-3">
+            {{ booking_form.date(class_="form-control dark-input booking-input", placeholder="dd/mm/yyyy") }}
+          </div>
+
+          <div class="mb-3">
+            {{ booking_form.time(class_="form-control dark-input booking-input", placeholder="-- : -- --") }}
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 btn-lg">
+            Confirm Booking
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,638 @@
+/* ===============================
+        GLOBAL STYLES
+   =============================== */
+
+body {
+  background-color: #000;
+  color: #f5c542;
+  font-family: "Poppins", sans-serif;
+  padding-top: 70px;
+  overflow-x: hidden;
+}
+
+
+/* ===============================
+        PREMIUM GLASS NAVBAR
+   =============================== */
+
+.nav-dark {
+  background: rgba(20, 20, 20, 0.55) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+.brand-text {
+  font-family: "Bebas Neue", sans-serif;
+  color: #ffd700 !important;
+  letter-spacing: 2px;
+  font-size: 1.3rem;
+}
+
+.navbar-nav .nav-link {
+  color: #ffd700 !important;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.navbar-nav .nav-link:hover {
+  text-decoration: underline;
+}
+
+
+
+/* ===============================
+        BUTTONS
+   =============================== */
+
+.btn-gold {
+  background: #ffd700;
+  color: #000;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  border: none;
+  transition: 0.25s ease;
+}
+
+.btn-gold:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+  border-radius: 999px;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 0.6rem 2rem;
+}
+
+.btn-outline-gold:hover {
+  background: #ffd700;
+  color: #000;
+}
+
+
+
+/* ===============================
+   GLASS CARD (GLOBAL)
+   =============================== */
+
+.glass-card {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 215, 0, 0.16);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+  transition: 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 0 55px rgba(255, 215, 0, 0.25);
+}
+
+.glass-glow::before {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.20), transparent 70%);
+  top: -80px;
+  right: -60px;
+  z-index: -1;
+}
+
+
+
+/* ===============================
+        FORM INPUTS (GLASS)
+   =============================== */
+
+.dark-input {
+  background: rgba(20, 20, 20, 0.55) !important;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  color: #f5c542;
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  transition: 0.25s ease;
+}
+
+.dark-input::placeholder {
+  color: #f5c542 !important;
+  opacity: 0.7;
+}
+
+.dark-input:hover {
+  border-color: rgba(255, 215, 0, 0.35);
+}
+
+.dark-input:focus {
+  background: rgba(25, 25, 25, 0.72);
+  border-color: rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.28);
+  outline: none;
+}
+
+
+
+/* ===============================
+        PREMIUM HERO SECTION
+   =============================== */
+
+.hero-section {
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  padding-bottom: 2rem;
+}
+
+.hero-glass-card {
+  background: rgba(20, 20, 20, 0.55);
+  border-radius: 36px;
+  padding: 3rem 4rem;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 45px rgba(255, 215, 0, 0.2);
+  backdrop-filter: blur(14px);
+  position: relative;
+  margin: 0 auto;
+}
+
+.hero-glass-card::before {
+  content: "";
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.25), transparent 80%);
+  top: -120px;
+  left: -20px;
+  z-index: -1;
+}
+
+.hero-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 3.4rem;
+  color: #ffd700;
+  margin-bottom: 1rem;
+  line-height: 1.05;
+}
+
+.hero-title span {
+  color: #f5c542;
+}
+
+.hero-text {
+  font-size: 1.05rem;
+  max-width: 480px;
+  color: #f5c542;
+  opacity: 0.9;
+}
+
+.hero-image-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-image-big {
+  width: 100%;
+  height: 360px;
+  border-radius: 26px;
+  object-fit: cover;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.18);
+  transition: 0.3s ease;
+}
+
+.hero-image-big:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 55px rgba(255, 215, 0, 0.25);
+}
+
+.hero-glass-card .row {
+  --bs-gutter-x: 2.2rem;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(25px);
+  animation: fadeInUp 1s forwards ease;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* ===============================
+   XXL SCREENS (Large monitors)
+   =============================== */
+
+@media (min-width: 1600px) {
+  .hero-title {
+    font-size: 3.9rem;
+  }
+  .hero-image-big {
+    height: 430px;
+  }
+}
+
+@media (min-width: 1900px) {
+  .hero-title {
+    font-size: 4.2rem;
+  }
+  .hero-image-big {
+    height: 480px;
+  }
+}
+
+
+
+/* ===============================
+        ABOUT (PREMIUM)
+   =============================== */
+
+.gold-line {
+  width: 70px;
+  height: 4px;
+  background: linear-gradient(90deg, #ffd700, #caa400);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.about-text {
+  color: #f5c542;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.92;
+}
+
+.about-text .highlight {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.about-image {
+  width: 95%;
+  max-width: 520px;
+  border-radius: 24px;
+  box-shadow: 0 0 35px rgba(255, 215, 0, 0.15);
+  background: rgba(20, 20, 20, 0.45);
+  padding: 6px;
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+.about-image:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 60px rgba(255, 215, 0, 0.28);
+}
+
+.about-animate,
+.about-animate-img {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.9s forwards;
+}
+
+.about-animate-img {
+  animation-delay: 0.25s;
+}
+
+
+
+/* ===============================
+      PREMIUM SERVICES (AUTO GRID)
+   =============================== */
+
+#services {
+  margin-top: 4rem;
+}
+
+/* True responsive auto-grid */
+.services-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 2.2rem;
+  justify-items: center;
+  width: 100%;
+}
+
+/* Premium Card */
+.service-card {
+  width: 100%;
+  max-width: 260px;
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 35px rgba(255, 215, 0, 0.15);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Hover premium glow */
+.service-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 0 55px rgba(255, 215, 0, 0.3);
+}
+
+/* Shine animation */
+.service-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 215, 0, 0.2),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.7s;
+}
+
+.service-card:hover::after {
+  left: 120%;
+}
+
+/* Image */
+.service-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.18);
+}
+
+/* Title box */
+.service-title-box {
+  background-color: #f5c542;
+  padding: 14px 0;
+  text-align: center;
+  border-radius: 0 0 26px 26px;
+}
+
+.service-title {
+  margin: 0;
+  color: #000;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+
+/* SEE ALL LINK – GOLD ARROW ANIMATION */
+.see-all-link {
+  color: #ffd700 !important;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.see-all-link::after {
+  content: "→";
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: all 0.3s ease;
+}
+
+.see-all-link:hover {
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+.see-all-link:hover::after {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .services-row {
+    gap: 1.8rem;
+  }
+  .service-img {
+    height: 160px;
+  }
+}
+
+@media (max-width: 500px) {
+  .services-row {
+    gap: 1.5rem;
+  }
+  .service-img {
+    height: 140px;
+  }
+}
+
+
+/* ===============================
+    RESPONSIVE FIXES
+   =============================== */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .service-card {
+    width: 220px;
+  }
+  .service-img {
+    height: 170px;
+  }
+}
+
+/* Large Mobile */
+@media (max-width: 768px) {
+  .service-card {
+    width: 200px;
+  }
+  .service-img {
+    height: 160px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+  .services-row {
+    gap: 1.5rem;
+  }
+  .service-card {
+    width: 170px;
+  }
+  .service-img {
+    height: 140px;
+  }
+}
+
+/* Extra Small */
+@media (max-width: 380px) {
+  .service-card {
+    width: 150px;
+  }
+  .service-img {
+    height: 130px;
+  }
+}
+
+
+
+/* ===============================
+      PREMIUM GALLERY GRID
+   =============================== */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.6rem;
+  margin-top: 1rem;
+  animation: fadeGrid 0.8s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeGrid {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gallery-card {
+  background: rgba(20, 20, 20, 0.55);
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 28px rgba(255, 215, 0, 0.12);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.gallery-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 0 45px rgba(255, 215, 0, 0.22);
+}
+
+/* Shine sweep */
+.gallery-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 215, 0, 0.25),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.7s ease;
+}
+
+.gallery-card:hover::after {
+  left: 120%;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 22px;
+  transition: transform 0.35s ease;
+}
+
+.gallery-card:hover .gallery-img {
+  transform: scale(1.05);
+}
+
+/* EMPTY STATE */
+.empty-gallery {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.empty-gallery {
+  grid-column: 1 / -1;    /* Center full width */
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 26px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 28px rgba(255, 215, 0, 0.1);
+  padding: 3rem;
+}
+
+
+
+
+
+/* ===============================
+        CONTACT
+   =============================== */
+
+.contact-card {
+  background: rgba(20, 20, 20, 0.55);
+  border-radius: 22px;
+  padding: 2.2rem;
+  border: 1px solid rgba(255, 215, 0, 0.14);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+}
+
+.contact-icon {
+  font-size: 1.3rem;
+  margin-right: 10px;
+  color: #ffd700;
+}
+
+
+
+/* ===============================
+        FOOTER
+   =============================== */
+
+.footer {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(10px);
+  text-align: center;
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 215, 0, 0.16);
+  color: #ffd700;
+}
+
+
+
+/* ===============================
+        BOOKING PAGE
+   =============================== */
+
+.booking-card {
+  background: rgba(20, 20, 20, 0.65);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 215, 0, 0.16);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.18);
+}
+
+.booking-premium-img {
+  width: 90%;
+  max-width: 550px;
+  border-radius: 26px;
+  box-shadow: 0 0 35px rgba(255, 215, 0, 0.2);
+  transition: 0.35s ease;
+}
+
+.booking-premium-img:hover {
+  transform: scale(1.03);
+}

@@ -18,9 +18,10 @@ def create_app():
     app.register_blueprint(admin_bp)
 
     with app.app_context():
-        from models import Service, Package, Booking, Notification, ContactMessage
+        from models import Service, Package, Booking, Notification, ContactMessage, GalleryImage
 
         db.create_all()
+
 
         # Create default admin if not exists
         if not AdminUser.query.filter_by(username="admin").first():
