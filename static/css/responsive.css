@@ -1,0 +1,21 @@
+/* ===============================
+      RESPONSIVE FIXES
+   =============================== */
+@media (max-width: 992px) {
+  .service-card { width:220px; }
+}
+
+@media (max-width: 768px) {
+  .service-card { width:200px; }
+  .service-img { height:160px; }
+}
+
+@media (max-width: 500px) {
+  .service-card { width:170px; }
+  .service-img { height:140px; }
+}
+
+@media (max-width: 380px) {
+  .service-card { width:150px; }
+  .service-img { height:130px; }
+}

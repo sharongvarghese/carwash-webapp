@@ -3,62 +3,112 @@
 
 {% block content %}
 
-<section class="booking-section container py-5">
+<section class="booking-full-wrap">
 
-  <div class="row g-5 align-items-center">
+  <!-- Page Glow Behind Everything -->
+  <div class="booking-background-glow"></div>
 
-    <!-- LEFT IMAGE (LARGER, PREMIUM) -->
-    <div class="col-lg-6 text-center fade-in">
-      <div class="booking-image-box">
-        <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
-             class="img-fluid booking-premium-img"
-             alt="Booking Image">
+  <div class="container py-5">
+    <div class="row g-5 align-items-center justify-content-center">
+
+      <!-- LEFT IMAGE -->
+      <div class="col-lg-6 col-md-10 fade-up delay-100">
+        <div class="booking-hero-image-box position-relative">
+          <div class="booking-hero-glow"></div>
+
+          <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
+               class="booking-hero-image"
+               alt="Premium Car Wash">
+        </div>
       </div>
-    </div>
 
-    <!-- RIGHT FORM (PREMIUM CARD) -->
-    <div class="col-lg-6 fade-in">
-      <div class="booking-card shadow-soft">
+      <!-- RIGHT FORM -->
+      <div class="col-lg-5 col-md-10 fade-up delay-200">
+        <div class="booking-animated-card">
 
-        <h2 class="section-title mb-4 text-center">Book Your Premium Slot</h2>
+          <h2 class="booking-title text-center mb-4 fade-up delay-300">
+            Book Your Premium Slot
+          </h2>
 
-        <form method="POST" class="dark-form">
-          {{ booking_form.hidden_tag() }}
+          <form method="POST">
+            {{ booking_form.hidden_tag() }}
 
-          <div class="mb-3">
-            {{ booking_form.full_name(class_="form-control dark-input booking-input", placeholder="Full Name") }}
+            <!-- FULL NAME -->
+            <div class="form-group-animated mb-3">
+              <i class="bi bi-person-fill booking-icon"></i>
+              {{ booking_form.full_name(class_="form-control dark-input premium-input ps-5", placeholder="Full Name") }}
+              <span class="input-glow"></span>
+            </div>
+
+            <!-- PHONE -->
+            <div class="form-group-animated mb-3">
+              <i class="bi bi-phone-fill booking-icon"></i>
+              {{ booking_form.phone(class_="form-control dark-input premium-input ps-5", placeholder="Phone Number") }}
+              <span class="input-glow"></span>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group-animated mb-3">
+              <i class="bi bi-envelope-fill booking-icon"></i>
+              {{ booking_form.email(class_="form-control dark-input premium-input ps-5", placeholder="Email") }}
+              <span class="input-glow"></span>
+            </div>
+
+             <!-- DATE -->
+            <div class="mb-3 premium-date-wrapper">
+              <i class="fa-solid fa-calendar booking-icon"></i>
+
+              <div id="premiumDateDisplay" class="premium-date-display">
+                  <span id="selectedDateText">Select Date</span>
+              </div>
+
+              <div id="premiumDateDropdown" class="premium-date-dropdown"></div>
+
+              {{ booking_form.date(type="hidden", id="hiddenDateField") }}
+            </div>
+
+            <!-- TIME -->
+            <div class="premium-time-wrapper">
+              <div id="premiumTimeDisplay" class="premium-time-display">
+                  <i class="fa-solid fa-clock booking-icon"></i>
+                  <span id="selectedTimeText">Select Time</span>  
+              </div>
+
+              <div id="premiumTimeDropdown" class="premium-time-dropdown">
+                  <!-- JS will insert time options -->
+              </div>
+
+              {{ booking_form.time(type="hidden", id="hiddenTimeField") }}
           </div>
 
-          <div class="mb-3">
-            {{ booking_form.phone(class_="form-control dark-input booking-input", placeholder="Phone Number") }}
-          </div>
+            <!-- SERVICE -->
+            <div class="form-group-animated mb-3">
+              <i class="bi bi-list-ul booking-icon"></i>
+              {{ booking_form.service_id(class_="form-select dark-input premium-input ps-5") }}
+              <span class="input-glow"></span>
+            </div>
 
-          <div class="mb-3">
-            {{ booking_form.email(class_="form-control dark-input booking-input", placeholder="Email") }}
-          </div>
+           
 
-          <div class="mb-3">
-            {{ booking_form.service_id(class_="form-select dark-input booking-input") }}
-          </div>
 
-          <div class="mb-3">
-            {{ booking_form.date(class_="form-control dark-input booking-input", placeholder="dd/mm/yyyy") }}
-          </div>
 
-          <div class="mb-3">
-            {{ booking_form.time(class_="form-control dark-input booking-input", placeholder="-- : -- --") }}
-          </div>
+            
 
-          <button type="submit" class="btn btn-gold w-100 btn-lg">
-            Confirm Booking
-          </button>
 
-        </form>
+            <!-- BUTTON -->
+            <button type="submit"
+                    class="btn btn-gold w-100 btn-lg booking-cta-btn fade-up delay-350">
+              Confirm Booking
+            </button>
 
+          </form>
+
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
 </section>
 
 {% endblock %}

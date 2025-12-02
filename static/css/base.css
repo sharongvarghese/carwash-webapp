@@ -1,0 +1,10 @@
+/* ===============================
+        GLOBAL STYLES
+   =============================== */
+body {
+  background-color: #000;
+  color: #f5c542;
+  font-family: "Poppins", sans-serif;
+  padding-top: 70px;
+  overflow-x: hidden;
+}

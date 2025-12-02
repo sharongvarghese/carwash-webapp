@@ -1,0 +1,341 @@
+/* ============================================
+   PREMIUM FULL BOOKING PAGE
+============================================ */
+
+/* Whole page soft glow */
+.booking-full-wrap {
+  position: relative;
+  min-height: 100vh;
+}
+
+.booking-background-glow {
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(
+      rgba(255, 215, 0, 0.12),
+      transparent 70%
+  );
+  top: -200px;
+  left: -200px;
+  filter: blur(60px);
+  z-index: -3;
+}
+
+/* ===============================
+    ANIMATED ENTRANCE
+=============================== */
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUpAnim 1s forwards ease-out;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-350 { animation-delay: 0.35s; }
+
+@keyframes fadeUpAnim {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+    LEFT HERO CAR IMAGE
+=============================== */
+
+.booking-hero-image-box {
+  position: relative;
+}
+
+.booking-hero-image {
+  width: 95%;
+  max-width: 580px;
+  border-radius: 26px;
+  box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+  animation: floatImage 5s infinite ease-in-out;
+}
+
+@keyframes floatImage {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.booking-hero-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(rgba(255, 215, 0, 0.35), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(20px);
+  z-index: -1;
+}
+
+/* ===============================
+    PREMIUM GLASS FORM CARD
+=============================== */
+
+.booking-animated-card {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(16px);
+  padding: 3rem;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 48px rgba(255, 215, 0, 0.22);
+  animation: fadeUpAnim 0.9s ease-out;
+}
+
+/* ===============================
+    GOLD INPUT GLOW EFFECT
+=============================== */
+
+.form-group-animated {
+  position: relative;
+}
+
+.input-glow {
+  position: absolute;
+  bottom: 5px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  border-radius: 10px;
+  opacity: 0;
+  transform: scaleX(0);
+  transition: 0.35s ease;
+}
+
+.premium-input:focus + .input-glow,
+.form-group-animated:hover .input-glow {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* ===============================
+     CTA BUTTON ANIMATION
+=============================== */
+
+.booking-cta-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-cta-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  height: 100%;
+  width: 80%;
+  background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.6s ease-out;
+}
+
+.booking-cta-btn:hover::after {
+  left: 120%;
+}
+
+
+/* ================================
+      PREMIUM TIME DROPDOWN
+================================ */
+
+.premium-time-wrapper {
+  position: relative;
+}
+
+/* Display box */
+.premium-time-display {
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border-radius: 16px;
+  color: #f5c542;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.premium-time-display:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Dropdown container */
+.premium-time-dropdown {
+  position: absolute;
+  width: 100%;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  margin-top: 6px;
+  padding: 10px 0;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+  display: none;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+/* Each time option */
+.premium-time-option {
+  padding: 10px 20px;
+  color: #f5c542;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.premium-time-option:hover {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+}
+
+/* Scrollbar styling */
+.premium-time-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+.premium-time-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+}
+
+/* ================================
+      PREMIUM DATE PICKER
+================================ */
+
+.premium-date-wrapper {
+  position: relative;
+}
+
+/* Display area */
+.premium-date-display {
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border-radius: 16px;
+  color: #f5c542;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.premium-date-wrapper .booking-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #ffd700;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.premium-date-display:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Dropdown calendar */
+.premium-date-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  background: rgba(20, 20, 20, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.25);
+  margin-top: 8px;
+
+  display: none;
+  z-index: 20;
+
+  max-height: 320px;       /* so it doesn't hit the footer */
+  overflow-y: auto;
+}
+
+/* Month header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffd700;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.calendar-arrow {
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: 0.25s;
+}
+
+.calendar-arrow:hover {
+  background: rgba(255, 215, 0, 0.18);
+}
+
+/* Grid styling */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.calendar-day {
+  color: #ffd700;
+  opacity: 0.8;
+}
+
+/* Dates */
+.calendar-date {
+  padding: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s;
+  color: #f5c542;
+}
+
+.calendar-date:hover {
+  background: rgba(255, 215, 0, 0.18);
+  color: #ffd700;
+}
+
+/* Disabled dates */
+.calendar-date.disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* Today */
+.calendar-date.today {
+  border: 1px solid #ffd700;
+}
+
+/* Selected */
+.calendar-date.selected {
+  background: rgba(255, 215, 0, 0.35);
+  color: #000;
+  font-weight: 600;
+}

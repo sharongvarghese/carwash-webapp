@@ -12,9 +12,9 @@ public_bp = Blueprint("public", __name__)
 # ----------------------------
 @public_bp.route("/", methods=["GET"])
 def home():
-    services = Service.query.all()
+    services = Service.query.limit(4).all()
     packages = Package.query.all()
-    gallery_images = GalleryImage.query.all()   # ✅ NEW
+    gallery_images = GalleryImage.query.all()
 
     contact_form = ContactForm(prefix="contact")
 
@@ -22,13 +22,37 @@ def home():
         "public/index.html",
         services=services,
         packages=packages,
-        gallery_images=gallery_images,   # ✅ SEND TO TEMPLATE
+        gallery_images=gallery_images,
         contact_form=contact_form,
     )
 
 
 # ----------------------------
-# CONTACT FORM HANDLER
+# ALL SERVICES PAGE
+# ----------------------------
+@public_bp.route("/services")
+def services_page():
+    services = Service.query.all()
+    return render_template("public/services.html", services=services)
+
+
+# ----------------------------
+# SERVICE DETAIL PAGE
+# ----------------------------
+@public_bp.route("/service/<int:service_id>")
+def service_detail(service_id):
+    service = Service.query.get_or_404(service_id)
+    other_services = Service.query.filter(Service.id != service_id).all()
+
+    return render_template(
+        "public/service_detail.html",
+        service=service,
+        other_services=other_services
+    )
+
+
+# ----------------------------
+# CONTACT HANDLER
 # ----------------------------
 @public_bp.route("/contact", methods=["POST"])
 def contact_submit():
@@ -58,7 +82,7 @@ def contact_submit():
 
 
 # ----------------------------
-# BOOKING PAGE (SEPARATE PAGE)
+# BOOKING PAGE
 # ----------------------------
 @public_bp.route("/booking", methods=["GET", "POST"])
 def booking_page():

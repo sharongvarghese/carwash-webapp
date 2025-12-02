@@ -5,11 +5,11 @@
 
 <section id="hero" class="hero-section container">
 
-  <div class="hero-glass-card glass-glow">
+  <div class="hero-glass-card glass-glow hero-animate-wrapper">
     <div class="row align-items-center">
 
       <!-- LEFT TEXT -->
-      <div class="col-lg-6 hero-animate-left">
+      <div class="col-lg-6 hero-animate  fade-up">
         <h1 class="hero-title">WELCOME TO<br>GOLDEN TOUCH CAR WASH</h1>
         <p class="hero-text">
           Premium detailing, ceramic coating & deep car spa — experience luxury.
@@ -22,109 +22,56 @@
       </div>
 
       <!-- RIGHT IMAGE -->
-      <div class="col-lg-6 hero-image-box">
-        <img src="{{ url_for('static', filename='img/hero-car.jpg') }}"
-             class="hero-image-big hero-animate-image" alt="Car wash">
+      <div class="col-lg-6 position-relative hero-animate fade-up">
+
+        <!-- Glow Behind -->
+        <div class="hero-glow"></div>
+
+        <!-- Image -->
+        <div class="hero-image-container">
+          <img src="{{ url_for('static', filename='img/hero-car.jpg') }}"
+               class="hero-image-premium"
+               alt="Car wash">
+        </div>
+
       </div>
 
     </div>
   </div>
 
 </section>
+
 
 <!-- ===============================
-        ABOUT SECTION (PREMIUM)
+        SERVICES SECTION HOME PAGE
    =============================== -->
-<section id="about" class="container py-5">
-
-  <div class="row align-items-center gx-5">
-
-    <!-- LEFT GLASS CONTENT -->
-    <div class="col-lg-6">
-      <div class="glass-card glass-glow about-animate">
-
-        <h2 class="section-title mb-3">About Us</h2>
-
-        <div class="gold-line"></div>
-
-        <p class="about-text">
-          At <span class="highlight">Golden Touch Car Wash</span>, your car receives more than a wash —
-          it receives a luxury treatment. Our expert detailing team is committed to bringing back
-          that brand-new showroom shine, every single visit.
-        </p>
-
-        <p class="about-text">
-          Using high-grade products, modern techniques, and unmatched precision, we provide everything
-          from quick washes to premium ceramic coating & deep spa treatments.
-        </p>
-
-        <p class="about-text mb-0">
-          We don’t just clean cars.<br>
-          <strong>We redefine their beauty.</strong>
-        </p>
-
-      </div>
-    </div>
-
-    <!-- RIGHT IMAGE -->
-    <div class="col-lg-6 text-center about-animate-img mt-4 mt-lg-0">
-      <img src="{{ url_for('static', filename='img/about-car.jpg') }}"
-           class="about-image"
-           alt="Car detailing">
-    </div>
-
-  </div>
-
-</section>
-
 <section id="services" class="section-dark container py-5">
 
   <div class="glass-card glass-glow">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="section-title mb-0">Services</h2>
-      <a href="#services" class="see-all-link">see all</a>
+      <a href="{{ url_for('public.services_page') }}" class="see-all-link">See all</a>
     </div>
 
-    <!-- PREMIUM AUTO GRID -->
     <div class="services-row">
       {% if services %}
         {% for service in services %}
-          <div class="service-card">
-            <img src="{{ service.image_url or url_for('static', filename='img/service-1.webp') }}"
-                 class="service-img" alt="{{ service.name }}">
-            <div class="service-title-box">
-              <p class="service-title">{{ service.name }}</p>
+          <a href="{{ url_for('public.service_detail', service_id=service.id) }}" class="service-link">
+            <div class="service-card">
+             <img src="{{ url_for('static', filename=service.image_url) }}" class="service-img">
+              <div class="service-title-box">
+                <p class="service-title">{{ service.name }}</p>
+              </div>
             </div>
-          </div>
+          </a>
         {% endfor %}
-      {% else %}
-      
-        <div class="service-card">
-          <img src="{{ url_for('static', filename='img/service-1.webp') }}" class="service-img" alt="Deep Clean">
-          <div class="service-title-box"><p class="service-title">Deep Clean</p></div>
-        </div>
-
-        <div class="service-card">
-          <img src="{{ url_for('static', filename='img/service-2.webp') }}" class="service-img" alt="Exterior Washing">
-          <div class="service-title-box"><p class="service-title">Exterior Washing</p></div>
-        </div>
-
-        <div class="service-card">
-          <img src="{{ url_for('static', filename='img/service-3.jpg') }}" class="service-img" alt="Interior Washing">
-          <div class="service-title-box"><p class="service-title">Interior Washing</p></div>
-        </div>
-
-        <div class="service-card">
-          <img src="{{ url_for('static', filename='img/service-4.jpg') }}" class="service-img" alt="Ceramic Coating">
-          <div class="service-title-box"><p class="service-title">Ceramic Coating</p></div>
-        </div>
       {% endif %}
     </div>
 
   </div>
-
 </section>
+
 
 
 <!-- ===============================

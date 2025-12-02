@@ -1,0 +1,243 @@
+/* ===============================
+      PREMIUM SERVICES (GRID)
+   =============================== */
+
+#services { 
+  margin-top: 4.5rem;
+}
+
+.service-link {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s ease;
+}
+
+/* Grid Layout (Better Responsive) */
+.services-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2.3rem;
+  justify-items: center;
+  width: 100%;
+}
+
+/* SERVICE CARD */
+.service-card {
+  width: 100%;
+  max-width: 260px;
+  min-width: 260px;
+
+  background: rgba(20,20,20,0.5);
+  backdrop-filter: blur(16px);
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255,215,0,0.25);
+
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.55),
+    0 0 40px rgba(255,215,0,0.15);
+
+  transition: 0.35s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+/* CARD HOVER */
+.service-card:hover {
+  transform: translateY(-12px) scale(1.05);
+  box-shadow:
+    0 18px 45px rgba(0,0,0,0.7),
+    0 0 70px rgba(255,215,0,0.35);
+}
+
+/* Premium Shine Sweep */
+.service-card::after {
+  content:"";
+  position:absolute;
+  top:0;
+  left:-120%;
+  width:75%;
+  height:100%;
+  background:linear-gradient(120deg,
+    transparent,
+    rgba(255,215,0,0.3),
+    transparent
+  );
+  transform:skewX(-20deg);
+  transition:0.7s;
+}
+
+.service-card:hover::after {
+  left:130%;
+}
+
+/* SERVICE IMAGE */
+.service-img {
+  width:100%;
+  height:185px;
+  object-fit:cover;
+  border-bottom:2px solid rgba(255,215,0,0.28);
+  filter: brightness(0.92);
+  transition: 0.4s ease;
+}
+
+/* Smooth Zoom */
+.service-card:hover .service-img {
+  filter: brightness(1.05);
+  transform: scale(1.06);
+}
+
+/* TITLE BOX */
+.service-title-box {
+  background: linear-gradient(90deg, #ffe27a, #ffd700, #e4b300);
+  padding: 16px 0;
+  text-align:center;
+}
+
+.service-title {
+  font-family: "Bebas Neue", sans-serif;
+  color:#000;
+  font-size:1.4rem;
+  letter-spacing:1.2px;
+  text-shadow:0 1px 0 rgba(255,255,255,0.9);
+}
+
+
+
+/* ============================================================
+   ULTRA PREMIUM SERVICE DETAILS PAGE (UPDATED & UPGRADED)
+   ============================================================ */
+
+/* LEFT IMAGE FLOATING WRAPPER */
+.detail-image-container {
+  position: relative;
+  border-radius: 35px;
+  overflow: hidden;
+  padding: 0;
+  animation: floatImage 6s ease-in-out infinite;
+}
+
+/* Yellow Glow Behind the Image */
+.yellow-glow-bg {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  background: radial-gradient(
+    circle,
+    rgba(255,215,0,0.55),
+    transparent 65%
+  );
+  filter: blur(70px);
+  z-index: 1;
+}
+
+/* Main Service Image */
+.detail-main-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 32px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 55px rgba(255,215,0,0.3);
+  transition: 0.5s ease;
+}
+
+.detail-main-img:hover {
+  transform: scale(1.055);
+}
+
+/* FLOAT ANIMATION */
+@keyframes floatImage {
+  0% { transform: translateY(0px) }
+  50% { transform: translateY(-14px) }
+  100% { transform: translateY(0px) }
+}
+
+/* RIGHT CONTENT BOX */
+.detail-right-card {
+  background: rgba(15,15,15,0.55);
+  backdrop-filter: blur(18px);
+  border-radius: 32px;
+  border: 1px solid rgba(255,215,0,0.25);
+  padding: 40px;
+  box-shadow: 0 0 65px rgba(255,215,0,0.22);
+}
+
+/* Title */
+.detail-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #ffd700;
+  text-shadow: 0 0 25px rgba(255,215,0,0.55);
+  margin-bottom: 1rem;
+}
+
+/* Price Badge */
+.detail-price-box {
+  background: rgba(255,215,0,0.25);
+  border: 1px solid rgba(255,215,0,0.35);
+  padding: 12px 26px;
+  border-radius: 14px;
+  font-size: 1.6rem;
+  color: #ffd700;
+  display: inline-block;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+}
+
+/* Description */
+.detail-description {
+  font-size: 1.2rem;
+  line-height: 1.85;
+  color: #ffe98f;
+  opacity: 0.96;
+  margin-bottom: 1.7rem;
+}
+
+
+
+/* ============================================================
+      PREMIUM "SEE ALL" LINK ANIMATION (UPGRADED)
+   ============================================================ */
+
+.premium-see-all {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffd700;
+  text-decoration: none;
+  letter-spacing: 0.6px;
+  display: inline-block;
+  position: relative;
+  padding-bottom: 3px;
+  transition: 0.3s ease;
+  text-shadow: 0 0 10px rgba(255,215,0,0.4);
+}
+
+/* Underline Grow */
+.premium-see-all::after {
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  height:2px;
+  width:0%;
+  background:#ffd700;
+  box-shadow: 0 0 6px rgba(255,215,0,0.7);
+  transition:0.35s ease-in-out;
+}
+
+/* Hover Glow */
+.premium-see-all:hover {
+  color:#fff5b3;
+  text-shadow:0 0 15px rgba(255,215,0,0.9);
+}
+
+/* Underline Animate */
+.premium-see-all:hover::after {
+  width:100%;
+}

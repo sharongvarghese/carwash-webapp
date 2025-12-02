@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="admin-card glass-glow mb-4">
+  <h2 class="section-title">Gallery Management</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.image.label }}
+      {{ form.image(class_="form-control dark-input") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.caption.label }}
+      {{ form.caption(class_="form-control dark-input", placeholder="Optional caption") }}
+    </div>
+
+    {{ form.submit(class_="btn btn-gold") }}
+  </form>
+</div>
+
+<div class="row g-4">
+  {% for img in images %}
+    <div class="col-md-3">
+      <div class="glass-card text-center p-2">
+        <img src="{{ url_for('static', filename=img.image_url) }}" 
+             class="img-fluid rounded mb-2"
+             style="height:200px; object-fit:cover;">
+
+        <p class="body-text">{{ img.caption or "No caption" }}</p>
+
+        <form method="POST" action="{{ url_for('admin.delete_gallery_image', image_id=img.id) }}">
+          <button class="btn btn-outline-gold w-100">Delete</button>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+/* ===========================================
+      PERFECT GLASS INPUT (NO COLOR CHANGE)
+   =========================================== */
+.dark-input {
+  background: rgba(20, 20, 20, 0.55) !important;
+  color: #f5c542 !important;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dark-input::placeholder {
+  color: #f5c542 !important;
+  opacity: 0.75;
+}
+
+.dark-input:hover {
+  border-color: rgba(255, 215, 0, 0.35);
+}
+
+.dark-input:focus {
+  border-color: rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.28);
+  outline: none;
+}
+
+/* Autofill Fix */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px rgba(20,20,20,0.55) inset !important;
+  -webkit-text-fill-color: #f5c542 !important;
+}
+
+/* BOOKING ICONS */
+.booking-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #ffd700;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+select.booking-input {
+  padding-left: 2.6rem !important;
+}
+
+/* GOLD DATE / TIME PICKER ICONS */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(77%) sepia(82%) saturate(745%) hue-rotate(3deg) brightness(102%) contrast(102%);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  filter: drop-shadow(0 0 6px rgba(255,215,0,0.6))
+          invert(77%) sepia(82%) saturate(745%) hue-rotate(3deg) brightness(102%) contrast(102%);
+}
