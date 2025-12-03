@@ -91,18 +91,18 @@ def booking_page():
 
     booking_form.service_id.choices = [(s.id, s.name) for s in services]
 
-    # Debug logs
-    if request.method == "POST":
-        print("---- NEW BOOKING SUBMISSION ----")
-        print("Form Data:", request.form)
-        print("Full Name:", booking_form.full_name.data)
-        print("Phone:", booking_form.phone.data)
-        print("Email:", booking_form.email.data)
-        print("Date:", booking_form.date.data)
-        print("Time:", booking_form.time.data)
-        print("Service:", booking_form.service_id.data)
-        print("Validate:", booking_form.validate_on_submit())
-        print("Errors:", booking_form.errors)
+    # # Debug logs
+    # if request.method == "POST":
+    #     print("---- NEW BOOKING SUBMISSION ----")
+    #     print("Form Data:", request.form)
+    #     print("Full Name:", booking_form.full_name.data)
+    #     print("Phone:", booking_form.phone.data)
+    #     print("Email:", booking_form.email.data)
+    #     print("Date:", booking_form.date.data)
+    #     print("Time:", booking_form.time.data)
+    #     print("Service:", booking_form.service_id.data)
+    #     print("Validate:", booking_form.validate_on_submit())
+    #     print("Errors:", booking_form.errors)
 
     # ---------- AJAX SUBMISSION ----------
     if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":

@@ -11,21 +11,41 @@ class ContactForm(FlaskForm):
     submit = SubmitField("Send Message")
 
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, ValidationError, Regexp
+
+
 class BookingForm(FlaskForm):
-    full_name = StringField("Full Name", validators=[DataRequired(), Length(max=120)])
-    phone = StringField("Phone Number", validators=[DataRequired(), Length(max=20)])
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    full_name = StringField("Full Name", validators=[
+        DataRequired(),
+        Length(min=2, max=120)
+    ])
 
-    # SERVICE MUST BE SELECTED (NO EMPTY VALUE ALLOWED)
-    service_id = SelectField("Service", coerce=int, validators=[DataRequired()])
+    phone = StringField("Phone Number", validators=[
+        DataRequired(),
+        Regexp(r'^[0-9]{10}$', message="Phone number must be 10 digits")
+    ])
 
-    # date/time come from JS → hidden inputs
+    email = StringField("Email", validators=[
+        DataRequired(),
+        Email()
+    ])
+
+    # SERVICE MUST BE SELECTED
+    service_id = SelectField(
+        "Service",
+        coerce=int,
+        validators=[DataRequired(message="Please select a service")]
+    )
+
     date = StringField("Date", validators=[DataRequired()])
     time = StringField("Time", validators=[DataRequired()])
 
     submit = SubmitField("Book Slot")
 
-    # custom validation → 0 means "Select Service"
+    # FIXED VALIDATION (supports both 0 and "")
     def validate_service_id(self, field):
-        if field.data == 0:
+        if not field.data or field.data == 0:
             raise ValidationError("Please select a service")
+

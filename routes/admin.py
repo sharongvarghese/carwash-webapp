@@ -118,14 +118,56 @@ def manage_services():
 
 
 
-@admin_bp.route("/services/delete/<int:service_id>")
+
+@admin_bp.route("/services/delete/<int:service_id>", methods=["POST"])
 @login_required
 def delete_service(service_id):
     service = Service.query.get_or_404(service_id)
+
+    # optionally delete physical file
+    if service.image_url:
+        try:
+            os.remove(os.path.join("static", service.image_url))
+        except Exception:
+            pass
+
     db.session.delete(service)
     db.session.commit()
     flash("Service deleted.", "info")
     return redirect(url_for("admin.manage_services"))
+
+
+@admin_bp.route("/services/edit/<int:service_id>", methods=["GET", "POST"])
+@login_required
+def edit_service(service_id):
+    service = Service.query.get_or_404(service_id)
+    form = ServiceForm(obj=service)   # Prefill existing values
+
+    if form.validate_on_submit():
+
+        # Update fields
+        service.name = form.name.data
+        service.price = form.price.data
+        service.description = form.description.data
+
+        # Optional: If new image uploaded
+        if form.image.data:
+            upload_folder = os.path.join("static", "uploads", "services")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filename = secure_filename(form.image.data.filename)
+            image_path = os.path.join(upload_folder, filename)
+            form.image.data.save(image_path)
+
+            # save relative path
+            service.image_url = f"uploads/services/{filename}"
+
+        db.session.commit()
+        flash("Service updated successfully!", "success")
+        return redirect(url_for("admin.manage_services"))
+
+    return render_template("admin/edit_service.html", form=form, service=service)
+
 
 
 # =========================

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Edit Service{% endblock %}
+{% block content %}
+
+<div class="container py-5 mt-5">
+  <h2 class="section-title mb-4">Edit Service</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="dark-form">
+    {{ form.hidden_tag() }}
+
+    <div class="row g-3">
+      <div class="col-md-3">
+        {{ form.name(class_="form-control dark-input") }}
+        {% for e in form.name.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="col-md-3">
+        {{ form.price(class_="form-control dark-input") }}
+        {% for e in form.price.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="col-md-3">
+        {{ form.image(class_="form-control dark-input") }}
+        {% for e in form.image.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}
+        {% if service.image_url %}
+          <div class="mt-2">
+            <small class="text-light d-block">Current image:</small>
+            <img src="{{ url_for('static', filename=service.image_url) }}"
+                 alt="current" style="width:120px; height:80px; object-fit:cover; border-radius:6px;">
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-12">
+        {{ form.description(class_="form-control dark-input", rows="3") }}
+        {% for e in form.description.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="col-md-12">
+        {{ form.submit(class_="btn btn-gold", value="Update Service") }}
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

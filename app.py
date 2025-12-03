@@ -6,10 +6,16 @@ from models import AdminUser
 from routes.public import public_bp
 from routes.admin import admin_bp
 from flask_migrate import Migrate
+from flask_wtf import CSRFProtect
+
+csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # Enable CSRF protection for all forms
+    csrf.init_app(app)
 
     # Initialize extensions
     db.init_app(app)
