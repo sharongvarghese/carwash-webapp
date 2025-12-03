@@ -1,14 +1,18 @@
-// Confirm before delete in admin
+/* ====================================================
+      CONFIRM DELETE (ADMIN)
+==================================================== */
 document.addEventListener("click", function (e) {
   if (e.target.matches(".btn-delete")) {
-    const ok = confirm("Are you sure you want to delete this item?");
-    if (!ok) {
+    if (!confirm("Are you sure you want to delete this item?")) {
       e.preventDefault();
     }
   }
 });
 
-// Smooth scroll for internal nav links
+
+/* ====================================================
+      SMOOTH SCROLL LINKS
+==================================================== */
 document.querySelectorAll('a.nav-link[href*="#"]').forEach((link) => {
   link.addEventListener("click", function (e) {
     const href = this.getAttribute("href");
@@ -18,7 +22,7 @@ document.querySelectorAll('a.nav-link[href*="#"]').forEach((link) => {
       if (target) {
         window.scrollTo({
           top: target.offsetTop - 70,
-          behavior: "smooth",
+          behavior: "smooth"
         });
       }
     }
@@ -26,177 +30,218 @@ document.querySelectorAll('a.nav-link[href*="#"]').forEach((link) => {
 });
 
 
+/* ====================================================
+      CLICK OUTSIDE HELPER
+==================================================== */
+function clickOutside(element, callback) {
+  document.addEventListener("click", (e) => {
+    if (!element.contains(e.target)) callback();
+  });
+}
 
 
 /* ====================================================
-      PREMIUM GOLD × BLACK CALENDAR
+      PREMIUM DATE PICKER (FINAL FIXED VERSION)
 ==================================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
-    
   const display = document.getElementById("premiumDateDisplay");
   const dropdown = document.getElementById("premiumDateDropdown");
   const selectedText = document.getElementById("selectedDateText");
-  const hiddenDate = document.getElementById("hiddenDateField");
+  const hiddenDate = document.getElementById("booking-date");
+
+  if (!display) return; // Only run on booking page
 
   let currentDate = new Date();
 
   function renderCalendar() {
-      dropdown.innerHTML = "";
+    dropdown.innerHTML = "";
 
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const today = new Date();
 
-      const firstDay = new Date(year, month, 1).getDay();
-      const lastDate = new Date(year, month + 1, 0).getDate();
-      const today = new Date();
+    // HEADER
+    const header = document.createElement("div");
+    header.className = "calendar-header";
+    header.innerHTML = `
+      <span id="prevMonth" class="calendar-arrow">⟨</span>
+      <span>${currentDate.toLocaleString("en-US", { month: "long" })} ${year}</span>
+      <span id="nextMonth" class="calendar-arrow">⟩</span>
+    `;
+    dropdown.appendChild(header);
 
-      // HEADER
-      const header = document.createElement("div");
-      header.className = "calendar-header";
+    document.getElementById("prevMonth").addEventListener("click", (e) => {
+      e.stopPropagation();
+      currentDate.setMonth(month - 1);
+      renderCalendar();
+    });
 
-      header.innerHTML = `
-          <span class="calendar-arrow" id="prevMonth">⟨</span>
-          <span>${currentDate.toLocaleString("en-US", { month: "long" })} ${year}</span>
-          <span class="calendar-arrow" id="nextMonth">⟩</span>
-      `;
+    document.getElementById("nextMonth").addEventListener("click", (e) => {
+      e.stopPropagation();
+      currentDate.setMonth(month + 1);
+      renderCalendar();
+    });
 
-      dropdown.appendChild(header);
+    // WEEKDAYS
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const daysRow = document.createElement("div");
+    daysRow.className = "calendar-grid";
 
-      document.getElementById("prevMonth")?.addEventListener("click", () => {
-          currentDate.setMonth(currentDate.getMonth() - 1);
-          renderCalendar();
-      });
+    weekdays.forEach((day) => {
+      let el = document.createElement("div");
+      el.className = "calendar-day";
+      el.textContent = day;
+      daysRow.appendChild(el);
+    });
 
-      document.getElementById("nextMonth")?.addEventListener("click", () => {
-          currentDate.setMonth(currentDate.getMonth() + 1);
-          renderCalendar();
-      });
+    dropdown.appendChild(daysRow);
 
-      // WEEKDAYS
-      const daysRow = document.createElement("div");
-      daysRow.className = "calendar-grid";
-      const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-      days.forEach(d => {
-          const el = document.createElement("div");
-          el.className = "calendar-day";
-          el.textContent = d;
-          daysRow.appendChild(el);
-      });
-      dropdown.appendChild(daysRow);
+    // DATE GRID
+    const grid = document.createElement("div");
+    grid.className = "calendar-grid";
 
-      // DATES GRID
-      const dateGrid = document.createElement("div");
-      dateGrid.className = "calendar-grid";
+    let firstDay = new Date(year, month, 1).getDay();
+    let lastDate = new Date(year, month + 1, 0).getDate();
 
-      // Empty spaces for first-day alignment
-      for (let i = 0; i < firstDay; i++) {
-          dateGrid.appendChild(document.createElement("div"));
+    for (let i = 0; i < firstDay; i++) {
+      grid.appendChild(document.createElement("div"));
+    }
+
+    for (let d = 1; d <= lastDate; d++) {
+      const dateEl = document.createElement("div");
+      dateEl.className = "calendar-date";
+      dateEl.textContent = d;
+
+      let fullDate = new Date(year, month, d);
+
+      if (fullDate < new Date().setHours(0, 0, 0, 0)) {
+        dateEl.classList.add("disabled");
       }
 
-      for (let day = 1; day <= lastDate; day++) {
-          const d = document.createElement("div");
-          d.className = "calendar-date";
-          d.textContent = day;
-
-          const fullDate = new Date(year, month, day);
-
-          // Disable past dates
-          if (fullDate < new Date().setHours(0,0,0,0)) {
-              d.classList.add("disabled");
-          }
-
-          // Disable Sundays
-          if (fullDate.getDay() === 0) {
-              d.classList.add("disabled");
-          }
-
-          // Today highlight
-          if (day === today.getDate() &&
-              month === today.getMonth() &&
-              year === today.getFullYear()) {
-              d.classList.add("today");
-          }
-
-          // Click handler
-          d.addEventListener("click", () => {
-              selectedText.textContent =
-                `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-
-              hiddenDate.value = selectedText.textContent;
-
-              dropdown.style.display = "none";
-          });
-
-          dateGrid.appendChild(d);
+      if (fullDate.getDay() === 0) {
+        dateEl.classList.add("disabled");
       }
 
-      dropdown.appendChild(dateGrid);
+      dateEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (dateEl.classList.contains("disabled")) return;
+
+        const value = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        selectedText.textContent = value;
+        hiddenDate.value = value;
+
+        dropdown.style.display = "none"; // CLOSE after select
+      });
+
+      grid.appendChild(dateEl);
+    }
+
+    dropdown.appendChild(grid);
   }
 
-  // Initial Calendar Render
   renderCalendar();
 
-  // Toggle dropdown
-  display.addEventListener("click", () => {
-      dropdown.style.display =
-        dropdown.style.display === "block" ? "none" : "block";
+  // OPEN/CLOSE PICKER
+  display.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
   });
 
-  // Close when clicked outside
-  document.addEventListener("click", (e) => {
-      if (!display.contains(e.target) && !dropdown.contains(e.target)) {
-          dropdown.style.display = "none";
-      }
-  });
-
+  // CLOSE ON OUTSIDE CLICK
+  clickOutside(dropdown, () => (dropdown.style.display = "none"));
 });
 
-// PREMIUM TIME PICKER (6 AM – 6 PM)
-document.addEventListener("DOMContentLoaded", () => {
 
+/* ====================================================
+      PREMIUM TIME PICKER (FINAL VERSION)
+==================================================== */
+document.addEventListener("DOMContentLoaded", () => {
   const display = document.getElementById("premiumTimeDisplay");
   const dropdown = document.getElementById("premiumTimeDropdown");
+  const hiddenTime = document.getElementById("booking-time");
   const selectedText = document.getElementById("selectedTimeText");
-  const hiddenTime = document.getElementById("hiddenTimeField");
 
-  // Generate time slots
-  const generateTimes = () => {
+  if (!display) return;
+
+  function generateTimes() {
     dropdown.innerHTML = "";
+
     for (let hour = 6; hour <= 18; hour++) {
       for (let min of ["00", "30"]) {
-        let h = hour < 10 ? "0" + hour : hour;
-        let label = `${h}:${min}`;
-        let opt = document.createElement("div");
+        let label = `${hour.toString().padStart(2, "0")}:${min}`;
+
+        const opt = document.createElement("div");
         opt.className = "premium-time-option";
         opt.textContent = label;
 
-        opt.addEventListener("click", () => {
+        opt.addEventListener("click", (e) => {
+          e.stopPropagation();
+
           selectedText.textContent = label;
           hiddenTime.value = label;
-          dropdown.style.display = "none";
+
+          dropdown.style.display = "none"; // CLOSE after select
         });
 
         dropdown.appendChild(opt);
       }
     }
-  };
+  }
 
   generateTimes();
 
-  // Toggle dropdown
-  display.addEventListener("click", () => {
-    dropdown.style.display =
-      dropdown.style.display === "block" ? "none" : "block";
+  display.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
   });
 
-  // Close when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!display.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = "none";
-    }
-  });
-
+  clickOutside(dropdown, () => (dropdown.style.display = "none"));
 });
 
 
+/* ====================================================
+      AJAX BOOKING SUBMISSION (SUPER CLEAN VERSION)
+==================================================== */
+async function submitBooking(event) {
+  event.preventDefault(); // Stop page reload
+
+  const form = document.getElementById("booking-form");
+  const formData = new FormData(form);
+
+  // Clear previous errors
+  document.querySelectorAll(".text-danger.small").forEach(el => {
+    el.textContent = "";
+  });
+
+  // Send AJAX request
+  const response = await fetch("/booking", {
+    method: "POST",
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    body: formData
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    // Show validation errors
+    for (let field in data.errors) {
+      const errorBox = document.getElementById(`${field}-error`);
+      if (errorBox) {
+        errorBox.textContent = data.errors[field][0];
+      }
+    }
+    return false;
+  }
+
+  // SUCCESS
+  alert(data.message);
+
+  // Reset form
+  form.reset();
+
+  document.getElementById("selectedDateText").textContent = "Select Date";
+  document.getElementById("selectedTimeText").textContent = "Select Time";
+
+  return false;
+}

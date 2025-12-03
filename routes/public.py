@@ -1,5 +1,5 @@
 # routes/public.py
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from extensions import db
 from models import Service, Package, Booking, Notification, ContactMessage, GalleryImage
 from forms.public_forms import ContactForm, BookingForm
@@ -52,7 +52,7 @@ def service_detail(service_id):
 
 
 # ----------------------------
-# CONTACT HANDLER
+# CONTACT FORM SUBMIT
 # ----------------------------
 @public_bp.route("/contact", methods=["POST"])
 def contact_submit():
@@ -82,7 +82,7 @@ def contact_submit():
 
 
 # ----------------------------
-# BOOKING PAGE
+# BOOKING (AJAX SUPPORTED)
 # ----------------------------
 @public_bp.route("/booking", methods=["GET", "POST"])
 def booking_page():
@@ -91,7 +91,28 @@ def booking_page():
 
     booking_form.service_id.choices = [(s.id, s.name) for s in services]
 
-    if booking_form.validate_on_submit():
+    # Debug logs
+    if request.method == "POST":
+        print("---- NEW BOOKING SUBMISSION ----")
+        print("Form Data:", request.form)
+        print("Full Name:", booking_form.full_name.data)
+        print("Phone:", booking_form.phone.data)
+        print("Email:", booking_form.email.data)
+        print("Date:", booking_form.date.data)
+        print("Time:", booking_form.time.data)
+        print("Service:", booking_form.service_id.data)
+        print("Validate:", booking_form.validate_on_submit())
+        print("Errors:", booking_form.errors)
+
+    # ---------- AJAX SUBMISSION ----------
+    if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
+
+        if not booking_form.validate():
+            return jsonify({
+                "success": False,
+                "errors": booking_form.errors
+            }), 400
+
         booking = Booking(
             full_name=booking_form.full_name.data,
             phone=booking_form.phone.data,
@@ -100,18 +121,24 @@ def booking_page():
             date=booking_form.date.data,
             time=booking_form.time.data,
         )
+
         db.session.add(booking)
 
+        # Notification for admin
         note = Notification(
             type="booking",
             message=f"New booking from {booking.full_name} for {booking.date} at {booking.time}",
         )
         db.session.add(note)
+
         db.session.commit()
 
-        flash("Slot booked successfully! We’ll contact you soon.", "success")
-        return redirect(url_for("public.booking_page"))
+        return jsonify({
+            "success": True,
+            "message": "Slot booked successfully! We'll contact you soon."
+        })
 
+    # ---------- NORMAL PAGE LOAD ----------
     return render_template(
         "public/booking.html",
         booking_form=booking_form,

@@ -1,6 +1,19 @@
+# Virtual Environment
 venv/
+
+# Python Cache
 __pycache__/
 *.pyc
+*.pyo
+
+# Database files (SQLite)
 *.db
+
+# Flask instance folder (contains config, uploads, etc.)
 instance/
+
+# Environment variables
 .env
+
+# macOS system files
+.DS_Store
