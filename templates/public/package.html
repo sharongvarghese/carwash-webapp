@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Packages{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/packages.css') }}">
+
+<section class="container py-5 mt-5">
+  
+  <h2 class="premium-packages-title text-center mb-5">Our Premium Packages</h2>
+
+  <div class="row g-4">
+
+    {% for pkg in packages %}
+    <div class="col-md-4 col-sm-6">
+
+      <div class="premium-package-card premium-fade">
+
+        <!-- IMAGE -->
+        <div class="premium-pkg-image">
+
+          {% if pkg.image_url %}
+            <!-- Correct path: static + relative DB path -->
+            <img src="{{ url_for('static', filename=pkg.image_url) }}" 
+                 alt="{{ pkg.title }}">
+          {% else %}
+            <!-- Fallback default image -->
+            <img src="{{ url_for('static', filename='images/default-package.jpg') }}" 
+                 alt="{{ pkg.title }}">
+          {% endif %}
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="premium-pkg-body">
+
+          <h4 class="premium-pkg-title">{{ pkg.title }}</h4>
+
+          {% if pkg.details %}
+            <p class="premium-pkg-details">{{ pkg.details }}</p>
+          {% endif %}
+
+          <div class="premium-pkg-price-box">
+
+            {% if pkg.discount_price %}
+              <span class="premium-price-new">₹{{ pkg.discount_price }}</span>
+              <span class="premium-price-old">₹{{ pkg.price }}</span>
+            {% else %}
+              <span class="premium-price-new">₹{{ pkg.price }}</span>
+            {% endif %}
+
+          </div>
+
+          <a href="/booking" class="premium-btn">Book Now</a>
+
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, TextAreaField
 from wtforms.validators import DataRequired, Length, Optional
-from flask_wtf.file import FileAllowed, FileField
+from flask_wtf.file import FileAllowed, FileField, FileRequired
 
 class AdminLoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(min=3, max=100)])
@@ -24,7 +24,9 @@ class PackageForm(FlaskForm):
     details = TextAreaField("Details", validators=[Optional()])
     price = FloatField("Price", validators=[Optional()])
     discount_price = FloatField("Discount Price", validators=[Optional()])
-    image_url = StringField("Image URL", validators=[Optional(), Length(max=255)])
+    image = FileField("Image", validators=[
+        FileAllowed(["jpg", "jpeg", "png", "webp"], "Images only!")
+    ])
     submit = SubmitField("Add Package")
 
 

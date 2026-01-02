@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block body_class %}fixed-footer{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-gold mb-0">📥 Contact Inbox</h2>
+
+    <button
+      type="button"
+      class="btn btn-outline-gold btn-sm"
+      id="deleteBtn">
+      Delete Selected
+    </button>
+  </div>
+
+  <form
+    method="POST"
+    action="{{ url_for('admin.delete_selected_contacts') }}"
+    id="deleteForm">
+    
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="card glass-card p-3">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover inbox-table mb-0">
+
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" id="selectAll">
+              </th>
+              <th>Status</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th class="d-none d-md-table-cell">Phone</th>
+              <th>Date</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for msg in messages %}
+            <tr class="inbox-row {% if not msg.is_read %}unread{% endif %}">
+              <td>
+                <input
+                  type="checkbox"
+                  name="selected_ids"
+                  value="{{ msg.id }}"
+                  class="msg-checkbox">
+              </td>
+
+              <td>
+                {% if msg.is_read %}
+                  <span class="badge bg-secondary">Read</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark">New</span>
+                {% endif %}
+              </td>
+
+              <td>{{ msg.name }}</td>
+              <td>{{ msg.email }}</td>
+              <td class="d-none d-md-table-cell">{{ msg.phone or "—" }}</td>
+              <td>{{ msg.created_at.strftime('%d %b %Y') }}</td>
+
+              <td class="text-end">
+                <a
+                  href="{{ url_for('admin.view_contact_message', message_id=msg.id) }}"
+                  class="btn btn-sm btn-outline-gold">
+                  View
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">
+                No messages found
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

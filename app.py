@@ -1,12 +1,16 @@
-# app.py
+import os
 from flask import Flask
+from dotenv import load_dotenv
 from config import Config
-from extensions import db, login_manager
+from extensions import db, login_manager, mail
 from models import AdminUser
 from routes.public import public_bp
 from routes.admin import admin_bp
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
+
+# Load .env
+load_dotenv()
 
 csrf = CSRFProtect()
 
@@ -14,28 +18,31 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Enable CSRF protection for all forms
     csrf.init_app(app)
 
-    # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
 
-    # Initialize Flask-Migrate
     migrate = Migrate(app, db)
 
-    # Register blueprints
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
 
     # Create default admin user if not exists
     with app.app_context():
-        if not AdminUser.query.filter_by(username="admin").first():
-            admin = AdminUser(username="admin")
-            admin.set_password("admin123")
-            db.session.add(admin)
-            db.session.commit()
-            print("Default admin created: username=admin, password=admin123")
+        admin_username = os.getenv("ADMIN_USERNAME")
+        admin_password = os.getenv("ADMIN_PASSWORD")
+
+        if admin_username and admin_password:
+            if not AdminUser.query.filter_by(username=admin_username).first():
+                admin = AdminUser(username=admin_username)
+                admin.set_password(admin_password)
+                db.session.add(admin)
+                db.session.commit()
+                print(f"Default admin created: {admin_username}")
+        else:
+            print("⚠️ ADMIN_USERNAME or ADMIN_PASSWORD not set in .env")
 
     return app
 

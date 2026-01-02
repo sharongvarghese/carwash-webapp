@@ -8,14 +8,18 @@
 
   <div class="services-row">
     {% for service in services %}
-      <a href="{{ url_for('public.service_detail', service_id=service.id) }}" class="service-link">
-        <div class="service-card">
-          <img src="{{ url_for('static', filename=service.image_url) }}" class="service-img">
-          <div class="service-title-box">
-            <p class="service-title">{{ service.name }}</p>
-          </div>
+      <div class="service-card no-click">
+        <img src="{{ url_for('static', filename=service.image_url) }}" class="service-img">
+        
+        <div class="service-title-box text-center">
+          <p class="service-title">{{ service.name }}</p>
         </div>
-      </a>
+
+        <!-- Make it like a button -->
+        <button class="btn btn-gold w-100 mt-2" disabled>
+          Available
+        </button>
+      </div>
     {% endfor %}
   </div>
 

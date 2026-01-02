@@ -25,10 +25,11 @@
         <div class="booking-animated-card">
 
           <h2 class="booking-title text-center mb-4 fade-up delay-300">
-            Book Your Premium Slot
+            Book Your Slot
           </h2>
 
-          <form id="booking-form" onsubmit="return submitBooking(event)" class="booking-form fade-up delay-400">
+          <!-- ================== BOOKING FORM ================== -->
+          <form method="POST" action="{{ url_for('public.booking_page') }}" class="booking-form fade-up delay-400">
 
             {{ booking_form.hidden_tag() }}
 
@@ -36,7 +37,11 @@
             <div class="form-group-animated mb-1">
               <i class="bi bi-person-fill booking-icon"></i>
               {{ booking_form.full_name(class_="form-control dark-input premium-input ps-5", placeholder="Full Name") }}
-              <div id="full_name-error" class="text-danger small"></div>
+              
+              {% if booking_form.full_name.errors %}
+                <small class="text-danger">{{ booking_form.full_name.errors[0] }}</small>
+              {% endif %}
+              
               <span class="input-glow"></span>
             </div>
             <br>
@@ -45,7 +50,11 @@
             <div class="form-group-animated mb-1">
               <i class="bi bi-phone-fill booking-icon"></i>
               {{ booking_form.phone(class_="form-control dark-input premium-input ps-5", placeholder="Phone Number") }}
-              <div id="phone-error" class="text-danger small"></div>
+              
+              {% if booking_form.phone.errors %}
+                <small class="text-danger">{{ booking_form.phone.errors[0] }}</small>
+              {% endif %}
+              
               <span class="input-glow"></span>
             </div>
             <br>
@@ -54,7 +63,11 @@
             <div class="form-group-animated mb-1">
               <i class="bi bi-envelope-fill booking-icon"></i>
               {{ booking_form.email(class_="form-control dark-input premium-input ps-5", placeholder="Email") }}
-              <div id="email-error" class="text-danger small"></div>
+              
+              {% if booking_form.email.errors %}
+                <small class="text-danger">{{ booking_form.email.errors[0] }}</small>
+              {% endif %}
+              
               <span class="input-glow"></span>
             </div>
             <br>
@@ -62,15 +75,16 @@
             <!-- DATE -->
             <div class="mb-1 premium-date-wrapper">
               <i class="fa-solid fa-calendar booking-icon"></i>
-
               <div id="premiumDateDisplay" class="premium-date-display">
                 <span id="selectedDateText">Select Date</span>
               </div>
-
+              
               <div id="premiumDateDropdown" class="premium-date-dropdown"></div>
-
               {{ booking_form.date(type="hidden", id="booking-date") }}
-              <div id="date-error" class="text-danger small"></div>
+
+              {% if booking_form.date.errors %}
+                <small class="text-danger">{{ booking_form.date.errors[0] }}</small>
+              {% endif %}
             </div>
             <br>
 
@@ -80,35 +94,82 @@
                 <i class="fa-solid fa-clock booking-icon"></i>
                 <span id="selectedTimeText">Select Time</span>
               </div>
-
+              
               <div id="premiumTimeDropdown" class="premium-time-dropdown"></div>
-
               {{ booking_form.time(type="hidden", id="booking-time") }}
-              <div id="time-error" class="text-danger small"></div>
+
+              {% if booking_form.time.errors %}
+                <small class="text-danger">{{ booking_form.time.errors[0] }}</small>
+              {% endif %}
             </div>
 
             <!-- SERVICE -->
             <div class="form-group-animated mb-3">
               <i class="bi bi-list-ul booking-icon"></i>
               {{ booking_form.service_id(class_="form-select dark-input premium-input ps-5") }}
-              <div id="service_id-error" class="text-danger small"></div>
+              
+              {% if booking_form.service_id.errors %}
+                <small class="text-danger">{{ booking_form.service_id.errors[0] }}</small>
+              {% endif %}
+              
               <span class="input-glow"></span>
             </div>
 
-            <!-- BUTTON -->
-            <button type="submit"
-                    class="btn btn-gold w-100 btn-lg booking-cta-btn fade-up delay-350">
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" class="btn btn-gold w-100 btn-lg booking-cta-btn fade-up delay-350">
               Confirm Booking
             </button>
 
           </form>
+          <!-- ================== END FORM ================== -->
 
         </div>
       </div>
-
     </div>
   </div>
 
 </section>
 
 {% endblock %}
+
+<!-- =========== LIVE VALIDATION SCRIPT =========== -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  const fullName = document.querySelector('[name="full_name"]');
+  const phone = document.querySelector('[name="phone"]');
+  const email = document.querySelector('[name="email"]');
+  const dateInput = document.querySelector('#booking-date');
+  const timeInput = document.querySelector('#booking-time');
+  const service = document.querySelector('[name="service_id"]');
+
+  function show(input,msg){
+    input.classList.remove("is-valid");
+    input.classList.add("is-invalid");
+    input.parentElement.querySelector("small")?.remove();
+    const s=document.createElement("small");
+    s.className="text-danger mt-1 d-block";
+    s.innerText=msg;
+    input.parentElement.appendChild(s);
+  }
+
+  function ok(input){
+    input.classList.remove("is-invalid");
+    input.classList.add("is-valid");
+    input.parentElement.querySelector("small")?.remove();
+  }
+
+  fullName.addEventListener("input",()=>{
+    fullName.value.trim().length < 2 ? show(fullName,"Enter a valid name") : ok(fullName);
+  });
+
+  phone.addEventListener("input",()=>{
+    /^[0-9]{10}$/.test(phone.value) ? ok(phone) : show(phone,"Phone must be 10 digits");
+  });
+
+  email.addEventListener("input",()=>{
+    /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/.test(email.value) ? ok(email) : show(email,"Invalid email format");
+  });
+
+});
+</script>

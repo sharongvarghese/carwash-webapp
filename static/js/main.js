@@ -245,3 +245,35 @@ async function submitBooking(event) {
 
   return false;
 }
+
+
+/* ====================================================
+      ADMIN CONTACT INBOX JS
+==================================================== */
+// SELECT ALL CHECKBOXES
+const selectAll = document.getElementById("selectAll");
+if (selectAll) {
+  selectAll.addEventListener("change", () => {
+    document.querySelectorAll(".msg-checkbox").forEach(cb => {
+      cb.checked = selectAll.checked;
+    });
+  });
+}
+
+// DELETE SELECTED
+const deleteBtn = document.getElementById("deleteBtn");
+if (deleteBtn) {
+  deleteBtn.addEventListener("click", () => {
+    const checked = document.querySelectorAll(".msg-checkbox:checked");
+
+    if (checked.length === 0) {
+      alert("Please select at least one message.");
+      return;
+    }
+
+    if (confirm("Are you sure you want to delete selected messages?")) {
+      document.getElementById("deleteForm").submit();
+    }
+  });
+}
+

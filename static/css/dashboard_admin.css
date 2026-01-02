@@ -1,0 +1,78 @@
+/* Dashboard Enhancements */
+.dashboard-container {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.admin-card.enhanced-card {
+  border-radius: 16px;
+  padding: 25px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card.enhanced-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.big-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Soft Shadow */
+.shadow-soft {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+/* Logout button spacing fix */
+.logout-btn {
+  min-width: 120px;
+}
+
+/* Stylish Notification List */
+.dashboard-list {
+  padding: 0;
+  margin: 0;
+}
+
+.dashboard-list-item {
+  padding: 12px 14px;
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 3px solid #ffd700;
+}
+
+/* Buttons */
+.nav-btn {
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+  .big-number {
+    font-size: 2.4rem;
+  }
+  .admin-card.enhanced-card {
+    padding: 18px 15px;
+  }
+  .nav-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

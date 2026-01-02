@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Edit Package{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+
+  <h2 class="section-title mb-4">Edit Package</h2>
+
+  <form method="post" enctype="multipart/form-data" class="dark-form">
+    {{ form.hidden_tag() }}
+
+    <div class="row g-3">
+
+      <!-- Title -->
+      <div class="col-md-4">
+        {{ form.title(class_="form-control dark-input", placeholder="Package Title") }}
+      </div>
+
+      <!-- Price -->
+      <div class="col-md-4">
+        {{ form.price(class_="form-control dark-input", placeholder="Price") }}
+      </div>
+
+      <!-- Discount Price -->
+      <div class="col-md-4">
+        {{ form.discount_price(class_="form-control dark-input", placeholder="Discount Price") }}
+      </div>
+
+
+      <!-- IMAGE UPLOAD -->
+      <div class="col-md-6">
+        <label class="text-light mb-2">Upload New Image</label>
+        {{ form.image(class_="form-control dark-input") }}
+      </div>
+
+      <!-- CURRENT IMAGE PREVIEW -->
+      <div class="col-md-6">
+        <label class="text-light mb-2">Current Image</label><br>
+
+        {% if package.image_url %}
+          <img src="/static/{{ package.image_url }}" 
+               class="admin-pkg-thumb" 
+               style="width:130px; height:130px; object-fit:cover; border-radius:10px;">
+        {% else %}
+          <p class="text-muted small">No image uploaded</p>
+        {% endif %}
+      </div>
+
+
+      <!-- DETAILS -->
+      <div class="col-md-12">
+        {{ form.details(class_="form-control dark-input", rows="3", placeholder="Package Details") }}
+      </div>
+
+      <!-- BUTTON -->
+      <div class="col-md-12">
+        {{ form.submit(class_="btn btn-gold") }}
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+{% endblock %}

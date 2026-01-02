@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import AdminUser, Service, Package, Booking, Notification, GalleryImage
+from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage
 from forms.admin_forms import AdminLoginForm, ServiceForm, PackageForm, GalleryUploadForm
 from werkzeug.utils import secure_filename
 import os
@@ -72,6 +72,58 @@ def mark_notification_read(note_id):
 
 
 # =========================
+# CONTACT INBOX
+# =========================
+@admin_bp.route("/contacts")
+@login_required
+def contact_inbox():
+    messages = ContactMessage.query.order_by(
+        ContactMessage.created_at.desc()
+    ).all()
+
+    return render_template(
+        "admin/contact_inbox.html",
+        messages=messages
+    )
+
+# =========================
+# VIEW CONTACT MESSAGE
+# =========================
+@admin_bp.route("/contacts/<int:message_id>")
+@login_required
+def view_contact_message(message_id):
+    message = ContactMessage.query.get_or_404(message_id)
+
+    # Mark as read
+    if not message.is_read:
+        message.is_read = True
+        db.session.commit()
+
+    return render_template(
+        "admin/contact_view.html",
+        message=message
+    )
+
+@admin_bp.route("/contact/delete-selected", methods=["POST"])
+@login_required
+def delete_selected_contacts():
+    ids = request.form.getlist("selected_ids")
+
+    if not ids:
+        flash("No messages selected.", "warning")
+        return redirect(url_for("admin.contact_inbox"))
+
+    ContactMessage.query.filter(
+        ContactMessage.id.in_(ids)
+    ).delete(synchronize_session=False)
+
+    db.session.commit()
+    flash(f"{len(ids)} message(s) deleted.", "success")
+
+    return redirect(url_for("admin.contact_inbox"))
+
+
+# =========================
 # SERVICES MANAGEMENT
 # =========================
 @admin_bp.route("/services", methods=["GET", "POST"])
@@ -124,17 +176,24 @@ def manage_services():
 def delete_service(service_id):
     service = Service.query.get_or_404(service_id)
 
-    # optionally delete physical file
+    # 1️⃣ DELETE PHYSICAL IMAGE (if exists)
     if service.image_url:
-        try:
-            os.remove(os.path.join("static", service.image_url))
-        except Exception:
-            pass
+        image_path = os.path.join("static", service.image_url)  
+        # service.image_url must be like: "uploads/services/filename.jpg"
 
+        if os.path.exists(image_path):
+            try:
+                os.remove(image_path)
+            except Exception as e:
+                print("Error deleting service image:", e)
+
+    # 2️⃣ DELETE FROM DATABASE
     db.session.delete(service)
     db.session.commit()
-    flash("Service deleted.", "info")
+
+    flash("Service deleted successfully!", "info")
     return redirect(url_for("admin.manage_services"))
+
 
 
 @admin_bp.route("/services/edit/<int:service_id>", methods=["GET", "POST"])
@@ -180,13 +239,28 @@ def manage_packages():
     packages = Package.query.all()
 
     if form.validate_on_submit():
+        if form.image.data:
+            file = form.image.data
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join("static", "uploads", "packages")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filepath = os.path.join(upload_folder, filename)
+            file.save(filepath)
+
+            image_url = f"uploads/packages/{filename}"
+        else:
+            image_url = None
+
         package = Package(
             title=form.title.data,
             details=form.details.data,
             price=form.price.data,
             discount_price=form.discount_price.data,
-            image_url=form.image_url.data,
+            image_url=image_url
         )
+
         db.session.add(package)
         db.session.commit()
         flash("Package added successfully!", "success")
@@ -199,10 +273,25 @@ def manage_packages():
 @login_required
 def delete_package(package_id):
     package = Package.query.get_or_404(package_id)
+
+    # 1️⃣ DELETE IMAGE FILE FROM STATIC UPLOADS
+    if package.image_url:
+        image_path = os.path.join("static", package.image_url)  
+        # package.image_url = "uploads/packages/filename.jpg"
+
+        if os.path.exists(image_path):
+            try:
+                os.remove(image_path)
+            except Exception as e:
+                print("Error deleting image:", e)
+
+    # 2️⃣ DELETE PACKAGE FROM DATABASE
     db.session.delete(package)
     db.session.commit()
-    flash("Package deleted.", "info")
+
+    flash("Package deleted successfully!", "info")
     return redirect(url_for("admin.manage_packages"))
+
 
 
 # =========================
@@ -223,6 +312,16 @@ def update_booking_status(booking_id, status):
     db.session.commit()
     flash("Booking status updated.", "success")
     return redirect(url_for("admin.bookings"))
+
+@admin_bp.route("/bookings/delete/<int:booking_id>", methods=["POST"])
+@login_required
+def delete_booking(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+    db.session.delete(booking)
+    db.session.commit()
+    flash("Booking deleted successfully!", "success")
+    return redirect(url_for("admin.bookings"))
+
 
 
 # =========================

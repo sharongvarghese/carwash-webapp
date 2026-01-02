@@ -1,10 +1,146 @@
 /* ===============================
-        GLOBAL STYLES
-   =============================== */
+   GLOBAL STYLES
+=============================== */
 body {
   background-color: #000;
   color: #f5c542;
   font-family: "Poppins", sans-serif;
   padding-top: 70px;
   overflow-x: hidden;
+
+  /* 🔑 Sticky layout support */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content should grow */
+.main-content {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255,215,0,0.55);
+  margin-bottom: 2rem;
+}
+
+/* ===============================
+        BUTTONS
+   =============================== */
+.btn-gold {
+  background: #ffd700;
+  color: #000;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  border: none;
+  transition: 0.25s ease;
+}
+
+.btn-gold:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+  border-radius: 999px;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 0.6rem 2rem;
+}
+
+.btn-outline-gold:hover {
+  background: #ffd700;
+  color: #000;
+}
+
+
+/* =====================================
+   FIXED FOOTER (PAGE SPECIFIC)
+===================================== */
+
+.fixed-footer .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Prevent overlap when footer is fixed */
+.fixed-footer .main-content {
+  padding-bottom: 80px; /* footer height */
+}
+
+/* ===============================
+        FOOTER
+=============================== */
+.footer {
+  background:rgba(20,20,20,0.55);
+  backdrop-filter:blur(10px);
+  padding:1rem;
+  text-align:center;
+  border-top:1px solid rgba(255,215,0,0.16);
+  color:#ffd700;
+}
+
+/* ===============================
+        PREMIUM GLASS NAVBAR
+   =============================== */
+.nav-dark {
+  background: rgba(20, 20, 20, 0.55) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+.brand-text {
+  font-family: "Bebas Neue", sans-serif;
+  color: #ffd700 !important;
+  letter-spacing: 2px;
+  font-size: 1.3rem;
+}
+
+.navbar-nav .nav-link {
+  color: #ffd700 !important;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.navbar-nav .nav-link:hover {
+  text-decoration: underline;
+}
+
+
+/* ===============================
+        GLASS CARD (GLOBAL)
+   =============================== */
+.glass-card {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 215, 0, 0.16);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+}
+
+.glass-card:hover {
+  box-shadow: 0 0 55px rgba(255, 215, 0, 0.25);
+}
+
+.glass-glow {
+  position: relative;
+}
+
+.glass-glow::before {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent 70%);
+  top: -80px;
+  right: -60px;
+  z-index: -1;
 }

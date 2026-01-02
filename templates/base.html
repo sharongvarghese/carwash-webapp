@@ -18,20 +18,19 @@
   
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/glass.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_contact_view.css') }}">
 
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
+
 
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark nav-dark fixed-top">
@@ -47,6 +46,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ url_for('public.home') }}#hero">HOME</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('public.booking_page') }}">BOOKING</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('public.home') }}#services">SERVICES</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('public.packages_page') }}">PACKAGES</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('public.home') }}#contact">CONTACT</a></li>
           {% if current_user.is_authenticated %}
             <li class="nav-item">
@@ -73,8 +73,11 @@
     {% endwith %}
   </div>
 
-  <!-- MAIN CONTENT -->
+<!-- MAIN CONTENT -->
+<main class="main-content">
   {% block content %}{% endblock %}
+</main>
+
 
   <!-- FOOTER -->
   <footer class="footer text-center py-3">

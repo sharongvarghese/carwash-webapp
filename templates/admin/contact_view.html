@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-gold mb-0">
+      📩 Contact Message
+    </h2>
+
+    {% if not message.is_read %}
+      <span class="badge bg-warning text-dark px-3 py-2">
+        Unread
+      </span>
+    {% else %}
+      <span class="badge bg-success px-3 py-2">
+        Read
+      </span>
+    {% endif %}
+  </div>
+
+  <!-- MESSAGE CARD -->
+  <div class="card glass-card p-4">
+
+    <!-- META INFO -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <p class="meta-label">Name</p>
+        <p class="meta-value">{{ message.name }}</p>
+      </div>
+
+      <div class="col-md-6">
+        <p class="meta-label">Email</p>
+        <p class="meta-value">
+          <a href="mailto:{{ message.email }}" class="text-gold text-decoration-none">
+            {{ message.email }}
+          </a>
+        </p>
+      </div>
+
+      <div class="col-md-6">
+        <p class="meta-label">Phone</p>
+        <p class="meta-value">{{ message.phone or "—" }}</p>
+      </div>
+
+      <div class="col-md-6">
+        <p class="meta-label">Received</p>
+        <p class="meta-value">
+          {{ message.created_at.strftime("%d %b %Y, %I:%M %p") }}
+        </p>
+      </div>
+    </div>
+
+    <hr class="border-secondary">
+
+    <!-- MESSAGE BODY -->
+    <div class="message-box">
+      <p class="meta-label">Message</p>
+      <p class="message-text">
+        {{ message.message }}
+      </p>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <a href="{{ url_for('admin.contact_inbox') }}" class="btn btn-outline-gold">
+        ← Back to Inbox
+      </a>
+
+      <a href="mailto:{{ message.email }}" class="btn btn-gold">
+        Reply
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

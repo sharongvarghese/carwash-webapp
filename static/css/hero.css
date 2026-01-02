@@ -100,9 +100,30 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .hero-glass-card { padding: 2rem; }
-  .hero-title { font-size: 2.8rem; }
-  .hero-image-premium { height: 260px; }
+/* ==========================
+       RESPONSIVE DESIGN
+==========================*/
+
+@media(max-width:992px){
+  .hero-title{font-size:3rem;}
+  .hero-image-premium{max-height:300px;}
+  .hero-image-container{
+    padding-top:6vh; 
+  }
+}
+
+@media(max-width:768px){
+  .hero-section{padding-top:7vh;}
+  .hero-image-container{padding-top:7vh;}
+
+  .hero-glass-card{padding:1.8rem;}
+  .hero-title{font-size:2.6rem;text-align:center;}
+  .hero-text{text-align:center;margin:auto;}
+  .hero-buttons{justify-content:center;}
+}
+
+@media(max-width:480px){
+  .hero-title{font-size:2.3rem;}
+  .hero-image-container{padding-top:9vh;}
+  .hero-image-premium{max-height:210px;}
 }
