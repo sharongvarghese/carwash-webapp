@@ -15,7 +15,10 @@ public_bp = Blueprint("public", __name__)
 def home():
     services = Service.query.limit(4).all()
     packages = Package.query.all()
-    gallery_images = GalleryImage.query.all()
+    gallery_items = GalleryImage.query.order_by(GalleryImage.id.desc()).limit(4).all()
+
+    # Total gallery count
+    total_gallery_count = GalleryImage.query.count()
 
     contact_form = ContactForm(prefix="contact")
 
@@ -23,7 +26,8 @@ def home():
         "public/index.html",
         services=services,
         packages=packages,
-        gallery_images=gallery_images,
+        gallery_items=gallery_items,
+        total_gallery_count=total_gallery_count,
         contact_form=contact_form,
     )
 
@@ -35,6 +39,20 @@ def home():
 def services_page():
     services = Service.query.all()
     return render_template("public/services.html", services=services)
+
+    
+
+# ----------------------------
+# ALL GALLERY PAGE
+# ----------------------------
+@public_bp.route("/gallery")
+def gallery_page():
+    gallery_items = GalleryImage.query.order_by(GalleryImage.id.desc()).all()
+    return render_template(
+        "public/gallery_page.html",
+        gallery_items=gallery_items
+    )
+
 
 # ----------------------------
 # ALL PACKAGES PAGE

@@ -1,4 +1,4 @@
-{% extends "admin/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 
 <div class="admin-card glass-glow mb-4">
@@ -8,8 +8,13 @@
     {{ form.hidden_tag() }}
 
     <div class="mb-3">
-      {{ form.image.label }}
-      {{ form.image(class_="form-control dark-input") }}
+      {{ form.before_image.label }}
+      {{ form.before_image(class_="form-control dark-input") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.after_image.label }}
+      {{ form.after_image(class_="form-control dark-input") }}
     </div>
 
     <div class="mb-3">
@@ -21,22 +26,43 @@
   </form>
 </div>
 
+
 <div class="row g-4">
-  {% for img in images %}
-    <div class="col-md-3">
-      <div class="glass-card text-center p-2">
-        <img src="{{ url_for('static', filename=img.image_url) }}" 
-             class="img-fluid rounded mb-2"
-             style="height:200px; object-fit:cover;">
+  {% for item in gallery_items %}
+    <div class="col-md-4">
+      <div class="glass-card p-2">
 
-        <p class="body-text">{{ img.caption or "No caption" }}</p>
+        <div class="row g-2">
+          <div class="col-6">
+            <img src="{{ url_for('static', filename=item.before_image) }}"
+                 class="img-fluid rounded"
+                 style="height:180px; object-fit:cover;">
+            <small class="d-block text-gold text-center mt-1">Before</small>
+          </div>
 
-        <form method="POST" action="{{ url_for('admin.delete_gallery_image', image_id=img.id) }}">
+          <div class="col-6">
+            <img src="{{ url_for('static', filename=item.after_image) }}"
+                 class="img-fluid rounded"
+                 style="height:180px; object-fit:cover;">
+            <small class="d-block text-gold text-center mt-1">After</small>
+          </div>
+        </div>
+
+        <p class="body-text mt-2 text-center">
+          {{ item.caption or "No caption" }}
+        </p>
+
+        <form method="POST"
+          action="{{ url_for('admin.delete_gallery_image', image_id=item.id) }}">
+          {{ form.hidden_tag() }}
           <button class="btn btn-outline-gold w-100">Delete</button>
         </form>
+
+
       </div>
     </div>
   {% endfor %}
 </div>
 
 {% endblock %}
+

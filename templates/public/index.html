@@ -74,7 +74,7 @@
           to bring mirror-finish perfection to every vehicle.
         </p>
 
-        <a href="#services" class="btn btn-gold btn-lg">Explore Services</a>
+        <a href="{{ url_for('public.services_page') }}" class="btn btn-gold btn-lg">Explore Services</a>
       </div>
 
     </div>
@@ -82,12 +82,10 @@
 
 </section>
 
-
-
 <!-- ===============================
-        SERVICES SECTION HOME PAGE
+            SERVICES SECTION
    =============================== -->
-<section id="services" class="section-dark container py-5">
+   <section id="services" class="section-dark container py-5">
 
   <div class="glass-card glass-glow">
 
@@ -96,60 +94,70 @@
       <a href="{{ url_for('public.services_page') }}" class="see-all-link">See all</a>
     </div>
 
-    <div class="services-row">
-      {% if services %}
-        {% for service in services %}
-          <div class="service-card">
-            <img src="{{ url_for('static', filename=service.image_url) }}" class="service-img">
-            <div class="service-title-box">
-              <p class="service-title">{{ service.name }}</p>
+    <div class="common-grid">
+      {% for service in services %}
+      <div class="common-card service-card">
 
-              <!-- You can enable this button if you want direct booking -->
-              <!--
-              <button class="btn btn-gold w-100 mt-2"
-                      onclick="window.location.href='{{ url_for('public.booking_page') }}'">
-                Book Now
-              </button>
-              -->
-            </div>
-          </div>
-        {% endfor %}
-      {% endif %}
+        <img src="{{ url_for('static', filename=service.image_url) }}"
+             class="common-img"
+             alt="{{ service.name }}">
+
+        <div class="common-title-box">
+          <p class="common-title">{{ service.name }}</p>
+        </div>
+
+      </div>
+      {% endfor %}
     </div>
 
   </div>
 </section>
 
 
+
+
 <!-- ===============================
             GALLERY SECTION
    =============================== -->
+
 <section id="gallery" class="section-dark container py-5">
 
-  <div class="glass-card glass-glow mb-4">
-    <h2 class="section-title">Gallery</h2>
-  </div>
+  <div class="glass-card glass-glow">
 
-  <div class="gallery-grid">
-    {% if gallery_images and gallery_images|length > 0 %}
-      {% for item in gallery_images %}
-        <div class="gallery-card">
-          <img src="{{ item.image_url }}"
-               alt="Gallery Image {{ loop.index }}"
-               class="gallery-img">
-        </div>
-      {% endfor %}
-    {% else %}
-      <div class="empty-gallery glass-card text-center py-5">
-        <div style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;">📷</div>
-        <h4 class="body-text mb-2">No Gallery Images Yet</h4>
-        <p class="body-text" style="opacity: 0.8;">
-          Once admin uploads images,<br> they will appear here.
-        </p>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0">Gallery</h2>
+
+      <a href="{{ url_for('public.gallery_page') }}" class="see-all-link">See all</a>
+    </div>
+    <div class="gallery-grid">
+ 
+  {% for item in gallery_items %}
+  <div class="gallery-card-wrapper">
+
+    <div class="gallery-card-overlay"
+         data-before="{{ url_for('static', filename=item.before_image) }}"
+         data-after="{{ url_for('static', filename=item.after_image) }}">
+
+      <img src="{{ url_for('static', filename=item.before_image) }}"
+           class="gallery-image-overlay"
+           alt="Before and After Work">
+
+      <div class="gallery-badge before active">BEFORE</div>
+      <div class="gallery-badge after">AFTER</div>
+    </div>
+
+    {% if item.caption %}
+    <div class="gallery-description">
+      {{ item.caption }}
+    </div>
     {% endif %}
-  </div>
 
+  </div>
+  {% endfor %}
+
+</div>
+
+  </div>
 </section>
 
 

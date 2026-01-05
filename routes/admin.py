@@ -327,51 +327,81 @@ def delete_booking(booking_id):
 # =========================
 # GALLERY ADMIN
 # =========================
+import os
+from werkzeug.utils import secure_filename
+from datetime import datetime
+
 @admin_bp.route("/gallery", methods=["GET", "POST"])
 @login_required
 def admin_gallery():
     form = GalleryUploadForm()
 
     if form.validate_on_submit():
-        file = form.image.data
-        filename = secure_filename(file.filename)
+        before = form.before_image.data
+        after = form.after_image.data
 
-        # save image to static/uploads
-        upload_folder = os.path.join("static", "uploads")
-        if not os.path.exists(upload_folder):
-            os.makedirs(upload_folder)
+        # Timestamp to avoid filename conflicts
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 
-        filepath = os.path.join(upload_folder, filename)
-        file.save(filepath)
+        before_name = f"{timestamp}_before_{secure_filename(before.filename)}"
+        after_name  = f"{timestamp}_after_{secure_filename(after.filename)}"
 
-        new_image = GalleryImage(
-            image_url=f"uploads/{filename}",
-            caption=form.caption.data,
+        # Base upload directory
+        base_upload = os.path.join("static", "uploads", "gallery")
+
+        before_dir = os.path.join(base_upload, "before")
+        after_dir  = os.path.join(base_upload, "after")
+
+        # Create folders if not exist
+        os.makedirs(before_dir, exist_ok=True)
+        os.makedirs(after_dir, exist_ok=True)
+
+        # Save files
+        before_path = os.path.join(before_dir, before_name)
+        after_path  = os.path.join(after_dir, after_name)
+
+        before.save(before_path)
+        after.save(after_path)
+
+        # Save relative paths in DB
+        gallery = GalleryImage(
+            before_image=f"uploads/gallery/before/{before_name}",
+            after_image=f"uploads/gallery/after/{after_name}",
+            caption=form.caption.data
         )
-        db.session.add(new_image)
+
+        db.session.add(gallery)
         db.session.commit()
 
-        flash("Image uploaded successfully!", "success")
+        flash("Gallery item added successfully!", "success")
         return redirect(url_for("admin.admin_gallery"))
 
-    images = GalleryImage.query.order_by(GalleryImage.created_at.desc()).all()
+    gallery_items = GalleryImage.query.order_by(
+        GalleryImage.created_at.desc()
+    ).all()
 
-    return render_template("admin/gallery.html", form=form, images=images)
+    return render_template(
+        "admin/gallery.html",
+        form=form,
+        gallery_items=gallery_items
+    )
+
 
 
 @admin_bp.route("/gallery/delete/<int:image_id>", methods=["POST"])
 @login_required
 def delete_gallery_image(image_id):
-    image = GalleryImage.query.get_or_404(image_id)
+    item = GalleryImage.query.get_or_404(image_id)
 
-    # delete physical file
-    try:
-        os.remove(os.path.join("static", image.image_url))
-    except:
-        pass
+    for img in [item.before_image, item.after_image]:
+        try:
+            os.remove(os.path.join("static", img))
+        except:
+            pass
 
-    db.session.delete(image)
+    db.session.delete(item)
     db.session.commit()
 
-    flash("Image deleted.", "success")
+    flash("Gallery item deleted.", "success")
     return redirect(url_for("admin.admin_gallery"))
+

@@ -1,70 +1,107 @@
-/* ===============================
-      PREMIUM GALLERY GRID
-   =============================== */
+/* =================================================
+   GALLERY – OVERLAY BADGE DESIGN
+================================================= */
+
 .gallery-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:2rem;
-  margin-top:1.5rem;
-  opacity:0;
-  transform:translateY(20px);
-  animation:fadeGrid 0.9s forwards ease;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2.2rem;
+
+  align-items: stretch;     /* ✔ equal height */
+  justify-items: stretch;  /* ✔ equal width */
 }
 
-@keyframes fadeGrid {
-  to { opacity:1; transform:translateY(0); }
+.gallery-card-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
-.gallery-card {
-  background:rgba(20,20,20,0.55);
-  border-radius:26px;
-  padding:8px;
-  border:1px solid rgba(255,215,0,0.18);
-  backdrop-filter:blur(10px);
-  overflow:hidden;
-  box-shadow:0 0 30px rgba(255,215,0,0.14);
-  transition:0.35s ease;
-  cursor:pointer;
-  position:relative;
+
+/* Card */
+.gallery-card-overlay {
+  width: 100%;    
+  max-width: none; 
+
+  height: 340px;
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+
+  background: #000;
+  box-shadow:
+    0 12px 35px rgba(0,0,0,0.65),
+    0 0 45px rgba(255,215,0,0.15);
+
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-.gallery-card:hover {
-  transform:translateY(-10px) scale(1.035);
-  box-shadow:0 0 55px rgba(255,215,0,0.28);
+
+.gallery-card-overlay:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 20px 55px rgba(0,0,0,0.8),
+    0 0 70px rgba(255,215,0,0.35);
 }
 
-.gallery-card::after {
-  content:"";
-  position:absolute;
-  top:0;
-  left:-120%;
-  width:90%;
-  height:100%;
-  background:linear-gradient(120deg,transparent,rgba(255,215,0,0.25),transparent);
-  transform:skewX(-25deg);
-  transition:0.75s;
+/* Image */
+.gallery-image-overlay {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.8s ease, transform 0.6s ease;
 }
 
-.gallery-card:hover::after { left:120%; }
+/* Floating badge */
+.gallery-badge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 
-.gallery-img {
-  width:100%;
-  height:230px;
-  object-fit:cover;
-  border-radius:20px;
-  transition:0.45s ease;
+  padding: 8px 18px;
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,215,0,0.35);
+
+  color: #ffd700;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.35s ease;
 }
 
-.gallery-card:hover .gallery-img {
-  transform:scale(1.06);
-  opacity:0.95;
+/* Active badge */
+.gallery-badge.active {
+  opacity: 1;
+  transform: translateY(0);
+  box-shadow: 0 0 18px rgba(255,215,0,0.6);
 }
 
-.empty-gallery {
-  grid-column:1/-1;
-  text-align:center;
-  background:rgba(20,20,20,0.55);
-  border-radius:26px;
-  padding:3rem;
-  border:1px solid rgba(255,215,0,0.15);
+/* AFTER badge color */
+.gallery-badge.after {
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* Description */
+.gallery-description {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #ffe27a;
+  opacity: 0.9;
+  padding: 0 6px;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .gallery-card-overlay {
+    height: 280px;
+  }
 }

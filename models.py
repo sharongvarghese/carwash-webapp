@@ -86,7 +86,14 @@ class ContactMessage(db.Model):
 
 
 class GalleryImage(db.Model):
+    __tablename__ = "gallery_images"
+
     id = db.Column(db.Integer, primary_key=True)
-    image_url = db.Column(db.String(255), nullable=False)
-    caption = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=True)
+    before_image = db.Column(db.String(255), nullable=False)
+    after_image = db.Column(db.String(255), nullable=False)
+    caption = db.Column(db.String(255), nullable=True)
+    service = db.relationship("Service")
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+

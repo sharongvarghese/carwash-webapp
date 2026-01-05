@@ -32,9 +32,22 @@ class PackageForm(FlaskForm):
 
 
 class GalleryUploadForm(FlaskForm):
-    image = FileField("Upload Image", validators=[
-        DataRequired(),
-        FileAllowed(["png", "jpg", "jpeg", "webp"], "Images only!")
-    ])
+    before_image = FileField(
+        "Before Image",
+        validators=[
+            DataRequired(),
+            FileAllowed(["png", "jpg", "jpeg", "webp"], "Images only!")
+        ]
+    )
+
+    after_image = FileField(
+        "After Image",
+        validators=[
+            DataRequired(),
+            FileAllowed(["png", "jpg", "jpeg", "webp"], "Images only!")
+        ]
+    )
+
     caption = StringField("Caption", validators=[Optional()])
+
     submit = SubmitField("Upload")
