@@ -14,7 +14,7 @@ public_bp = Blueprint("public", __name__)
 @public_bp.route("/", methods=["GET"])
 def home():
     services = Service.query.limit(4).all()
-    packages = Package.query.all()
+    packages = Package.query.limit(4).all()
     gallery_items = GalleryImage.query.order_by(GalleryImage.id.desc()).limit(4).all()
 
     # Total gallery count
@@ -40,6 +40,23 @@ def services_page():
     services = Service.query.all()
     return render_template("public/services.html", services=services)
 
+@public_bp.route("/services/<int:service_id>")
+def service_detail(service_id):
+    service = Service.query.get_or_404(service_id)
+
+    other_services = (
+        Service.query
+        .filter(Service.id != service_id)
+        .all()
+    )
+
+    return render_template(
+        "public/service_detail.html",
+        service=service,
+        other_services = other_services
+    )
+
+
     
 
 # ----------------------------
@@ -59,7 +76,7 @@ def gallery_page():
 # ----------------------------
 @public_bp.route('/packages')
 def packages_page():
-    packages = Package.query.all()  # fetch all packages from database
+    packages = Package.query.all()  
     return render_template('public/package.html', packages=packages)    
 
 

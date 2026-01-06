@@ -7,8 +7,8 @@ html, body {
 }
 
 .hero-section {
-  min-height: 88vh;
-  padding: 4rem 0;
+  min-height: auto;
+  padding: 3rem 0;
   position: relative;
   width: 100%;
   overflow: hidden !important;
@@ -101,29 +101,88 @@ html, body {
 }
 
 /* ==========================
-       RESPONSIVE DESIGN
+   TABLET & BELOW (≤ 992px)
 ==========================*/
+@media (max-width: 992px) {
 
-@media(max-width:992px){
-  .hero-title{font-size:3rem;}
-  .hero-image-premium{max-height:300px;}
-  .hero-image-container{
-    padding-top:6vh; 
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-image-premium {
+    max-height: 300px;
+    transform: translateY(20px); 
+  }
+
+
+  .hero-image-container {
+    padding-top: 0;
+    margin-top: 2rem;
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding: 3rem 0;
   }
 }
 
-@media(max-width:768px){
-  .hero-section{padding-top:7vh;}
-  .hero-image-container{padding-top:7vh;}
 
-  .hero-glass-card{padding:1.8rem;}
-  .hero-title{font-size:2.6rem;text-align:center;}
-  .hero-text{text-align:center;margin:auto;}
-  .hero-buttons{justify-content:center;}
+/* ==========================
+   MOBILE (≤ 768px)
+==========================*/
+@media (max-width: 768px) {
+
+  .hero-section {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .hero-glass-card {
+    padding: 1.6rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .hero-text {
+    text-align: center;
+    margin: 0.8rem auto 0;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    margin-top: 1.2rem;
+  }
+
+  /* Kill translate animation */
+  .hero-image-premium {
+    transform: none;
+    animation: imgFade 0.9s ease forwards;
+  }
+
+  .hero-image-container {
+    margin-top: 1.6rem;
+  }
 }
 
-@media(max-width:480px){
-  .hero-title{font-size:2.3rem;}
-  .hero-image-container{padding-top:9vh;}
-  .hero-image-premium{max-height:210px;}
+
+/* ==========================
+   SMALL MOBILE (≤ 480px)
+==========================*/
+@media (max-width: 480px) {
+
+  .hero-title {
+    font-size: 2.2rem;
+    line-height: 1.15;
+  }
+
+  .hero-image-premium {
+    max-height: 200px;
+  }
+
+  .hero-section {
+    padding-bottom: 1.5rem;
+  }
 }
+

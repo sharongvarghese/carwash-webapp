@@ -339,3 +339,120 @@
   color: #000;
   font-weight: 600;
 }
+
+/* ===============================
+   TABLETS & SMALL DEVICES (≤ 768px)
+=============================== */
+@media (max-width: 768px) {
+
+  /* Center & balance image block */
+  .booking-hero-image-box {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    margin-bottom: 2rem;
+
+    border-radius: 28px;
+    background: rgba(20, 20, 20, 0.45);
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.25);
+  }
+
+  /* 🔑 KEY FIX: keep fade-up, stop floating only */
+  .booking-hero-image {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+
+    animation: none;        /* stops floatImage */
+  }
+
+  .fade-up {
+    animation: fadeUpAnim 0.8s ease-out forwards;
+  }
+
+  .booking-hero-glow {
+    width: 280px;
+    height: 280px;
+    filter: blur(16px);
+  }
+
+  .booking-animated-card {
+    padding: 2rem;
+    border-radius: 26px;
+  }
+
+  /* Dropdown safety */
+  .premium-time-dropdown,
+  .premium-date-dropdown {
+    max-height: 260px;
+  }
+}
+
+
+/* ===============================
+   MOBILE IMAGE HEIGHT FIX (CRITICAL)
+=============================== */
+@media (max-width: 576px) {
+
+  /* Limit image section height */
+  .booking-hero-image-box {
+    max-height: 260px;
+    padding: 0.6rem;
+    overflow: hidden;
+  }
+
+  .booking-hero-image {
+    height: 240px;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: unset;   /* 🔑 disable tall ratio */
+  }
+
+  /* Reduce glow so it doesn't add visual height */
+  .booking-hero-glow {
+    width: 200px;
+    height: 200px;
+    filter: blur(14px);
+  }
+
+  /* Pull form closer */
+  .booking-animated-card {
+    margin-top: -10px;
+  }
+}
+
+
+/* ===============================
+   EXTRA SMALL PHONES (≤ 400px)
+=============================== */
+@media (max-width: 400px) {
+
+  .booking-animated-card {
+    padding: 1.3rem;
+  }
+
+  .booking-hero-image-box {
+    padding: 0.6rem;
+  }
+
+  .calendar-header {
+    font-size: 0.9rem;
+  }
+
+  .calendar-arrow {
+    padding: 2px 6px;
+  }
+}
+
+/* ===============================
+   ACCESSIBILITY (PRO)
+=============================== */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .booking-hero-image {
+    animation: none !important;
+  }
+}
+
+

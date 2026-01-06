@@ -11,22 +11,23 @@
     <div class="row g-5 align-items-center justify-content-center">
 
       <!-- LEFT IMAGE -->
-      <div class="col-lg-6 col-md-10 fade-up delay-100">
-        <div class="booking-hero-image-box position-relative">
-          <div class="booking-hero-glow"></div>
-          <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
-               class="booking-hero-image"
-               alt="Premium Car Wash">
-        </div>
-      </div>
+<div class="col-12 col-lg-6 fade-up delay-100">
+  <div class="booking-hero-image-box position-relative text-center">
+    <div class="booking-hero-glow"></div>
+    <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
+         class="booking-hero-image"
+         alt="Premium Car Wash">
+  </div>
+</div>
 
-      <!-- RIGHT FORM -->
-      <div class="col-lg-5 col-md-10 fade-up delay-200">
-        <div class="booking-animated-card">
+<!-- RIGHT FORM -->
+<div class="col-12 col-lg-6 fade-up delay-200">
+  <div class="booking-animated-card">
 
-          <h2 class="booking-title text-center mb-4 fade-up delay-300">
-            Book Your Slot
-          </h2>
+    <h2 class="booking-title text-center mb-4 fade-up delay-300">
+      Book Your Slot
+    </h2>
+
 
           <!-- ================== BOOKING FORM ================== -->
           <form method="POST" action="{{ url_for('public.booking_page') }}" class="booking-form fade-up delay-400">

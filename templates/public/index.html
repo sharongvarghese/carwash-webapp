@@ -46,7 +46,7 @@
 <!-- ===============================
             ABOUT US SECTION
    =============================== -->
-<section id="about" class="section-dark container py-5">
+<section id="about" class="section-dark container">
 
   <div class="about-wrapper glass-card glass-glow">
 
@@ -83,36 +83,125 @@
 </section>
 
 <!-- ===============================
-            SERVICES SECTION
-   =============================== -->
-   <section id="services" class="section-dark container py-5">
+        SERVICES SECTION
+=============================== -->
+<section id="services" class="section-dark container py-5">
 
   <div class="glass-card glass-glow">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="section-title mb-0">Services</h2>
-      <a href="{{ url_for('public.services_page') }}" class="see-all-link">See all</a>
+      <a href="{{ url_for('public.services_page') }}" class="see-all-link">
+        See all
+      </a>
     </div>
 
-    <div class="common-grid">
+    <div class="row g-4">
+
       {% for service in services %}
-      <div class="common-card service-card">
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
 
-        <img src="{{ url_for('static', filename=service.image_url) }}"
-             class="common-img"
-             alt="{{ service.name }}">
+        <a href="{{ url_for('public.service_detail', service_id=service.id) }}"
+           class="service-link">
 
-        <div class="common-title-box">
-          <p class="common-title">{{ service.name }}</p>
-        </div>
+          <div class="service-card service-card-home">
+
+            <img src="{{ url_for('static', filename=service.image_url) }}"
+                 class="service-img"
+                 alt="{{ service.name }}">
+
+            <div class="service-title-box">
+              <p class="service-title">{{ service.name }}</p>
+            </div>
+
+          </div>
+
+        </a>
 
       </div>
       {% endfor %}
+
     </div>
 
   </div>
 </section>
 
+
+
+<!-- ===============================
+        PACKAGES PREVIEW SECTION
+=============================== -->
+<section id="packages" class="section-dark container py-5">
+
+  <div class="glass-card glass-glow">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0">Packages</h2>
+      <a href="{{ url_for('public.packages_page') }}" class="see-all-link">
+        See all
+      </a>
+    </div>
+
+    <!-- GRID -->
+    <div class="row g-4">
+
+      {% for pkg in packages %}
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <!-- PREVIEW CARD -->
+        <div class="package-preview-card">
+
+          <!-- IMAGE -->
+          <div class="package-preview-image">
+            {% if pkg.image_url %}
+              <img src="{{ url_for('static', filename=pkg.image_url) }}"
+                   alt="{{ pkg.title }}">
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default-package.jpg') }}"
+                   alt="{{ pkg.title }}">
+            {% endif %}
+          </div>
+
+          <!-- BODY -->
+          <div class="package-preview-body">
+
+            <h4 class="package-preview-title">
+              {{ pkg.title }}
+            </h4>
+
+            {% if pkg.details %}
+            <p class="package-preview-desc">
+              {{ pkg.details[:70] }}{% if pkg.details|length > 70 %}...{% endif %}
+            </p>
+            {% endif %}
+
+            <!-- PRICE -->
+            <div class="package-preview-price">
+              {% if pkg.discount_price %}
+                <span class="new">₹{{ pkg.discount_price }}</span>
+                <span class="old">₹{{ pkg.price }}</span>
+              {% else %}
+                <span class="new">₹{{ pkg.price }}</span>
+              {% endif %}
+            </div>
+
+            <!-- CTA -->
+            <a href="{{ url_for('public.booking_page') }}"
+               class="btn btn-outline-gold w-100 mt-2">
+              Buy Now
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
 
 
 
@@ -163,73 +252,105 @@
 
 
 <!-- ===============================
-            CONTACT SECTION
-   =============================== -->
-<section id="contact" class="section-dark container py-5">
+        CONTACT SECTION
+=============================== -->
+<section id="contact" class="section-dark container py-5 contact-section">
 
-  <div class="row g-4">
+  <div class="row g-4 align-items-stretch">
 
     <!-- CONTACT FORM -->
-    <div class="col-md-6">
-      <h2 class="section-title">Get in touch</h2>
+    <div class="col-12 col-lg-6 d-flex">
+      <div class="w-100 d-flex flex-column">
 
-      <form id="contactForm" action="{{ url_for('public.contact_submit')}}" method="post" class="dark-form glass-card glass-glow">
-        {{ contact_form.hidden_tag() }}
+        <h2 class="section-title">Get in touch</h2>
 
-        <div class="mb-3">
-          {{ contact_form.name(class_="form-control dark-input", placeholder="Name") }}
-        </div>
+        <form
+          id="contactForm"
+          action="{{ url_for('public.contact_submit') }}"
+          method="post"
+          class="dark-form glass-card glass-glow d-flex flex-column flex-grow-1">
 
-        <div class="mb-3">
-          {{ contact_form.email(class_="form-control dark-input", placeholder="Email") }}
-        </div>
+          {{ contact_form.hidden_tag() }}
 
-        <div class="mb-3">
-          {{ contact_form.phone(class_="form-control dark-input", placeholder="Phone") }}
-        </div>
+          <div class="mb-3">
+            {{ contact_form.name(class_="form-control dark-input", placeholder="Name") }}
+          </div>
 
-        <div class="mb-3">
-          {{ contact_form.message(class_="form-control dark-input", placeholder="Your Message", rows="4") }}
-        </div>
+          <div class="mb-3">
+            {{ contact_form.email(class_="form-control dark-input", placeholder="Email") }}
+          </div>
 
-        {{ contact_form.submit(class_="btn btn-gold", id="contactSubmitBtn", value="Send Message") }}
-      </form>
+          <div class="mb-3">
+            {{ contact_form.phone(class_="form-control dark-input", placeholder="Phone") }}
+          </div>
+
+          <div class="mb-3">
+            {{ contact_form.message(
+              class_="form-control dark-input",
+              placeholder="Your Message",
+              rows="4"
+            ) }}
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-gold mt-auto"
+            id="contactSubmitBtn">
+            Send Message
+          </button>
+
+        </form>
+
+      </div>
     </div>
-
 
     <!-- CONTACT INFO -->
-     <div class="col-md-6">
+    <div class="col-12 col-lg-6 d-flex">
+      <div class="w-100 d-flex flex-column">
 
-  <h2 class="section-title">Contact Us</h2>
+        <h2 class="section-title">Contact Us</h2>
 
-  <div class="contact-glass-box">
+        <div class="contact-glass-box d-flex flex-column flex-grow-1">
 
-    <!-- CONTACT DETAILS -->
-    <p><i class="bi bi-envelope-fill contact-info-icon"></i> example@gmail.com</p>
-    <p><i class="bi bi-telephone-fill contact-info-icon"></i> +91 1234567890</p>
-    <p><i class="bi bi-geo-alt-fill contact-info-icon"></i> Thattarambalam, Mavelikara, Kerala</p>
+          <p>
+            <i class="bi bi-envelope-fill contact-info-icon"></i>
+            example@gmail.com
+          </p>
 
-    <!-- SOCIAL ICONS -->
-    <div class="social-icons">
-      <a href="https://wa.me/911234567890" target="_blank"><i class="bi bi-whatsapp"></i></a>
-      <a href="https://instagram.com/yourprofile" target="_blank"><i class="bi bi-instagram"></i></a>
-      <a href="https://twitter.com/yourprofile" target="_blank"><i class="bi bi-twitter"></i></a>
-    </div>
+          <p>
+            <i class="bi bi-telephone-fill contact-info-icon"></i>
+            +91 1234567890
+          </p>
 
-    <!-- MAP INSIDE SAME GLASS CARD -->
-    <div class="map-inside-box">
-      <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10172.966880302061!2d76.5134370954607!3d9.251207963276988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b061f19cecc2359%3A0xdc49d8e4996cda2b!2sThattarambalam%2C%20Mavelikara%2C%20Kerala!5e1!3m2!1sen!2sin!4v1764823656380!5m2!1sen!2sin"
-        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
+          <p>
+            <i class="bi bi-geo-alt-fill contact-info-icon"></i>
+            Thattarambalam, Mavelikara, Kerala
+          </p>
+
+          <div class="social-icons mt-2">
+            <a href="#"><i class="bi bi-whatsapp"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-twitter"></i></a>
+          </div>
+
+          <div class="map-inside-box mt-3">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10172.966880302061!2d76.5134370954607!3d9.251207963276988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b061f19cecc2359%3A0xdc49d8e4996cda2b!2sThattarambalam%2C%20Mavelikara%2C%20Kerala!5e1!3m2!1sen!2sin!4v1764823656380!5m2!1sen!2sin"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+        </div>
+
+      </div>
     </div>
 
   </div>
-
-</div>
-
-</div>
 </section>
+
+
 
 <script>
   const contactForm = document.getElementById("contactForm");
@@ -242,5 +363,4 @@
     });
   }
 </script>
-
 {% endblock %}

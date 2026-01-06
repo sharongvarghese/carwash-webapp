@@ -5,7 +5,7 @@ body {
   background-color: #000;
   color: #f5c542;
   font-family: "Poppins", sans-serif;
-  padding-top: 70px;
+
   overflow-x: hidden;
 
   /* 🔑 Sticky layout support */
@@ -89,30 +89,129 @@ body {
 }
 
 /* ===============================
-        PREMIUM GLASS NAVBAR
-   =============================== */
+   PREMIUM GLASS NAVBAR
+=============================== */
 .nav-dark {
-  background: rgba(20, 20, 20, 0.55) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+  background: rgba(15, 15, 15, 0.65) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border-bottom: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.15);
+
+  transition: background 0.3s ease;
 }
 
+/* ===============================
+   BRAND
+=============================== */
 .brand-text {
   font-family: "Bebas Neue", sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 3px;
   color: #ffd700 !important;
-  letter-spacing: 2px;
-  font-size: 1.3rem;
+  text-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
-.navbar-nav .nav-link {
+.brand-text:hover {
+  transform: translateY(-1px);
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+}
+
+/* ===============================
+   NAV LINKS
+=============================== */
+.premium-nav .nav-link {
+  position: relative;
   color: #ffd700 !important;
   font-weight: 500;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover {
-  text-decoration: underline;
+/* Animated underline */
+.premium-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  transform: translateX(-50%);
+  transition: width 0.35s ease;
 }
+
+.premium-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.premium-nav .nav-link:hover {
+  color: #fff !important;
+}
+
+/* Active page highlight */
+.premium-nav .nav-link.active {
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.8);
+}
+
+/* ===============================
+   ADMIN LINK (SPECIAL)
+=============================== */
+.admin-link {
+  border: 1px solid rgba(255, 215, 0, 0.45);
+  border-radius: 999px;
+  padding: 0.4rem 1.2rem !important;
+  margin-left: 0.5rem;
+}
+
+.admin-link:hover {
+  background: rgba(255, 215, 0, 0.15);
+}
+
+/* ===============================
+   TOGGLER
+=============================== */
+.premium-toggler {
+  border: none;
+  outline: none;
+}
+
+.premium-toggler:focus {
+  box-shadow: none;
+}
+
+/* ===============================
+   MOBILE NAV
+=============================== */
+@media (max-width: 991px) {
+
+  .navbar-collapse {
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(18px);
+    border-radius: 18px;
+    padding: 1rem;
+    margin-top: 0.8rem;
+
+    box-shadow:
+      0 0 35px rgba(255, 215, 0, 0.25);
+  }
+
+  .premium-nav .nav-link {
+    text-align: center;
+    padding: 0.7rem;
+  }
+
+  .admin-link {
+    display: block;
+    margin: 0.6rem auto 0;
+  }
+}
+
 
 
 /* ===============================
@@ -284,4 +383,196 @@ body {
 .see-all-link:hover::after {
   width: 100%;
 }
+
+
+/* =================================================
+   PACKAGES PREVIEW – HOME ONLY
+================================================= */
+
+.package-preview-card {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 24px;
+  overflow: hidden;
+
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 215, 0, 0.16);
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.6),
+    0 0 35px rgba(255,215,0,0.12);
+
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+
+.glass-card > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.glass-card > .row > [class*="col-"] {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+
+.package-preview-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 18px 50px rgba(0,0,0,0.85),
+    0 0 55px rgba(255,215,0,0.3);
+}
+
+/* Image */
+.package-preview-image {
+  height: 190px;
+  overflow: hidden;
+}
+
+.package-preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.package-preview-card:hover img {
+  transform: scale(1.06);
+}
+
+/* Body */
+.package-preview-body {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.package-preview-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 0.3rem;
+}
+
+.package-preview-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #d0d0d0;
+  margin-bottom: 0.8rem;
+}
+
+/* Price */
+.package-preview-price {
+  margin-top: auto;
+  margin-bottom: 0.8rem;
+}
+
+.package-preview-price .new {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.package-preview-price .old {
+  font-size: 0.85rem;
+  margin-left: 8px;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+
+
+/* ---- DESKTOP SAFETY ---- */
+.package-preview-card {
+  height: 100%;
+}
+
+
+/* ---- TABLET (≤ 992px) ---- */
+@media (max-width: 992px) {
+
+  .package-preview-image {
+    height: 170px;
+  }
+
+  .package-preview-title {
+    font-size: 1.15rem;
+  }
+
+  .package-preview-desc {
+    font-size: 0.88rem;
+  }
+}
+
+
+/* ---- MOBILE (≤ 768px) ---- */
+@media (max-width: 768px) {
+
+  /* Disable hover lift (touch devices) */
+  .package-preview-card:hover {
+    transform: none;
+    box-shadow:
+      0 10px 28px rgba(0,0,0,0.6),
+      0 0 35px rgba(255,215,0,0.12);
+  }
+
+  .package-preview-image {
+    height: 150px;
+  }
+
+  .package-preview-body {
+    padding: 1.2rem;
+  }
+
+  .package-preview-title {
+    text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .package-preview-desc {
+    text-align: center;
+    font-size: 0.85rem;
+  }
+
+  .package-preview-price {
+    text-align: center;
+  }
+}
+
+
+/* ---- SMALL MOBILE (≤ 480px) ---- */
+@media (max-width: 480px) {
+
+  .package-preview-image {
+    height: 135px;
+  }
+
+  .package-preview-body {
+    padding: 1rem;
+  }
+
+  .package-preview-title {
+    font-size: 1.05rem;
+  }
+
+  .package-preview-desc {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .package-preview-price .new {
+    font-size: 1.15rem;
+  }
+}
+
+
+
+
 
