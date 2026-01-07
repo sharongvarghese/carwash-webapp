@@ -176,55 +176,57 @@
   .gallery-nav.next { right: 0.75rem; }
 }
 
-/* =========================================
-   MOBILE HARD FIX – CENTER & FULL WIDTH
-========================================= */
+/* ===============================
+   MOBILE – HORIZONTAL SLIDER MODE
+=============================== */
 @media (max-width: 48rem) {
 
-  /* Force full-width container */
-  .gallery-wrapper {
-    max-width: 100%;
-    width: 100%;
-    padding: 0;
+  .premium-gallery {
+    padding: 1rem 0.5rem;
   }
 
-  /* Slides must control height */
-  .gallery-track {
-    position: relative;
-  }
-
-  .gallery-slide {
-    position: relative;
-    inset: auto;
-  }
-
-  /* Glass should not create empty space */
+  /* Glass container becomes single image */
   .gallery-glass {
-    width: 100%;
-    margin: 0 auto;
+    display: block;
+    padding: 0.5rem;
+    border-radius: 1.25rem;
   }
 
-  /* Image box centered */
+  /* Show BOTH images but one at a time */
   .gallery-image-box {
     width: 100%;
-    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    min-height: 55vw; /* responsive horizontal */
+    border-radius: 1rem;
   }
 
-  /* NAV ARROWS ON IMAGE */
+  /* Hide AFTER by default */
+  .gallery-image-box:nth-child(2) {
+    display: none;
+  }
+
+  /* Make image FULL WIDTH */
+  .gallery-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+    border-radius: 1rem;
+  }
+
+  /* Center arrows ON image */
   .gallery-nav {
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.7);
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.4rem;
   }
 
-  .gallery-nav.prev {
-    left: 0.75rem;
-  }
-
-  .gallery-nav.next {
-    right: 0.75rem;
-  }
+  .gallery-nav.prev { left: 0.5rem; }
+  .gallery-nav.next { right: 0.5rem; }
 }
+
 
 
 /* ===============================
