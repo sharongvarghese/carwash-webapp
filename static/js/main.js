@@ -277,53 +277,7 @@ if (deleteBtn) {
   });
 }
 
-/* =====================================
-   GALLERY BEFORE / AFTER TRANSITION ONLY
-===================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  const INTERVAL = 3000;
-
-  document
-    .querySelectorAll(".gallery-card-overlay")
-    .forEach(overlay => {
-
-      // prevent double start
-      if (overlay.dataset.started === "true") return;
-      overlay.dataset.started = "true";
-
-      const img = overlay.querySelector(".gallery-image-overlay");
-      const beforeBadge = overlay.querySelector(".gallery-badge.before");
-      const afterBadge = overlay.querySelector(".gallery-badge.after");
-
-      const beforeImg = overlay.dataset.before;
-      const afterImg = overlay.dataset.after;
-
-      let showBefore = true;
-
-      setInterval(() => {
-        img.style.opacity = 0;
-
-        setTimeout(() => {
-          if (showBefore) {
-            img.src = afterImg;
-            beforeBadge.classList.remove("active");
-            afterBadge.classList.add("active");
-          } else {
-            img.src = beforeImg;
-            afterBadge.classList.remove("active");
-            beforeBadge.classList.add("active");
-          }
-
-          img.style.opacity = 1;
-          showBefore = !showBefore;
-        }, 400);
-
-      }, INTERVAL);
-    });
-
-});
 
 
 

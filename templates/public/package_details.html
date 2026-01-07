@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/package_detail.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ===============================
+   PRODUCT HERO
+=============================== -->
+<section class="product-hero container">
+
+  <div class="product-grid">
+
+    <!-- IMAGE SIDE -->
+    <div class="product-image-box">
+      <img src="{{ url_for('static', filename=package.image_url) }}"
+           alt="{{ package.title }}">
+    </div>
+
+    <!-- INFO SIDE -->
+    <div class="product-info-box">
+
+      <h1 class="product-title">{{ package.title }}</h1>
+
+      <!-- PRICE -->
+      <div class="product-price">
+        {% if package.discount_price %}
+          <span class="price-new">₹{{ package.discount_price }}</span>
+          <span class="price-old">₹{{ package.price }}</span>
+        {% else %}
+          <span class="price-new">₹{{ package.price }}</span>
+        {% endif %}
+      </div>
+      <!-- CTA -->
+      <a href="#" class="product-cta">
+        Book This Package
+      </a>
+
+      <!-- TRUST BADGES -->
+      <div class="product-meta">
+        <span>✔ Professional Service</span>
+        <span>✔ Safe Products</span>
+        <span>✔ Trusted by Customers</span>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ===============================
+   FULL DETAILS – FEATURE CARD
+=============================== -->
+<section class="product-details container">
+
+  <div class="details-card">
+
+    <h2 class="details-title">Package Details</h2>
+
+    <ul class="details-list">
+      {% for line in package.details.split('\n') %}
+        <li>{{ line }}</li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+</section>
+
+
+
+<!-- ===============================
+   RELATED PACKAGES
+=============================== -->
+<section class="product-related container">
+
+  <h2>You may also like</h2>
+
+  <div class="related-grid">
+
+    {% for pkg in related_packages %}
+    <div class="related-card">
+
+      <img src="{{ url_for('static', filename=pkg.image_url) }}"
+           alt="{{ pkg.title }}">
+
+      <div class="related-body">
+        <h4>{{ pkg.title }}</h4>
+
+        <span class="related-price">
+          ₹{{ pkg.discount_price or pkg.price }}
+        </span>
+
+        <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
+           class="pdv2-view-btn">
+          View Package
+        </a>
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+
+{% endblock %}

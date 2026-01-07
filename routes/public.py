@@ -59,17 +59,6 @@ def service_detail(service_id):
 
     
 
-# ----------------------------
-# ALL GALLERY PAGE
-# ----------------------------
-@public_bp.route("/gallery")
-def gallery_page():
-    gallery_items = GalleryImage.query.order_by(GalleryImage.id.desc()).all()
-    return render_template(
-        "public/gallery_page.html",
-        gallery_items=gallery_items
-    )
-
 
 # ----------------------------
 # ALL PACKAGES PAGE
@@ -77,7 +66,28 @@ def gallery_page():
 @public_bp.route('/packages')
 def packages_page():
     packages = Package.query.all()  
-    return render_template('public/package.html', packages=packages)    
+    return render_template('public/package.html', packages=packages)   
+
+# ----------------------------
+# PACKAGE DETAIL PAGE
+# ----------------------------
+@public_bp.route("/packages/<int:package_id>")
+def package_details(package_id):
+    package = Package.query.get_or_404(package_id)
+
+    related_packages = (
+        Package.query
+        .filter(Package.id != package_id)
+        .limit(3)
+        .all()
+    )
+
+    return render_template(
+        "public/package_details.html",
+        package=package,
+        related_packages=related_packages
+    )
+
 
 
 

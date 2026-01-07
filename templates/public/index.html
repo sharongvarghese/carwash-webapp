@@ -169,11 +169,6 @@
               {{ pkg.title }}
             </h4>
 
-            {% if pkg.details %}
-            <p class="package-preview-desc">
-              {{ pkg.details[:70] }}{% if pkg.details|length > 70 %}...{% endif %}
-            </p>
-            {% endif %}
 
             <!-- PRICE -->
             <div class="package-preview-price">
@@ -186,10 +181,9 @@
             </div>
 
             <!-- CTA -->
-            <a href="{{ url_for('public.booking_page') }}"
-               class="btn btn-outline-gold w-100 mt-2">
-              Buy Now
-            </a>
+            <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
+            class="btn btn-gold w-100">Buy Now</a>
+
 
           </div>
 
@@ -204,51 +198,57 @@
 </section>
 
 
+{% if gallery_items and gallery_items|length > 0 %}
 
-<!-- ===============================
-            GALLERY SECTION
-   =============================== -->
+<section id="gallery" class="premium-gallery">
 
-<section id="gallery" class="section-dark container py-5">
+  <h2 class="section-title text-center mb-4">Our Works</h2>
 
-  <div class="glass-card glass-glow">
+  <div class="gallery-wrapper">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="section-title mb-0">Gallery</h2>
+    <!-- SLIDES -->
+    <div class="gallery-track">
 
-      <a href="{{ url_for('public.gallery_page') }}" class="see-all-link">See all</a>
+      {% for item in gallery_items %}
+      <div class="gallery-slide {% if loop.first %}active{% endif %}">
+
+        <div class="gallery-glass">
+
+          <!-- BEFORE -->
+          <div class="gallery-image-box">
+            <span class="gallery-tag before">BEFORE</span>
+            <img src="{{ url_for('static', filename=item.before_image) }}"
+                 alt="Before work">
+          </div>
+
+          <!-- AFTER -->
+          <div class="gallery-image-box">
+            <span class="gallery-tag after">AFTER</span>
+            <img src="{{ url_for('static', filename=item.after_image) }}"
+                 alt="After work">
+          </div>
+
+        </div>
+
+        {% if item.caption %}
+        <p class="gallery-caption">{{ item.caption }}</p>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+
     </div>
-    <div class="gallery-grid">
- 
-  {% for item in gallery_items %}
-  <div class="gallery-card-wrapper">
 
-    <div class="gallery-card-overlay"
-         data-before="{{ url_for('static', filename=item.before_image) }}"
-         data-after="{{ url_for('static', filename=item.after_image) }}">
-
-      <img src="{{ url_for('static', filename=item.before_image) }}"
-           class="gallery-image-overlay"
-           alt="Before and After Work">
-
-      <div class="gallery-badge before active">BEFORE</div>
-      <div class="gallery-badge after">AFTER</div>
-    </div>
-
-    {% if item.caption %}
-    <div class="gallery-description">
-      {{ item.caption }}
-    </div>
+    {% if gallery_items|length > 1 %}
+    <button class="gallery-nav prev">‹</button>
+    <button class="gallery-nav next">›</button>
     {% endif %}
 
   </div>
-  {% endfor %}
 
-</div>
-
-  </div>
 </section>
 
+{% endif %}
 
 
 <!-- ===============================

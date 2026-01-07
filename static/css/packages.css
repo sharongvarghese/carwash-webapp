@@ -1,7 +1,3 @@
-/* =================================================
-   PACKAGES PAGE – FINAL CSS
-   Depends on base.css (buttons, fonts, globals)
-================================================= */
 
 /* ===============================
    PAGE TITLE
@@ -103,6 +99,7 @@
   margin-top: auto;
   margin-bottom: 1.2rem;
 }
+
 
 .premium-price-new {
   font-size: 1.7rem;

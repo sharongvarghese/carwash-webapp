@@ -78,13 +78,13 @@
     <h3 class="section-title mb-0">Other Services</h3>
   </div>
 
-  <div class="services-row">
+  <div class="services-row ">
 
     {% for item in other_services %}
     <a href="{{ url_for('public.service_detail', service_id=item.id) }}"
        class="service-link">
 
-      <div class="service-card">
+      <div class="service-card service-card-page">
 
         <img src="{{ url_for('static', filename=item.image_url) }}"
              class="service-img"
