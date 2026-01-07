@@ -32,19 +32,24 @@ body {
         BUTTONS
    =============================== */
 .btn-gold {
-  background: #ffd700;
+  background: linear-gradient(135deg, #ffd700, #f2c400);
   color: #000;
   font-weight: 600;
   border-radius: 999px;
   padding: 0.6rem 2rem;
   border: none;
-  transition: 0.25s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-gold:hover {
-  filter: brightness(0.9);
+  background: linear-gradient(135deg, #f2c400, #e6b800);
+  color: #000; /* 🔑 stays black */
   transform: translateY(-2px);
+  box-shadow:
+    0 8px 22px rgba(255, 215, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
+
 
 .btn-outline-gold {
   border-radius: 999px;
@@ -486,6 +491,8 @@ body {
   color: #aaa;
   text-decoration: line-through;
 }
+
+
 
 
 
