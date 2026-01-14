@@ -1,7 +1,12 @@
 /* ===========================
-   ADMIN SERVICES - DARK THEME FIX
+   ADMIN PACKAGES PANEL - DARK THEME
+   Admin-only styles for managing packages
    =========================== */
-.services-container {
+
+/* ===========================
+   Container & Global
+   =========================== */
+.packages-container {
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   max-width: 1400px;
 }
@@ -12,7 +17,6 @@ body {
   color: #ffd700 !important;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -37,45 +41,6 @@ html {
 .admin-subtitle {
   font-size: 0.9rem;
   color: rgba(255, 215, 0, 0.7);
-}
-
-.admin-btn-outline-gold {
-  background: rgba(255, 215, 0, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #ffd700 !important;
-  font-weight: 500;
-  padding: 10px 24px;
-  border-radius: 12px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.admin-btn-outline-gold::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 215, 0, 0.2);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
-}
-
-.admin-btn-outline-gold:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.admin-btn-outline-gold:hover {
-  background: rgba(255, 215, 0, 0.15);
-  border-color: #ffd700;
-  color: #ffd700 !important;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
 }
 
 /* ===========================
@@ -129,7 +94,7 @@ html {
 }
 
 /* ===========================
-   Form Inputs - DARK THEME
+   Form Inputs
    =========================== */
 .admin-form-label {
   font-size: 0.875rem;
@@ -170,7 +135,7 @@ textarea.admin-form-control {
 }
 
 /* ===========================
-   Custom File Upload - DARK
+   Custom File Upload
    =========================== */
 .admin-custom-file-upload {
   position: relative;
@@ -191,16 +156,17 @@ textarea.admin-form-control {
   padding: 12px 16px;
   background: rgba(10, 10, 10, 0.6);
   border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 10px;
+  border-radius: 12px;
   color: #ffd700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0;
 }
 
 .admin-file-label:hover {
   background: rgba(20, 20, 20, 0.8);
   border-color: #ffd700;
+  transform: translateY(-1px);
 }
 
 .admin-file-label i {
@@ -250,24 +216,20 @@ textarea.admin-form-control {
   color: #000 !important;
 }
 
-.admin-btn-gold:active {
-  transform: translateY(-1px);
-  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-}
-
-.admin-btn-outline-danger {
-  background: rgba(220, 53, 69, 0.1) !important;
-  border: 1px solid rgba(220, 53, 69, 0.4) !important;
-  color: #ff6b6b !important;
+.admin-btn-outline-gold {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700 !important;
   font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 10px;
+  padding: 10px 24px;
+  border-radius: 12px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
   position: relative;
   overflow: hidden;
 }
 
-.admin-btn-outline-danger::before {
+.admin-btn-outline-gold::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -275,28 +237,28 @@ textarea.admin-form-control {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(220, 53, 69, 0.2);
+  background: rgba(255, 215, 0, 0.2);
   transform: translate(-50%, -50%);
   transition: width 0.6s ease, height 0.6s ease;
 }
 
-.admin-btn-outline-danger:hover::before {
+.admin-btn-outline-gold:hover::before {
   width: 300px;
   height: 300px;
 }
 
-.admin-btn-outline-danger:hover {
-  background: rgba(220, 53, 69, 0.2) !important;
-  border-color: #ff6b6b !important;
-  color: #ff6b6b !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+.admin-btn-outline-gold:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+  color: #ffd700 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
 }
 
 /* ===========================
-   Services List Header
+   Packages List Header
    =========================== */
-.admin-services-list-header {
+.admin-packages-list-header {
   display: flex;
   align-items: center;
   padding: 15px 20px;
@@ -305,14 +267,14 @@ textarea.admin-form-control {
   border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
-.admin-services-list-header h5 {
+.admin-packages-list-header h5 {
   font-size: 1rem;
   font-weight: 600;
   color: #ffd700;
   margin: 0;
 }
 
-.admin-services-list-header i {
+.admin-packages-list-header i {
   color: #ffd700;
 }
 
@@ -327,187 +289,314 @@ textarea.admin-form-control {
 }
 
 /* ===========================
-   MOBILE GRID (< 992px) - SAME CARD DESIGN
+   MOBILE PACKAGES GRID
    =========================== */
-.services-row-mobile {
+.packages-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 2rem;
-  justify-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
   margin-top: 20px;
 }
 
-.admin-service-wrapper-mobile {
-  max-width: 280px;
-  width: 100%;
+.package-card-mobile {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.12);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
 }
 
-/* Staggered animation for mobile cards */
-.admin-service-wrapper-mobile:nth-child(1) { animation-delay: 0.1s; }
-.admin-service-wrapper-mobile:nth-child(2) { animation-delay: 0.15s; }
-.admin-service-wrapper-mobile:nth-child(3) { animation-delay: 0.2s; }
-.admin-service-wrapper-mobile:nth-child(4) { animation-delay: 0.25s; }
-.admin-service-wrapper-mobile:nth-child(5) { animation-delay: 0.3s; }
-.admin-service-wrapper-mobile:nth-child(6) { animation-delay: 0.35s; }
-
-/* ===========================
-   DESKTOP GRID - YOUR CARD DESIGN
-   =========================== */
-.services-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2.5rem;
-  justify-items: center;
-  margin-top: 20px;
+.package-card-mobile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.8s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.admin-service-wrapper {
-  max-width: 260px;
+.package-card-mobile:hover::before {
+  left: 130%;
+}
+
+.package-card-mobile:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 70px rgba(255, 215, 0, 0.25);
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.package-card-image {
   width: 100%;
-}
-
-/* Use your existing service-card styles */
-.service-card-admin {
-  cursor: default;
-}
-
-.service-card-admin:hover {
-  transform: translateY(-8px);
-}
-
-.service-card-admin:hover .service-img {
-  filter: brightness(1.05);
-  transform: scale(1.05);
-}
-
-/* Desktop No Image Placeholder */
-.admin-no-image-placeholder-desktop {
-  width: 100%;
-  height: 185px;
+  height: 200px;
+  overflow: hidden;
+  background: rgba(10, 10, 10, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 10, 0.8);
-  border-bottom: 2px solid rgba(255, 215, 0, 0.28);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
 }
 
-.admin-no-image-placeholder-desktop i {
-  font-size: 4rem;
+.mobile-package-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.95);
+}
+
+.package-card-mobile:hover .mobile-package-img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+.package-no-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.package-no-image-placeholder i {
+  font-size: 3.5rem;
   color: rgba(255, 215, 0, 0.3);
 }
 
-/* Service Info Below Title */
-.admin-service-info {
+.package-card-content {
   padding: 20px;
-  background: rgba(10, 10, 10, 0.4);
 }
 
-.admin-service-price-desktop {
-  font-size: 1.5rem;
+.package-card-title {
+  font-size: 1.2rem;
   font-weight: 700;
   color: #ffd700;
-  margin-bottom: 10px;
-  text-align: center;
+  margin-bottom: 12px;
 }
 
-.admin-service-desc-desktop {
+.package-pricing {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.package-price-original {
+  font-size: 1rem;
+  color: rgba(255, 215, 0, 0.5);
+  text-decoration: line-through;
+}
+
+.package-price-discount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.package-price-single {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.package-details-mobile {
   font-size: 0.875rem;
   color: rgba(255, 215, 0, 0.7);
   line-height: 1.5;
-  margin: 0;
-  text-align: center;
-  /* Multi-line truncation */
+  margin-bottom: 15px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  /* Fallback for non-webkit browsers */
-  max-height: calc(0.875rem * 1.5 * 3); /* font-size * line-height * lines */
 }
 
-/* Action Buttons Below Card */
-.admin-card-actions {
-  display: flex;
-  gap: 12px;
+.package-card-actions {
   margin-top: 15px;
 }
 
-.admin-btn-edit {
-  flex: 1;
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #ffd700 !important;
+.admin-btn-delete-mobile {
+  background: rgba(220, 53, 69, 0.1) !important;
+  border: 1px solid rgba(220, 53, 69, 0.4) !important;
+  color: #ff6b6b !important;
   font-weight: 500;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 10px 20px;
+  border-radius: 10px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  text-align: center;
-  position: relative;
+}
+
+.admin-btn-delete-mobile:hover {
+  background: rgba(220, 53, 69, 0.2) !important;
+  border-color: #ff6b6b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+/* ===========================
+   DESKTOP TABLE
+   =========================== */
+.packages-table {
+  width: 100%;
+  background: rgba(20, 20, 20, 0.4);
+  border-radius: 16px;
   overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
-.admin-btn-edit::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 215, 0, 0.15);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
+.packages-table thead {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
 }
 
-.admin-btn-edit:hover::before {
-  width: 300px;
-  height: 300px;
+.packages-table thead th {
+  padding: 18px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
 }
 
-.admin-btn-edit:hover {
-  background: rgba(255, 215, 0, 0.2);
-  border-color: #ffd700;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+.packages-table tbody tr {
+  border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
-.admin-btn-delete {
-  flex: 1;
+.packages-table tbody tr:hover {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.packages-table tbody td {
+  padding: 16px;
+  vertical-align: middle;
+  border: none;
+}
+
+.package-id {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #ffd700;
+  font-size: 0.875rem;
+}
+
+.table-image-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(10, 10, 10, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-package-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.packages-table tbody tr:hover .table-package-image {
+  transform: scale(1.1);
+}
+
+.table-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.table-no-image i {
+  font-size: 1.8rem;
+  color: rgba(255, 215, 0, 0.3);
+}
+
+.table-package-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.table-package-title {
+  font-weight: 600;
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.table-package-details {
+  font-size: 0.85rem;
+  color: rgba(255, 215, 0, 0.6);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.table-price {
+  font-weight: 600;
+  color: rgba(255, 215, 0, 0.7);
+  font-size: 1rem;
+}
+
+.table-discount-price {
+  font-weight: 700;
+  color: #ffd700;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.table-discount-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.table-no-discount {
+  color: rgba(255, 215, 0, 0.3);
+  font-size: 1.2rem;
+}
+
+.admin-btn-delete-table {
   background: rgba(220, 53, 69, 0.1);
   border: 1px solid rgba(220, 53, 69, 0.4);
   color: #ff6b6b !important;
   font-weight: 500;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  text-decoration: none;
 }
 
-.admin-btn-delete::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(220, 53, 69, 0.15);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
-}
-
-.admin-btn-delete:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.admin-btn-delete:hover {
+.admin-btn-delete-table:hover {
   background: rgba(220, 53, 69, 0.2);
   border-color: #ff6b6b;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
 }
 
 /* ===========================
@@ -564,17 +653,13 @@ textarea.admin-form-control {
   }
 }
 
-/* Staggered animation for cards */
-.admin-service-wrapper {
-  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
-}
-
-.admin-service-wrapper:nth-child(1) { animation-delay: 0.1s; }
-.admin-service-wrapper:nth-child(2) { animation-delay: 0.15s; }
-.admin-service-wrapper:nth-child(3) { animation-delay: 0.2s; }
-.admin-service-wrapper:nth-child(4) { animation-delay: 0.25s; }
-.admin-service-wrapper:nth-child(5) { animation-delay: 0.3s; }
-.admin-service-wrapper:nth-child(6) { animation-delay: 0.35s; }
+/* Staggered animation */
+.package-card-mobile:nth-child(1) { animation-delay: 0.1s; }
+.package-card-mobile:nth-child(2) { animation-delay: 0.15s; }
+.package-card-mobile:nth-child(3) { animation-delay: 0.2s; }
+.package-card-mobile:nth-child(4) { animation-delay: 0.25s; }
+.package-card-mobile:nth-child(5) { animation-delay: 0.3s; }
+.package-card-mobile:nth-child(6) { animation-delay: 0.35s; }
 
 /* ===========================
    Responsive Design
@@ -584,18 +669,14 @@ textarea.admin-form-control {
     padding: 25px;
   }
 
-  .services-row-mobile {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.8rem;
-  }
-
-  .admin-service-wrapper-mobile {
-    max-width: 260px;
+  .packages-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
 }
 
 @media (max-width: 767px) {
-  .services-container {
+  .packages-container {
     padding-left: 15px;
     padding-right: 15px;
   }
@@ -618,13 +699,17 @@ textarea.admin-form-control {
     border-radius: 20px;
   }
 
-  .services-row-mobile {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
+  .packages-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .admin-service-wrapper-mobile {
-    max-width: 240px;
+  .package-card-title {
+    font-size: 1.1rem;
+  }
+
+  .package-pricing {
+    flex-wrap: wrap;
   }
 }
 
@@ -642,12 +727,16 @@ textarea.admin-form-control {
     width: 100%;
   }
 
-  .admin-services-list-header {
+  .admin-packages-list-header {
     padding: 12px 15px;
   }
 
-  .admin-services-list-header h5 {
+  .admin-packages-list-header h5 {
     font-size: 0.9rem;
+  }
+
+  .package-card-image {
+    height: 180px;
   }
 
   .admin-empty-state {
@@ -661,44 +750,23 @@ textarea.admin-form-control {
   .admin-empty-state h5 {
     font-size: 1.1rem;
   }
-
-  .services-row,
-  .services-row-mobile {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .admin-service-wrapper,
-  .admin-service-wrapper-mobile {
-    max-width: 100%;
-  }
-
-  .admin-card-actions {
-    gap: 8px;
-  }
-
-  .admin-btn-edit,
-  .admin-btn-delete {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
 }
 
 /* ===========================
    Accessibility
    =========================== */
 @media (prefers-reduced-motion: reduce) {
-  .admin-service-card-mobile,
-  .service-card-admin,
+  .package-card-mobile,
   .admin-btn-gold,
   .admin-btn-outline-gold,
-  .admin-btn-outline-danger,
-  .admin-mobile-service-img,
-  .service-img {
+  .admin-btn-delete-mobile,
+  .admin-btn-delete-table,
+  .mobile-package-img,
+  .table-package-image {
     transition: none;
   }
 
-  .services-container,
+  .packages-container,
   .page-header {
     animation: none;
   }

@@ -173,6 +173,9 @@
             <!-- PRICE -->
             <div class="package-preview-price">
               {% if pkg.discount_price %}
+              <span class="table-discount-badge">
+                {{ ((pkg.price - pkg.discount_price) / pkg.price * 100) | round | int }}% OFF
+              </span><br>
                 <span class="new">₹{{ pkg.discount_price }}</span>
                 <span class="old">₹{{ pkg.price }}</span>
               {% else %}

@@ -1,68 +1,128 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="admin-card glass-glow mb-4">
-  <h2 class="section-title">Gallery Management</h2>
-
-  <form method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-
-    <div class="mb-3">
-      {{ form.before_image.label }}
-      {{ form.before_image(class_="form-control dark-input") }}
+<div class="gallery-admin-container">
+  <!-- Upload Section -->
+  <div class="admin-card glass-glow mb-5">
+    <div class="card-header">
+      <h2 class="section-title">
+        <i class="fas fa-upload"></i>
+        Add New Gallery Item
+      </h2>
     </div>
 
-    <div class="mb-3">
-      {{ form.after_image.label }}
-      {{ form.after_image(class_="form-control dark-input") }}
-    </div>
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+      {{ form.hidden_tag() }}
 
-    <div class="mb-3">
-      {{ form.caption.label }}
-      {{ form.caption(class_="form-control dark-input", placeholder="Optional caption") }}
-    </div>
-
-    {{ form.submit(class_="btn btn-gold") }}
-  </form>
-</div>
-
-
-<div class="row g-4">
-  {% for item in gallery_items %}
-    <div class="col-md-4">
-      <div class="glass-card p-2">
-
-        <div class="row g-2">
-          <div class="col-6">
-            <img src="{{ url_for('static', filename=item.before_image) }}"
-                 class="img-fluid rounded"
-                 style="height:180px; object-fit:cover;">
-            <small class="d-block text-gold text-center mt-1">Before</small>
+      <div class="image-upload-row">
+        <div class="upload-group">
+          <label class="upload-label">
+            <i class="fas fa-image"></i> Before Image
+          </label>
+          <div class="file-input-wrapper">
+            {{ form.before_image(class_="form-control dark-input file-input", accept="image/*") }}
+            <div class="file-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>Choose before image</span>
+            </div>
           </div>
-
-          <div class="col-6">
-            <img src="{{ url_for('static', filename=item.after_image) }}"
-                 class="img-fluid rounded"
-                 style="height:180px; object-fit:cover;">
-            <small class="d-block text-gold text-center mt-1">After</small>
-          </div>
+          <small class="form-hint">Recommended: JPG, PNG (Max 5MB)</small>
         </div>
 
-        <p class="body-text mt-2 text-center">
-          {{ item.caption or "No caption" }}
-        </p>
-
-        <form method="POST"
-          action="{{ url_for('admin.delete_gallery_image', image_id=item.id) }}">
-          {{ form.hidden_tag() }}
-          <button class="btn btn-outline-gold w-100">Delete</button>
-        </form>
-
-
+        <div class="upload-group">
+          <label class="upload-label">
+            <i class="fas fa-image"></i> After Image
+          </label>
+          <div class="file-input-wrapper">
+            {{ form.after_image(class_="form-control dark-input file-input", accept="image/*") }}
+            <div class="file-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>Choose after image</span>
+            </div>
+          </div>
+          <small class="form-hint">Recommended: JPG, PNG (Max 5MB)</small>
+        </div>
       </div>
+
+      <div class="caption-group">
+        {{ form.caption.label(class_="upload-label") }}
+        {{ form.caption(class_="form-control dark-input caption-input", placeholder="Enter a description for this transformation...", rows="3") }}
+      </div>
+
+      <div class="submit-wrapper">
+        {{ form.submit(class_="btn btn-gold btn-submit") }}
+      </div>
+    </form>
+  </div>
+
+  <!-- Gallery Grid Section -->
+  <div class="gallery-grid-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-images"></i>
+        Gallery Items ({{ gallery_items|length }})
+      </h2>
     </div>
-  {% endfor %}
+
+    {% if gallery_items %}
+      <div class="gallery-grid">
+        {% for item in gallery_items %}
+          <div class="gallery-item" data-id="{{ item.id }}">
+            <div class="glass-card gallery-card">
+              <div class="images-container">
+                <div class="image-wrapper before-wrapper">
+                  <img src="{{ url_for('static', filename=item.before_image) }}"
+                       class="gallery-image"
+                       alt="Before"
+                       loading="lazy">
+                  <div class="image-label before-label">Before</div>
+                </div>
+
+                <div class="divider-line">
+                  <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="image-wrapper after-wrapper">
+                  <img src="{{ url_for('static', filename=item.after_image) }}"
+                       class="gallery-image"
+                       alt="After"
+                       loading="lazy">
+                  <div class="image-label after-label">After</div>
+                </div>
+              </div>
+
+              <div class="gallery-content">
+                {% if item.caption %}
+                  <p class="gallery-caption">{{ item.caption }}</p>
+                {% else %}
+                  <p class="gallery-caption no-caption">No caption provided</p>
+                {% endif %}
+              </div>
+
+              <div class="gallery-actions">
+                <form method="POST"
+                      action="{{ url_for('admin.delete_gallery_image', image_id=item.id) }}"
+                      class="delete-form"
+                      onsubmit="return confirm('Are you sure you want to delete this gallery item?');">
+                  {{ form.hidden_tag() }}
+                  <button type="submit" class="btn btn-delete">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-images"></i>
+        <h3>No Gallery Items Yet</h3>
+        <p>Upload your first before & after transformation above</p>
+      </div>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}
-
