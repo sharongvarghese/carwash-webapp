@@ -1,68 +1,143 @@
 /* ===============================
-   GLOBAL STYLES
+   GLOBAL STYLES — MOBILE FIRST
 =============================== */
 body {
   background-color: #000;
   color: #f5c542;
   font-family: "Poppins", sans-serif;
-
   overflow-x: hidden;
-
-  /* 🔑 Sticky layout support */
+  
+  /* Sticky footer layout */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  
+  /* Better mobile font size */
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Main content should grow */
+/* Main content grows to push footer down */
 .main-content {
   flex: 1;
 }
 
+/* Section titles */
 .section-title {
-  font-size: 2rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   color: #ffd700;
-  text-shadow: 0 0 20px rgba(255,215,0,0.55);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.55);
   margin-bottom: 2rem;
-
+  line-height: 1.2;
 }
 
 /* ===============================
-        BUTTONS
-   =============================== */
-.btn-gold {
-  background: #ffd700;
-  color: #000;
+   PROFESSIONAL BUTTONS
+=============================== */
+
+/* Base button styles */
+.btn-gold,
+.btn-outline-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
   font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  
   border-radius: 999px;
-  padding: 0.6rem 2rem;
+  padding: 0.75rem 2rem;
+  
+  /* Minimum touch target for accessibility */
+  min-height: 44px;
+  min-width: 120px;
+  
+  cursor: pointer;
+  user-select: none;
+  
+  transition: all 0.25s ease;
+  
+  /* Prevent text overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Gold filled button */
+.btn-gold {
+  background: linear-gradient(135deg, #ffd700, #f2c400);
+  color: #000;
   border: none;
-  transition: 0.25s ease;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
 }
 
 .btn-gold:hover {
-  filter: brightness(0.9);
+  background: linear-gradient(135deg, #f2c400, #e6b800);
+  color: #000;
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
 }
 
+.btn-gold:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+/* Gold outline button */
 .btn-outline-gold {
-  border-radius: 999px;
-  border: 1px solid #ffd700;
+  background: transparent;
+  border: 2px solid #ffd700;
   color: #ffd700;
-  padding: 0.6rem 2rem;
 }
 
 .btn-outline-gold:hover {
-  background: #ffd700;
-  color: #000;
+  background: transparent;
+  border-color: #fff;
+  color: #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
 }
 
+.btn-outline-gold:active {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: #fff;
+  transform: translateY(0);
+}
+
+/* Button disabled state */
+.btn-gold:disabled,
+.btn-outline-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button sizes */
+.btn-sm {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  min-height: 38px;
+}
+
+.btn-lg {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  min-height: 50px;
+}
+
+/* Full width button */
+.btn-block {
+  width: 100%;
+  display: flex;
+}
 
 /* =====================================
    FIXED FOOTER (PAGE SPECIFIC)
 ===================================== */
-
 .fixed-footer .footer {
   position: fixed;
   bottom: 0;
@@ -71,21 +146,21 @@ body {
   z-index: 1000;
 }
 
-/* Prevent overlap when footer is fixed */
 .fixed-footer .main-content {
-  padding-bottom: 80px; /* footer height */
+  padding-bottom: 80px;
 }
 
 /* ===============================
-        FOOTER
+   FOOTER
 =============================== */
 .footer {
-  background:rgba(20,20,20,0.55);
-  backdrop-filter:blur(10px);
-  padding:1rem;
-  text-align:center;
-  border-top:1px solid rgba(255,215,0,0.16);
-  color:#ffd700;
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 215, 0, 0.16);
+  color: #ffd700;
+  font-size: 0.95rem;
 }
 
 /* ===============================
@@ -95,13 +170,12 @@ body {
   background: rgba(15, 15, 15, 0.65) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-
   border-bottom: 1px solid rgba(255, 215, 0, 0.18);
   box-shadow:
     0 8px 30px rgba(0, 0, 0, 0.6),
     0 0 30px rgba(255, 215, 0, 0.15);
-
   transition: background 0.3s ease;
+  padding: 0.75rem 0;
 }
 
 /* ===============================
@@ -109,7 +183,7 @@ body {
 =============================== */
 .brand-text {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 1.4rem;
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
   letter-spacing: 3px;
   color: #ffd700 !important;
   text-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
@@ -128,9 +202,15 @@ body {
   position: relative;
   color: #ffd700 !important;
   font-weight: 500;
+  font-size: 0.95rem;
   letter-spacing: 1.2px;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   transition: color 0.3s ease;
+  
+  /* Better touch target */
+  min-height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 /* Animated underline */
@@ -165,7 +245,7 @@ body {
 .admin-link {
   border: 1px solid rgba(255, 215, 0, 0.45);
   border-radius: 999px;
-  padding: 0.4rem 1.2rem !important;
+  padding: 0.5rem 1.3rem !important;
   margin-left: 0.5rem;
 }
 
@@ -186,50 +266,23 @@ body {
 }
 
 /* ===============================
-   MOBILE NAV
+   GLASS CARD (GLOBAL)
 =============================== */
-@media (max-width: 991px) {
-
-  .navbar-collapse {
-    background: rgba(15, 15, 15, 0.92);
-    backdrop-filter: blur(18px);
-    border-radius: 18px;
-    padding: 1rem;
-    margin-top: 0.8rem;
-
-    box-shadow:
-      0 0 35px rgba(255, 215, 0, 0.25);
-  }
-
-  .premium-nav .nav-link {
-    text-align: center;
-    padding: 0.7rem;
-  }
-
-  .admin-link {
-    display: block;
-    margin: 0.6rem auto 0;
-  }
-}
-
-
-
-/* ===============================
-        GLASS CARD (GLOBAL)
-   =============================== */
 .glass-card {
   background: rgba(20, 20, 20, 0.55);
   backdrop-filter: blur(12px);
   border-radius: 24px;
-  padding: 2rem;
+  padding: clamp(2rem, 4vw, 3rem);
   border: 1px solid rgba(255, 215, 0, 0.16);
   box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+  transition: box-shadow 0.3s ease;
 }
 
 .glass-card:hover {
   box-shadow: 0 0 55px rgba(255, 215, 0, 0.25);
 }
 
+/* Glass card with glow effect */
 .glass-glow {
   position: relative;
 }
@@ -237,12 +290,13 @@ body {
 .glass-glow::before {
   content: "";
   position: absolute;
-  width: 340px;
-  height: 340px;
+  width: min(340px, 60vw);
+  height: min(340px, 60vw);
   background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent 70%);
   top: -80px;
   right: -60px;
   z-index: -1;
+  pointer-events: none;
 }
 
 /* =================================================
@@ -256,7 +310,6 @@ body {
   color: inherit;
 }
 
-
 /* COMMON GRID */
 .common-grid {
   display: grid;
@@ -269,19 +322,15 @@ body {
 /* COMMON CARD */
 .common-card {
   width: 100%;
-  max-width: 260px;
-  min-width: 260px;
-
-  background: rgba(20,20,20,0.5);
+  max-width: 280px;
+  background: rgba(20, 20, 20, 0.5);
   backdrop-filter: blur(16px);
   border-radius: 26px;
   overflow: hidden;
-
   box-shadow: 
-    0 10px 25px rgba(0,0,0,0.55),
-    0 0 40px rgba(255,215,0,0.15);
-
-  transition: 0.35s ease;
+    0 10px 25px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(255, 215, 0, 0.15);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
   position: relative;
   cursor: pointer;
 }
@@ -290,38 +339,39 @@ body {
 .common-card:hover {
   transform: translateY(-12px) scale(1.05);
   box-shadow:
-    0 18px 45px rgba(0,0,0,0.7),
-    0 0 70px rgba(255,215,0,0.35);
+    0 18px 45px rgba(0, 0, 0, 0.7),
+    0 0 70px rgba(255, 215, 0, 0.35);
 }
 
-/* Shine sweep */
+/* Shine sweep effect */
 .common-card::after {
-  content:"";
-  position:absolute;
-  top:0;
-  left:-120%;
-  width:75%;
-  height:100%;
-  background:linear-gradient(120deg,
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(120deg,
     transparent,
-    rgba(255,215,0,0.3),
+    rgba(255, 215, 0, 0.3),
     transparent
   );
-  transform:skewX(-20deg);
-  transition:0.7s;
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
 }
 
 .common-card:hover::after {
-  left:130%;
+  left: 130%;
 }
 
 /* COMMON IMAGE */
 .common-img {
-  width:100%;
-  height:185px;
-  object-fit:cover;
+  width: 100%;
+  height: 185px;
+  object-fit: cover;
   filter: brightness(0.92);
-  transition: 0.4s ease;
+  transition: transform 0.4s ease, filter 0.4s ease;
 }
 
 .common-card:hover .common-img {
@@ -332,22 +382,22 @@ body {
 /* COMMON TITLE BAR */
 .common-title-box {
   background: linear-gradient(90deg, #ffe27a, #ffd700, #e4b300);
-  padding: 16px 0;
-  text-align:center;
+  padding: 16px 12px;
+  text-align: center;
 }
 
 .common-title {
   font-family: "Bebas Neue", sans-serif;
-  color:#000;
-  font-size:1.4rem;
-  letter-spacing:1.2px;
-  text-shadow:0 1px 0 rgba(255,255,255,0.9);
+  color: #000;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
+  letter-spacing: 1.2px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
 }
 
 /* =================================================
-   SEE ALL / BACK LINK – SHARED STYLE
+   SEE ALL / BACK LINK
 ================================================= */
-
 .see-all-link {
   font-size: 1.05rem;
   font-weight: 600;
@@ -356,12 +406,12 @@ body {
   letter-spacing: 0.6px;
   position: relative;
   padding-bottom: 3px;
-  transition: 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
   white-space: nowrap;
 }
 
-/* underline animation */
+/* Underline animation */
 .see-all-link::after {
   content: "";
   position: absolute;
@@ -371,10 +421,9 @@ body {
   width: 0%;
   background: #ffd700;
   box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
-  transition: 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
 }
 
-/* hover effect */
 .see-all-link:hover {
   color: #fff5b3;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
@@ -384,33 +433,27 @@ body {
   width: 100%;
 }
 
-
 /* =================================================
    PACKAGES PREVIEW – HOME ONLY
 ================================================= */
-
 .package-preview-card {
   height: 100%;
   width: 100%;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-
   border-radius: 24px;
   overflow: hidden;
-
   background: rgba(20, 20, 20, 0.55);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 215, 0, 0.16);
-
   box-shadow:
-    0 10px 28px rgba(0,0,0,0.6),
-    0 0 35px rgba(255,215,0,0.12);
-
+    0 10px 28px rgba(0, 0, 0, 0.6),
+    0 0 35px rgba(255, 215, 0, 0.12);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-
+/* Fix grid spacing */
 .glass-card > .row {
   margin-left: 0;
   margin-right: 0;
@@ -421,15 +464,14 @@ body {
   padding-right: 12px;
 }
 
-
 .package-preview-card:hover {
   transform: translateY(-8px);
   box-shadow:
-    0 18px 50px rgba(0,0,0,0.85),
-    0 0 55px rgba(255,215,0,0.3);
+    0 18px 50px rgba(0, 0, 0, 0.85),
+    0 0 55px rgba(255, 215, 0, 0.3);
 }
 
-/* Image */
+/* Package Image */
 .package-preview-image {
   height: 190px;
   overflow: hidden;
@@ -446,7 +488,7 @@ body {
   transform: scale(1.06);
 }
 
-/* Body */
+/* Package Body */
 .package-preview-body {
   padding: 1.4rem;
   display: flex;
@@ -458,20 +500,21 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   color: #ffd700;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
 }
 
 .package-preview-desc {
   font-size: 0.9rem;
   line-height: 1.6;
   color: #d0d0d0;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
-/* Price */
+/* Package Price */
 .package-preview-price {
   margin-top: auto;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .package-preview-price .new {
@@ -487,17 +530,44 @@ body {
   text-decoration: line-through;
 }
 
-
-
-/* ---- DESKTOP SAFETY ---- */
-.package-preview-card {
-  height: 100%;
-}
-
-
-/* ---- TABLET (≤ 992px) ---- */
+/* ===============================
+   TABLET (≤ 992px)
+=============================== */
 @media (max-width: 992px) {
 
+  /* Mobile navigation */
+  .navbar-collapse {
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(18px);
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.25);
+  }
+
+  .premium-nav .nav-link {
+    text-align: center;
+    padding: 0.8rem;
+    font-size: 1rem;
+    justify-content: center;
+  }
+
+  .admin-link {
+    display: block;
+    margin: 1rem auto 0;
+    width: fit-content;
+  }
+
+  /* Disable fixed footer on mobile */
+  .fixed-footer .footer {
+    position: static;
+  }
+
+  .fixed-footer .main-content {
+    padding-bottom: 0;
+  }
+
+  /* Package cards */
   .package-preview-image {
     height: 170px;
   }
@@ -511,34 +581,72 @@ body {
   }
 }
 
-
-/* ---- MOBILE (≤ 768px) ---- */
+/* ===============================
+   MOBILE (≤ 768px)
+=============================== */
 @media (max-width: 768px) {
 
-  /* Disable hover lift (touch devices) */
+  body {
+    font-size: 16px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Button adjustments */
+  .btn-gold,
+  .btn-outline-gold {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+  }
+
+  .btn-lg {
+    padding: 1rem 2.3rem;
+    font-size: 1.05rem;
+  }
+
+  /* Glass card */
+  .glass-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  /* Common grid single column */
+  .common-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .common-card {
+    max-width: 100%;
+  }
+
+  /* Package cards */
   .package-preview-card:hover {
     transform: none;
     box-shadow:
-      0 10px 28px rgba(0,0,0,0.6),
-      0 0 35px rgba(255,215,0,0.12);
+      0 10px 28px rgba(0, 0, 0, 0.6),
+      0 0 35px rgba(255, 215, 0, 0.12);
   }
 
   .package-preview-image {
-    height: 150px;
+    height: 160px;
   }
 
   .package-preview-body {
-    padding: 1.2rem;
+    padding: 1.3rem;
   }
 
   .package-preview-title {
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .package-preview-desc {
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .package-preview-price {
@@ -546,9 +654,108 @@ body {
   }
 }
 
+/* ===============================
+   MOBILE (≤ 576px)
+=============================== */
+@media (max-width: 576px) {
 
-/* ---- SMALL MOBILE (≤ 480px) ---- */
-@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .brand-text {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+  }
+
+  /* Full width buttons on mobile */
+  .btn-gold,
+  .btn-outline-gold {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
+  .glass-card {
+    padding: 1.8rem 1.3rem;
+  }
+
+  /* Package adjustments */
+  .package-preview-image {
+    height: 145px;
+  }
+
+  .package-preview-body {
+    padding: 1.2rem;
+  }
+
+  .package-preview-title {
+    font-size: 1.1rem;
+  }
+
+  .package-preview-desc {
+    font-size: 0.85rem;
+  }
+
+  .package-preview-price .new {
+    font-size: 1.3rem;
+  }
+}
+
+/* ===============================
+   DISABLE HOVER ON TOUCH DEVICES
+=============================== */
+@media (hover: none) {
+  
+  .btn-gold:hover,
+  .btn-outline-gold:hover {
+    transform: none;
+  }
+
+  .premium-nav .nav-link::after,
+  .see-all-link::after {
+    display: none;
+  }
+
+  .common-card:hover {
+    transform: none;
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.55),
+      0 0 40px rgba(255, 215, 0, 0.15);
+  }
+
+  .common-card:hover .common-img {
+    transform: none;
+    filter: brightness(0.92);
+  }
+
+  .common-card::after {
+    display: none;
+  }
+}
+
+/* ===============================
+   VERY SMALL MOBILE (≤ 400px)
+=============================== */
+@media (max-width: 400px) {
+
+  body {
+    font-size: 15px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .btn-gold,
+  .btn-outline-gold {
+    padding: 0.8rem 1.8rem;
+    font-size: 0.95rem;
+  }
+
+  .glass-card {
+    padding: 1.5rem 1.2rem;
+  }
 
   .package-preview-image {
     height: 135px;
@@ -564,15 +771,5 @@ body {
 
   .package-preview-desc {
     font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
-  .package-preview-price .new {
-    font-size: 1.15rem;
   }
 }
-
-
-
-
-

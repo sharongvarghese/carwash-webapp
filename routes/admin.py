@@ -60,7 +60,7 @@ def dashboard():
 
 
 # =========================
-# MARK NOTIFICATION AS READ
+# MARK NOTIFICATION AS READ (UPDATED)
 # =========================
 @admin_bp.route("/notifications/read/<int:note_id>")
 @login_required
@@ -68,11 +68,18 @@ def mark_notification_read(note_id):
     note = Notification.query.get_or_404(note_id)
     note.is_read = True
     db.session.commit()
-    return redirect(url_for("admin.dashboard"))
+    
+    # Redirect based on notification type
+    if note.type == "contact":
+        return redirect(url_for("admin.contact_inbox"))
+    elif note.type == "booking":
+        return redirect(url_for("admin.bookings"))
+    else:
+        return redirect(url_for("admin.dashboard"))
 
 
 # =========================
-# CONTACT INBOX
+# CONTACT INBOX (UPDATED - Auto-mark contact notifications as read)
 # =========================
 @admin_bp.route("/contacts")
 @login_required
@@ -81,10 +88,23 @@ def contact_inbox():
         ContactMessage.created_at.desc()
     ).all()
 
+    # ✅ AUTO-MARK ALL CONTACT NOTIFICATIONS AS READ
+    unread_contact_notifications = Notification.query.filter_by(
+        type="contact", 
+        is_read=False
+    ).all()
+    
+    for notification in unread_contact_notifications:
+        notification.is_read = True
+    
+    if unread_contact_notifications:
+        db.session.commit()
+
     return render_template(
         "admin/contact_inbox.html",
         messages=messages
     )
+
 
 # =========================
 # VIEW CONTACT MESSAGE
@@ -103,6 +123,7 @@ def view_contact_message(message_id):
         "admin/contact_view.html",
         message=message
     )
+
 
 @admin_bp.route("/contact/delete-selected", methods=["POST"])
 @login_required
@@ -169,8 +190,6 @@ def manage_services():
     return render_template("admin/services.html", form=form, services=services)
 
 
-
-
 @admin_bp.route("/services/delete/<int:service_id>", methods=["POST"])
 @login_required
 def delete_service(service_id):
@@ -193,7 +212,6 @@ def delete_service(service_id):
 
     flash("Service deleted successfully!", "info")
     return redirect(url_for("admin.manage_services"))
-
 
 
 @admin_bp.route("/services/edit/<int:service_id>", methods=["GET", "POST"])
@@ -226,7 +244,6 @@ def edit_service(service_id):
         return redirect(url_for("admin.manage_services"))
 
     return render_template("admin/edit_service.html", form=form, service=service)
-
 
 
 # =========================
@@ -293,14 +310,26 @@ def delete_package(package_id):
     return redirect(url_for("admin.manage_packages"))
 
 
-
 # =========================
-# BOOKINGS
+# BOOKINGS (UPDATED - Auto-mark booking notifications as read)
 # =========================
 @admin_bp.route("/bookings")
 @login_required
 def bookings():
     bookings = Booking.query.order_by(Booking.created_at.desc()).all()
+    
+    # ✅ AUTO-MARK ALL BOOKING NOTIFICATIONS AS READ
+    unread_booking_notifications = Notification.query.filter_by(
+        type="booking", 
+        is_read=False
+    ).all()
+    
+    for notification in unread_booking_notifications:
+        notification.is_read = True
+    
+    if unread_booking_notifications:
+        db.session.commit()
+    
     return render_template("admin/bookings.html", bookings=bookings)
 
 
@@ -313,6 +342,7 @@ def update_booking_status(booking_id, status):
     flash("Booking status updated.", "success")
     return redirect(url_for("admin.bookings"))
 
+
 @admin_bp.route("/bookings/delete/<int:booking_id>", methods=["POST"])
 @login_required
 def delete_booking(booking_id):
@@ -321,7 +351,6 @@ def delete_booking(booking_id):
     db.session.commit()
     flash("Booking deleted successfully!", "success")
     return redirect(url_for("admin.bookings"))
-
 
 
 # =========================
@@ -387,7 +416,6 @@ def admin_gallery():
     )
 
 
-
 @admin_bp.route("/gallery/delete/<int:image_id>", methods=["POST"])
 @login_required
 def delete_gallery_image(image_id):
@@ -404,4 +432,3 @@ def delete_gallery_image(image_id):
 
     flash("Gallery item deleted.", "success")
     return redirect(url_for("admin.admin_gallery"))
-

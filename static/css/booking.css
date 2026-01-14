@@ -1,5 +1,5 @@
 /* ============================================
-   PREMIUM FULL BOOKING PAGE
+   PREMIUM FULL BOOKING PAGE - FIXED FOR MOBILE
 ============================================ */
 
 /* Whole page soft glow */
@@ -20,28 +20,7 @@
   left: -200px;
   filter: blur(60px);
   z-index: -3;
-}
-
-/* ===============================
-    ANIMATED ENTRANCE
-=============================== */
-
-.fade-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeUpAnim 1s forwards ease-out;
-}
-
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-350 { animation-delay: 0.35s; }
-
-@keyframes fadeUpAnim {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  pointer-events: none;
 }
 
 /* ===============================
@@ -57,12 +36,6 @@
   max-width: 580px;
   border-radius: 26px;
   box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
-  animation: floatImage 5s infinite ease-in-out;
-}
-
-@keyframes floatImage {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
 }
 
 .booking-hero-glow {
@@ -75,6 +48,7 @@
   transform: translate(-50%, -50%);
   filter: blur(20px);
   z-index: -1;
+  pointer-events: none;
 }
 
 /* ===============================
@@ -88,7 +62,6 @@
   border-radius: 32px;
   border: 1px solid rgba(255, 215, 0, 0.18);
   box-shadow: 0 0 48px rgba(255, 215, 0, 0.22);
-  animation: fadeUpAnim 0.9s ease-out;
 }
 
 /* ===============================
@@ -147,7 +120,6 @@
 .booking-cta-btn:hover::after {
   left: 120%;
 }
-
 
 /* ================================
       PREMIUM TIME DROPDOWN
@@ -268,7 +240,7 @@
   display: none;
   z-index: 20;
 
-  max-height: 320px;       /* so it doesn't hit the footer */
+  max-height: 320px;
   overflow-y: auto;
 }
 
@@ -341,6 +313,67 @@
 }
 
 /* ===============================
+    DESKTOP ONLY ANIMATIONS (≥992px)
+=============================== */
+@media (min-width: 992px) {
+
+  /* Animated entrance - DESKTOP ONLY */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUpAnim 1s forwards ease-out;
+  }
+
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-350 { animation-delay: 0.35s; }
+
+  @keyframes fadeUpAnim {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Floating image animation - DESKTOP ONLY */
+  .booking-hero-image {
+    animation: floatImage 5s infinite ease-in-out;
+  }
+
+  @keyframes floatImage {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Card entrance - DESKTOP ONLY */
+  .booking-animated-card {
+    animation: fadeUpAnim 0.9s ease-out;
+  }
+}
+
+/* ===============================
+   TABLETS & SMALL DEVICES (≤ 991px)
+=============================== */
+@media (max-width: 991px) {
+
+  /* DISABLE ALL ANIMATIONS ON MOBILE/TABLET */
+  .fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .booking-hero-image {
+    animation: none !important;
+  }
+
+  .booking-animated-card {
+    animation: none !important;
+  }
+}
+
+/* ===============================
    TABLETS & SMALL DEVICES (≤ 768px)
 =============================== */
 @media (max-width: 768px) {
@@ -349,26 +382,18 @@
   .booking-hero-image-box {
     display: flex;
     justify-content: center;
-    padding: 1rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
-
     border-radius: 28px;
     background: rgba(20, 20, 20, 0.45);
     box-shadow: 0 0 35px rgba(255, 215, 0, 0.25);
   }
 
-  /* 🔑 KEY FIX: keep fade-up, stop floating only */
   .booking-hero-image {
     width: 100%;
     max-width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-
-    animation: none;        /* stops floatImage */
-  }
-
-  .fade-up {
-    animation: fadeUpAnim 0.8s ease-out forwards;
   }
 
   .booking-hero-glow {
@@ -378,7 +403,7 @@
   }
 
   .booking-animated-card {
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     border-radius: 26px;
   }
 
@@ -387,53 +412,111 @@
   .premium-date-dropdown {
     max-height: 260px;
   }
+
+  /* Background glow smaller */
+  .booking-background-glow {
+    width: 600px;
+    height: 600px;
+    filter: blur(50px);
+  }
 }
 
-
 /* ===============================
-   MOBILE IMAGE HEIGHT FIX (CRITICAL)
+   MOBILE (≤ 576px)
 =============================== */
 @media (max-width: 576px) {
 
   /* Limit image section height */
   .booking-hero-image-box {
-    max-height: 260px;
-    padding: 0.6rem;
-    overflow: hidden;
+    max-height: 280px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .booking-hero-image {
     height: 240px;
     width: 100%;
     object-fit: cover;
-    aspect-ratio: unset;   /* 🔑 disable tall ratio */
+    aspect-ratio: unset;
+    border-radius: 20px;
   }
 
-  /* Reduce glow so it doesn't add visual height */
+  /* Reduce glow */
   .booking-hero-glow {
     width: 200px;
     height: 200px;
     filter: blur(14px);
   }
 
-  /* Pull form closer */
   .booking-animated-card {
-    margin-top: -10px;
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+  }
+
+  /* Input sizes */
+  .premium-time-display,
+  .premium-date-display {
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1rem;
+  }
+
+  /* Smaller dropdowns */
+  .premium-time-dropdown,
+  .premium-date-dropdown {
+    max-height: 220px;
+  }
+
+  /* Calendar adjustments */
+  .calendar-grid {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  .calendar-date {
+    padding: 6px 0;
   }
 }
 
+/* ===============================
+   iPhone 14 Pro Max (≤ 430px)
+=============================== */
+@media (max-width: 430px) {
+
+  .booking-hero-image-box {
+    max-height: 260px;
+    padding: 0.8rem;
+  }
+
+  .booking-hero-image {
+    height: 220px;
+  }
+
+  .booking-animated-card {
+    padding: 1.8rem 1.3rem;
+  }
+
+  .premium-time-display,
+  .premium-date-display {
+    padding: 0.95rem 1rem 0.95rem 2.8rem;
+  }
+}
 
 /* ===============================
    EXTRA SMALL PHONES (≤ 400px)
 =============================== */
 @media (max-width: 400px) {
 
-  .booking-animated-card {
-    padding: 1.3rem;
+  .booking-hero-image-box {
+    max-height: 240px;
+    padding: 0.6rem;
   }
 
-  .booking-hero-image-box {
-    padding: 0.6rem;
+  .booking-hero-image {
+    height: 200px;
+  }
+
+  .booking-animated-card {
+    padding: 1.5rem 1.2rem;
   }
 
   .calendar-header {
@@ -442,6 +525,16 @@
 
   .calendar-arrow {
     padding: 2px 6px;
+    font-size: 1rem;
+  }
+
+  .calendar-grid {
+    font-size: 0.8rem;
+  }
+
+  .premium-time-dropdown,
+  .premium-date-dropdown {
+    max-height: 200px;
   }
 }
 
@@ -450,9 +543,8 @@
 =============================== */
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
-  .booking-hero-image {
+  .booking-hero-image,
+  .booking-animated-card {
     animation: none !important;
   }
 }
-
-

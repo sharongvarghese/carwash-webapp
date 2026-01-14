@@ -1,21 +1,53 @@
 {% extends "base.html" %}
+{% block title %}Contact Inbox - Admin{% endblock %}
 {% block body_class %}fixed-footer{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 mt-4">
 
   <!-- HEADER -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-gold mb-0">📥 Contact Inbox</h2>
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+    <h2 class="section-title mb-2">
+      <i class="bi bi-inbox-fill me-2"></i>Contact Inbox
+    </h2>
 
-    <button
-      type="button"
-      class="btn btn-outline-gold btn-sm"
-      id="deleteBtn">
-      Delete Selected
-    </button>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-gold">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      </a>
+      <button
+        type="button"
+        class="btn btn-gold"
+        id="deleteBtn"
+        style="display: none;">
+        <i class="bi bi-trash me-1"></i> Delete Selected
+      </button>
+    </div>
   </div>
 
+  <!-- STATS CARD -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card glass-card text-center p-3">
+        <h4 class="text-gold mb-1">{{ messages|length }}</h4>
+        <p class="text-muted mb-0">Total Messages</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card glass-card text-center p-3">
+        <h4 class="text-warning mb-1">{{ messages|selectattr('is_read', 'equalto', False)|list|length }}</h4>
+        <p class="text-muted mb-0">Unread</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card glass-card text-center p-3">
+        <h4 class="text-success mb-1">{{ messages|selectattr('is_read', 'equalto', True)|list|length }}</h4>
+        <p class="text-muted mb-0">Read</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGES TABLE -->
   <form
     method="POST"
     action="{{ url_for('admin.delete_selected_contacts') }}"
@@ -23,60 +55,74 @@
     
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <div class="card glass-card p-3">
+    <div class="inbox-container glass-card p-4">
+      
+      {% if messages %}
       <div class="table-responsive">
-        <table class="table table-dark table-hover inbox-table mb-0">
+        <table class="table inbox-table mb-0">
 
           <thead>
             <tr>
-              <th>
-                <input type="checkbox" id="selectAll">
+              <th style="width: 40px;">
+                <input type="checkbox" id="selectAll" class="form-check-input">
               </th>
-              <th>Status</th>
+              <th style="width: 80px;">Status</th>
               <th>Name</th>
-              <th>Email</th>
-              <th class="d-none d-md-table-cell">Phone</th>
-              <th>Date</th>
-              <th class="text-end">Action</th>
+              <th class="d-none d-md-table-cell">Email</th>
+              <th class="d-none d-lg-table-cell">Phone</th>
+              <th class="d-none d-md-table-cell">Date</th>
+              <th class="text-end" style="width: 100px;">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {% for msg in messages %}
-            <tr class="inbox-row {% if not msg.is_read %}unread{% endif %}">
+            <tr class="inbox-row {% if not msg.is_read %}unread-row{% endif %}">
               <td>
                 <input
                   type="checkbox"
                   name="selected_ids"
                   value="{{ msg.id }}"
-                  class="msg-checkbox">
+                  class="msg-checkbox form-check-input">
               </td>
 
               <td>
                 {% if msg.is_read %}
-                  <span class="badge bg-secondary">Read</span>
+                  <span class="badge bg-secondary">
+                    <i class="bi bi-check-circle me-1"></i>Read
+                  </span>
                 {% else %}
-                  <span class="badge bg-warning text-dark">New</span>
+                  <span class="badge bg-warning text-dark">
+                    <i class="bi bi-envelope-fill me-1"></i>New
+                  </span>
                 {% endif %}
               </td>
 
-              <td>{{ msg.name }}</td>
-              <td>{{ msg.email }}</td>
-              <td class="d-none d-md-table-cell">{{ msg.phone or "—" }}</td>
-              <td>{{ msg.created_at.strftime('%d %b %Y') }}</td>
+              <td class="fw-bold">
+                {% if not msg.is_read %}
+                  <i class="bi bi-circle-fill text-warning me-2" style="font-size: 0.5rem;"></i>
+                {% endif %}
+                {{ msg.name }}
+              </td>
+              
+              <td class="d-none d-md-table-cell text-muted">
+                {{ msg.email }}
+              </td>
+              
+              <td class="d-none d-lg-table-cell text-muted">
+                {{ msg.phone or "—" }}
+              </td>
+              
+              <td class="d-none d-md-table-cell text-muted">
+                {{ msg.created_at.strftime('%d %b, %I:%M %p') }}
+              </td>
 
               <td class="text-end">
                 <a
                   href="{{ url_for('admin.view_contact_message', message_id=msg.id) }}"
-                  class="btn btn-sm btn-outline-gold">
-                  View
+                  class="btn btn-sm btn-gold">
+                  <i class="bi bi-eye me-1"></i>View
                 </a>
-              </td>
-            </tr>
-            {% else %}
-            <tr>
-              <td colspan="7" class="text-center text-muted py-4">
-                No messages found
               </td>
             </tr>
             {% endfor %}
@@ -84,7 +130,50 @@
 
         </table>
       </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: rgba(255, 215, 0, 0.3);"></i>
+        <p class="text-muted mt-3 mb-0">No messages found</p>
+      </div>
+      {% endif %}
+
     </div>
   </form>
 </div>
+
+<script>
+// Select all checkboxes functionality
+document.getElementById('selectAll')?.addEventListener('change', function() {
+  const checkboxes = document.querySelectorAll('.msg-checkbox');
+  checkboxes.forEach(cb => cb.checked = this.checked);
+  toggleDeleteButton();
+});
+
+// Show/hide delete button based on selection
+document.querySelectorAll('.msg-checkbox').forEach(checkbox => {
+  checkbox.addEventListener('change', toggleDeleteButton);
+});
+
+function toggleDeleteButton() {
+  const anyChecked = document.querySelectorAll('.msg-checkbox:checked').length > 0;
+  const deleteBtn = document.getElementById('deleteBtn');
+  if (deleteBtn) {
+    deleteBtn.style.display = anyChecked ? 'inline-block' : 'none';
+  }
+}
+
+// Delete confirmation
+document.getElementById('deleteBtn')?.addEventListener('click', function() {
+  const checkedCount = document.querySelectorAll('.msg-checkbox:checked').length;
+  if (checkedCount === 0) {
+    alert('Please select messages to delete.');
+    return;
+  }
+  
+  if (confirm(`Delete ${checkedCount} message(s)?`)) {
+    document.getElementById('deleteForm').submit();
+  }
+});
+</script>
+
 {% endblock %}

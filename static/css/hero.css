@@ -1,131 +1,193 @@
 /* ===============================
-        FINAL FIXED HERO SECTION
+   HERO SECTION - FIXED FOR MOBILE
 =============================== */
 
+/* Remove global overflow hidden - this was causing blank screen */
 html, body {
-  overflow-x: hidden !important;
+  overflow-x: hidden;
 }
 
+/* HERO SECTION */
 .hero-section {
   min-height: auto;
   padding: 3rem 0;
   position: relative;
   width: 100%;
-  overflow: hidden !important;
 }
 
 /* GLASS CARD */
 .hero-glass-card {
   background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(14px);
   border-radius: 36px;
   padding: 3rem 4rem;
   border: 1px solid rgba(255, 215, 0, 0.18);
   box-shadow: 0 0 45px rgba(255, 215, 0, 0.22);
-  backdrop-filter: blur(14px);
   margin: 0 auto;
-  overflow: hidden !important;
   position: relative;
 }
 
-/* Gold Glow */
+/* Gold Glow Effect */
 .hero-glass-card::before {
   content: "";
   position: absolute;
-  width: 320px;     /* reduced width */
+  width: 320px;
   height: 320px;
   background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 80%);
   top: -100px;
   left: -25px;
   filter: blur(12px);
   z-index: -1;
+  pointer-events: none;
 }
 
 /* TEXT */
 .hero-title {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 3.6rem;
+  font-size: clamp(2.5rem, 5vw, 3.6rem);
   letter-spacing: 1px;
   color: #ffd700;
+  line-height: 1.1;
+  margin-bottom: 1rem;
 }
 
 .hero-text {
   max-width: 500px;
+  font-size: 1.15rem;
   color: #f5c542;
   margin-top: 1rem;
+  line-height: 1.6;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
 /* IMAGE */
+.hero-image-container {
+  position: relative;
+}
+
 .hero-image-premium {
   width: 100%;
   height: 380px;
   object-fit: cover;
   border-radius: 25px;
   box-shadow: 0 0 35px rgba(255,215,0,0.25);
-  transform: translateY(40px);
-  opacity: 0;
-  animation: imgFade 1.2s ease forwards, imgFloat 5s ease-in-out infinite alternate;
-  overflow: hidden;
 }
 
-@keyframes imgFade {
-  to { opacity: 1; transform: translateY(0); }
-}
+/* DESKTOP ANIMATIONS (≥992px only) */
+@media (min-width: 992px) {
+  
+  .hero-image-premium {
+    transform: translateY(40px);
+    opacity: 0;
+    animation: imgFade 1.2s ease forwards, imgFloat 5s ease-in-out infinite alternate;
+  }
 
-@keyframes imgFloat {
-  50% { transform: translateY(-12px) scale(1.02); }
-}
+  @keyframes imgFade {
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
 
-/* LEFT ANIMATION */
-.hero-animate {
-  opacity: 0;
-  transform: translateX(-40px);
-  animation: heroLeft 1.1s ease forwards;
-}
+  @keyframes imgFloat {
+    50% { 
+      transform: translateY(-12px) scale(1.02); 
+    }
+  }
 
-@keyframes heroLeft {
-  to { opacity: 1; transform: translateX(0); }
-}
+  .hero-animate {
+    opacity: 0;
+    transform: translateX(-40px);
+    animation: heroLeft 1.1s ease forwards;
+  }
 
-/* BUTTON */
-.hero-buttons a {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: heroButton 1s ease forwards;
-}
+  @keyframes heroLeft {
+    to { 
+      opacity: 1; 
+      transform: translateX(0); 
+    }
+  }
 
-.hero-buttons a:nth-child(1) { animation-delay: 0.4s; }
-.hero-buttons a:nth-child(2) { animation-delay: 0.55s; }
+  .hero-buttons a {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: heroButton 1s ease forwards;
+  }
 
-@keyframes heroButton {
-  to { opacity: 1; transform: translateY(0); }
+  .hero-buttons a:nth-child(1) { 
+    animation-delay: 0.4s; 
+  }
+  
+  .hero-buttons a:nth-child(2) { 
+    animation-delay: 0.55s; 
+  }
+
+  @keyframes heroButton {
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
 }
 
 /* ==========================
-   TABLET & BELOW (≤ 992px)
+   TABLET (≤ 992px)
 ==========================*/
 @media (max-width: 992px) {
 
+  .hero-glass-card {
+    padding: 2.5rem 3rem;
+  }
+
   .hero-title {
     font-size: 3rem;
+    text-align: center;
+  }
+
+  .hero-text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
   }
 
   .hero-image-premium {
-    max-height: 300px;
-    transform: translateY(20px); 
+    height: 300px;
   }
 
-
   .hero-image-container {
-    padding-top: 0;
     margin-top: 2rem;
   }
 
-  .hero-section {
-    min-height: auto;
-    padding: 3rem 0;
+  /* NO ANIMATIONS ON TABLET/MOBILE */
+  .hero-animate {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .hero-buttons a {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .hero-image-premium {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }
-
 
 /* ==========================
    MOBILE (≤ 768px)
@@ -137,52 +199,145 @@ html, body {
   }
 
   .hero-glass-card {
-    padding: 1.6rem;
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+  }
+
+  .hero-glass-card::before {
+    width: 250px;
+    height: 250px;
+    top: -80px;
+    left: -20px;
   }
 
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     text-align: center;
   }
 
   .hero-text {
+    font-size: 1.15rem;
     text-align: center;
-    margin: 0.8rem auto 0;
+    margin: 1rem auto 0;
+    max-width: 100%;
   }
 
   .hero-buttons {
-    justify-content: center;
-    margin-top: 1.2rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
   }
 
-  /* Kill translate animation */
+  .hero-buttons a {
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    justify-content: center;
+  }
+
   .hero-image-premium {
-    transform: none;
-    animation: imgFade 0.9s ease forwards;
+    height: 250px;
+    margin-top: 0;
   }
 
   .hero-image-container {
-    margin-top: 1.6rem;
+    margin-top: 2rem;
   }
 }
 
+/* ==========================
+   MOBILE (≤ 576px)
+==========================*/
+@media (max-width: 576px) {
+
+  .hero-section {
+    padding: 2rem 0 1.5rem;
+  }
+
+  .hero-glass-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+
+  .hero-text {
+    font-size: 1.1rem;
+    margin-top: 0.8rem;
+  }
+
+  .hero-buttons {
+    margin-top: 1.3rem;
+  }
+
+  .hero-image-premium {
+    height: 220px;
+    border-radius: 18px;
+  }
+
+  .hero-image-container {
+    margin-top: 1.5rem;
+  }
+}
 
 /* ==========================
-   SMALL MOBILE (≤ 480px)
+   iPhone 14 Pro Max (≤ 430px)
 ==========================*/
-@media (max-width: 480px) {
+@media (max-width: 430px) {
+
+  .hero-glass-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.4rem;
+  }
+
+  .hero-text {
+    font-size: 1.1rem;
+  }
+
+  .hero-image-premium {
+    height: 200px;
+  }
+}
+
+/* ==========================
+   SMALL MOBILE (≤ 400px)
+==========================*/
+@media (max-width: 400px) {
+
+  .hero-section {
+    padding: 1.8rem 0 1.3rem;
+  }
+
+  .hero-glass-card {
+    padding: 1.8rem 1.3rem;
+  }
 
   .hero-title {
     font-size: 2.2rem;
     line-height: 1.15;
   }
 
-  .hero-image-premium {
-    max-height: 200px;
+  .hero-text {
+    font-size: 1.05rem;
   }
 
-  .hero-section {
-    padding-bottom: 1.5rem;
+  .hero-buttons a {
+    padding: 0.9rem 2rem;
+    font-size: 1.05rem;
+  }
+
+  .hero-image-premium {
+    height: 180px;
+  }
+
+  .hero-image-container {
+    margin-top: 1.3rem;
   }
 }
-
