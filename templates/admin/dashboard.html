@@ -3,97 +3,182 @@
 {% block body_class %}fixed-footer{% endblock %}
 {% block content %}
 
-<div class="container py-5 mt-4 dashboard-container">
+<div class="container py-4 mt-4 dashboard-container">
 
-  <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-    <h2 class="section-title mb-2">Dashboard</h2>
-    <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-gold logout-btn">
-      Logout
-    </a>
+  <!-- Header Section -->
+  <div class="dashboard-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2 class="section-title mb-1">Admin Dashboard</h2>
+        <p class="text-muted small mb-0">Welcome back! Here's your overview</p>
+      </div>
+      <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-gold logout-btn">
+        <i class="bi bi-box-arrow-right me-2"></i>Logout
+      </a>
+    </div>
   </div>
 
-  <!-- Analytics Cards -->
-  <div class="row g-4 mb-4">
-    <div class="col-md-4 col-sm-6">
-      <div class="admin-card enhanced-card shadow-soft text-center">
-        <h5 class="mb-1">Total Bookings</h5>
-        <p class="big-number">{{ booking_count }}</p>
+  <!-- Analytics & Notifications Row -->
+  <div class="row g-3 mb-4">
+    <!-- Total Bookings Card -->
+    <div class="col-lg-3 col-md-6">
+      <div class="stat-card glass-card">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h6 class="stat-label">Total Bookings</h6>
+          <p class="stat-number">{{ booking_count }}</p>
+        </div>
+        <div class="stat-accent"></div>
       </div>
     </div>
 
-    <div class="col-md-8 col-sm-6">
-      <div class="admin-card enhanced-card shadow-soft h-100">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="m-0">Notifications</h5>
+    <!-- Notifications Card -->
+    <div class="col-lg-9 col-md-6">
+      <div class="notification-card glass-card">
+        <div class="notification-header">
+          <h6 class="mb-0">
+            <i class="bi bi-bell me-2"></i>Recent Notifications
+          </h6>
           {% if unread_notifications %}
-            <span class="badge bg-danger">{{ unread_notifications|length }}</span>
+            <span class="notification-badge">{{ unread_notifications|length }}</span>
           {% endif %}
         </div>
 
-        {% if unread_notifications %}
-          <ul class="list-unstyled dashboard-list">
-            {% for note in unread_notifications %}
-              <li class="dashboard-list-item d-flex justify-content-between align-items-center">
-                <span>
-                  <i class="bi bi-bell-fill me-2" style="color: #ffd700;"></i>
-                  {{ note.message }}
-                </span>
-
-                <div class="d-flex gap-2">
-                  {% if note.type == "contact" %}
-                    <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
-                      class="btn btn-sm btn-gold">
-                      View Inbox
-                    </a>
-                  {% elif note.type == "booking" %}
-                    <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
-                      class="btn btn-sm btn-gold">
-                      View Booking
-                    </a>
-                  {% endif %}
+        <div class="notification-body">
+          {% if unread_notifications %}
+            <div class="notification-list">
+              {% for note in unread_notifications[:3] %}
+                <div class="notification-item">
+                  <div class="notification-icon">
+                    {% if note.type == "contact" %}
+                      <i class="bi bi-envelope-fill"></i>
+                    {% elif note.type == "booking" %}
+                      <i class="bi bi-calendar-event"></i>
+                    {% else %}
+                      <i class="bi bi-info-circle-fill"></i>
+                    {% endif %}
+                  </div>
+                  <div class="notification-text">
+                    <p class="mb-0">{{ note.message }}</p>
+                  </div>
+                  <div class="notification-action">
+                    {% if note.type == "contact" %}
+                      <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
+                        class="btn btn-sm btn-gold-minimal">
+                        View
+                      </a>
+                    {% elif note.type == "booking" %}
+                      <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
+                        class="btn btn-sm btn-gold-minimal">
+                        View
+                      </a>
+                    {% endif %}
+                  </div>
                 </div>
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="text-center py-4">
-            <i class="bi bi-check-circle" style="font-size: 3rem; color: #4caf50;"></i>
-            <p class="text-muted mt-2">No new notifications.</p>
-          </div>
-        {% endif %}
+              {% endfor %}
+            </div>
+            {% if unread_notifications|length > 3 %}
+              <div class="text-center mt-2">
+                <small class="text-muted">+{{ unread_notifications|length - 3 }} more notifications</small>
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="notification-empty">
+              <i class="bi bi-check-circle"></i>
+              <p class="mb-0">All caught up!</p>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Navigation Buttons -->
-  <div class="row g-3 mt-3">
-    <div class="col-lg-4 col-md-6">
-      <a href="{{ url_for('admin.manage_services') }}" class="btn btn-outline-gold nav-btn w-100">
-        <i class="bi bi-tools me-2"></i>Manage Services
-      </a>
-    </div>
-    <div class="col-lg-4 col-md-6">
-      <a href="{{ url_for('admin.manage_packages') }}" class="btn btn-outline-gold nav-btn w-100">
-        <i class="bi bi-box-seam me-2"></i>Manage Packages
-      </a>
-    </div>
-    <div class="col-lg-4 col-md-6">
-      <a href="{{ url_for('admin.admin_gallery') }}" class="btn btn-outline-gold nav-btn w-100">
-        <i class="bi bi-images me-2"></i>Manage Gallery
-      </a>
-    </div>
-    <div class="col-lg-4 col-md-6">
-      <a href="{{ url_for('admin.bookings') }}" class="btn btn-outline-gold nav-btn w-100">
-        <i class="bi bi-calendar-check me-2"></i>View Bookings
-      </a>
-    </div>
-    <div class="col-lg-4 col-md-6">
-      <a href="{{ url_for('admin.contact_inbox') }}" class="btn btn-outline-gold nav-btn w-100">
-        <i class="bi bi-envelope me-2"></i>Contact Inbox
-      </a>
+  <!-- Quick Actions Section -->
+  <div class="quick-actions-section">
+    <h5 class="section-subtitle mb-3">
+      <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+    </h5>
+    
+    <div class="row g-3">
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.manage_services') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-tools"></i>
+          </div>
+          <div class="action-content">
+            <h6>Manage Services</h6>
+            <p class="mb-0">Add, edit, or remove services</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.manage_packages') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+          <div class="action-content">
+            <h6>Manage Packages</h6>
+            <p class="mb-0">Update package offerings</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.admin_gallery') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-images"></i>
+          </div>
+          <div class="action-content">
+            <h6>Manage Gallery</h6>
+            <p class="mb-0">Upload and organize photos</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.bookings') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <div class="action-content">
+            <h6>View Bookings</h6>
+            <p class="mb-0">Review all appointments</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.contact_inbox') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-envelope"></i>
+          </div>
+          <div class="action-content">
+            <h6>Contact Inbox</h6>
+            <p class="mb-0">View customer messages</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
+
 </div>
 
 {% endblock %}
