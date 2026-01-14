@@ -1,0 +1,703 @@
+/* ===========================
+   ADMIN SERVICES - DARK THEME FIX
+   =========================== */
+.services-container {
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 1400px;
+}
+
+/* Force dark background for admin pages */
+body {
+  background: #0a0a0a !important;
+  color: #ffd700 !important;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===========================
+   Page Header
+   =========================== */
+.page-header {
+  animation: slideInDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+.admin-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 215, 0, 0.7);
+}
+
+.admin-btn-outline-gold {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700 !important;
+  font-weight: 500;
+  padding: 10px 24px;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn-outline-gold::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.admin-btn-outline-gold:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.admin-btn-outline-gold:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+  color: #ffd700 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+/* ===========================
+   Form Card
+   =========================== */
+.admin-form-card {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 28px;
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.12);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.admin-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  opacity: 0.5;
+  border-radius: 28px 28px 0 0;
+}
+
+.admin-form-card:hover {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 60px rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.admin-form-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.admin-form-header h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffd700;
+  margin: 0;
+}
+
+.admin-form-header i {
+  color: #ffd700;
+}
+
+/* ===========================
+   Form Inputs - DARK THEME
+   =========================== */
+.admin-form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffd700;
+  margin-bottom: 8px;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.admin-form-control {
+  background: rgba(10, 10, 10, 0.6) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #ffd700 !important;
+  font-size: 0.95rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.admin-form-control::placeholder {
+  color: rgba(255, 215, 0, 0.4) !important;
+}
+
+.admin-form-control:focus {
+  background: rgba(20, 20, 20, 0.8) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15) !important;
+  color: #ffd700 !important;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+textarea.admin-form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ===========================
+   Custom File Upload - DARK
+   =========================== */
+.admin-custom-file-upload {
+  position: relative;
+}
+
+.admin-file-input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  width: 0;
+  height: 0;
+}
+
+.admin-file-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  color: #ffd700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0;
+}
+
+.admin-file-label:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: #ffd700;
+}
+
+.admin-file-label i {
+  font-size: 1.1rem;
+  color: #ffd700;
+}
+
+.admin-file-text {
+  font-size: 0.95rem;
+  color: #ffd700;
+}
+
+/* ===========================
+   Buttons
+   =========================== */
+.admin-btn-gold {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border: none;
+  color: #000 !important;
+  font-weight: 600;
+  padding: 14px 40px;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.admin-btn-gold:hover::before {
+  left: 100%;
+}
+
+.admin-btn-gold:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+  color: #000 !important;
+}
+
+.admin-btn-gold:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+.admin-btn-outline-danger {
+  background: rgba(220, 53, 69, 0.1) !important;
+  border: 1px solid rgba(220, 53, 69, 0.4) !important;
+  color: #ff6b6b !important;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 10px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn-outline-danger::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(220, 53, 69, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.admin-btn-outline-danger:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.admin-btn-outline-danger:hover {
+  background: rgba(220, 53, 69, 0.2) !important;
+  border-color: #ff6b6b !important;
+  color: #ff6b6b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+/* ===========================
+   Services List Header
+   =========================== */
+.admin-services-list-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(20, 20, 20, 0.4);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.admin-services-list-header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffd700;
+  margin: 0;
+}
+
+.admin-services-list-header i {
+  color: #ffd700;
+}
+
+.admin-badge-gold {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #000;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-left: 10px;
+}
+
+/* ===========================
+   MOBILE GRID (< 992px) - SAME CARD DESIGN
+   =========================== */
+.services-row-mobile {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  margin-top: 20px;
+}
+
+.admin-service-wrapper-mobile {
+  max-width: 280px;
+  width: 100%;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+/* Staggered animation for mobile cards */
+.admin-service-wrapper-mobile:nth-child(1) { animation-delay: 0.1s; }
+.admin-service-wrapper-mobile:nth-child(2) { animation-delay: 0.15s; }
+.admin-service-wrapper-mobile:nth-child(3) { animation-delay: 0.2s; }
+.admin-service-wrapper-mobile:nth-child(4) { animation-delay: 0.25s; }
+.admin-service-wrapper-mobile:nth-child(5) { animation-delay: 0.3s; }
+.admin-service-wrapper-mobile:nth-child(6) { animation-delay: 0.35s; }
+
+/* ===========================
+   DESKTOP GRID - YOUR CARD DESIGN
+   =========================== */
+.services-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2.5rem;
+  justify-items: center;
+  margin-top: 20px;
+}
+
+.admin-service-wrapper {
+  max-width: 260px;
+  width: 100%;
+}
+
+/* Use your existing service-card styles */
+.service-card-admin {
+  cursor: default;
+}
+
+.service-card-admin:hover {
+  transform: translateY(-8px);
+}
+
+.service-card-admin:hover .service-img {
+  filter: brightness(1.05);
+  transform: scale(1.05);
+}
+
+/* Desktop No Image Placeholder */
+.admin-no-image-placeholder-desktop {
+  width: 100%;
+  height: 185px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.8);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.28);
+}
+
+.admin-no-image-placeholder-desktop i {
+  font-size: 4rem;
+  color: rgba(255, 215, 0, 0.3);
+}
+
+/* Service Info Below Title */
+.admin-service-info {
+  padding: 20px;
+  background: rgba(10, 10, 10, 0.4);
+}
+
+.admin-service-price-desktop {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.admin-service-desc-desktop {
+  font-size: 0.875rem;
+  color: rgba(255, 215, 0, 0.7);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Action Buttons Below Card */
+.admin-card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.admin-btn-edit {
+  flex: 1;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700 !important;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn-edit::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.15);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.admin-btn-edit:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.admin-btn-edit:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.admin-btn-delete {
+  flex: 1;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.4);
+  color: #ff6b6b !important;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn-delete::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(220, 53, 69, 0.15);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.admin-btn-delete:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.admin-btn-delete:hover {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: #ff6b6b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+/* ===========================
+   Empty State
+   =========================== */
+.admin-empty-state {
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 60px 40px !important;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  margin-top: 20px;
+}
+
+.admin-empty-state i {
+  font-size: 4rem;
+  color: rgba(255, 215, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.admin-empty-state h5 {
+  color: #ffd700;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.admin-empty-state p {
+  color: rgba(255, 215, 0, 0.6);
+  margin: 0;
+}
+
+/* ===========================
+   Animations
+   =========================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation for cards */
+.admin-service-wrapper {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.admin-service-wrapper:nth-child(1) { animation-delay: 0.1s; }
+.admin-service-wrapper:nth-child(2) { animation-delay: 0.15s; }
+.admin-service-wrapper:nth-child(3) { animation-delay: 0.2s; }
+.admin-service-wrapper:nth-child(4) { animation-delay: 0.25s; }
+.admin-service-wrapper:nth-child(5) { animation-delay: 0.3s; }
+.admin-service-wrapper:nth-child(6) { animation-delay: 0.35s; }
+
+/* ===========================
+   Responsive Design
+   =========================== */
+@media (max-width: 991px) {
+  .admin-form-card {
+    padding: 25px;
+  }
+
+  .services-row-mobile {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.8rem;
+  }
+
+  .admin-service-wrapper-mobile {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 767px) {
+  .services-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .page-header .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .page-header .btn {
+    width: 100%;
+  }
+
+  .admin-section-title {
+    font-size: 1.6rem;
+  }
+
+  .admin-form-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .services-row-mobile {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .admin-service-wrapper-mobile {
+    max-width: 240px;
+  }
+}
+
+@media (max-width: 575px) {
+  .admin-section-title {
+    font-size: 1.4rem;
+  }
+
+  .admin-form-header h5 {
+    font-size: 1rem;
+  }
+
+  .admin-btn-gold {
+    padding: 12px 24px;
+    width: 100%;
+  }
+
+  .admin-services-list-header {
+    padding: 12px 15px;
+  }
+
+  .admin-services-list-header h5 {
+    font-size: 0.9rem;
+  }
+
+  .admin-empty-state {
+    padding: 40px 20px !important;
+  }
+
+  .admin-empty-state i {
+    font-size: 3rem;
+  }
+
+  .admin-empty-state h5 {
+    font-size: 1.1rem;
+  }
+
+  .services-row,
+  .services-row-mobile {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .admin-service-wrapper,
+  .admin-service-wrapper-mobile {
+    max-width: 100%;
+  }
+
+  .admin-card-actions {
+    gap: 8px;
+  }
+
+  .admin-btn-edit,
+  .admin-btn-delete {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===========================
+   Accessibility
+   =========================== */
+@media (prefers-reduced-motion: reduce) {
+  .admin-service-card-mobile,
+  .service-card-admin,
+  .admin-btn-gold,
+  .admin-btn-outline-gold,
+  .admin-btn-outline-danger,
+  .admin-mobile-service-img,
+  .service-img {
+    transition: none;
+  }
+
+  .services-container,
+  .page-header {
+    animation: none;
+  }
+}
