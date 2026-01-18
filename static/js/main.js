@@ -279,130 +279,238 @@ if (deleteBtn) {
 
 
 /* ====================================================
-      COMPACT GALLERY SLIDER
+      PREMIUM GALLERY SLIDER
 ==================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const slides = document.querySelectorAll(".gallery-slide");
   const leftBtn = document.querySelector(".gallery-arrow.left");
   const rightBtn = document.querySelector(".gallery-arrow.right");
   const dots = document.querySelectorAll(".dot");
+  const counterCurrent = document.querySelector(".counter-current");
 
+  // Exit if no gallery found
   if (!slides || slides.length === 0) return;
 
   let current = 0;
   let autoTimer = null;
+  let isTransitioning = false;
 
-  function show(index) {
+  /* ================================
+     SHOW SLIDE FUNCTION
+  ================================ */
+  function showSlide(index) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    // Remove active class from current slide
     slides[current].classList.remove("active");
     if (dots.length > 0) dots[current].classList.remove("active");
 
+    // Calculate new index (loop around)
     current = (index + slides.length) % slides.length;
 
+    // Add active class to new slide
     slides[current].classList.add("active");
     if (dots.length > 0) dots[current].classList.add("active");
+
+    // Update counter if exists
+    if (counterCurrent) {
+      counterCurrent.textContent = current + 1;
+    }
+
+    // Reset transition lock after animation completes
+    setTimeout(() => {
+      isTransitioning = false;
+    }, 600); // Match CSS transition duration
   }
 
-  function next() {
-    show(current + 1);
+  /* ================================
+     NAVIGATION FUNCTIONS
+  ================================ */
+  function nextSlide() {
+    showSlide(current + 1);
   }
 
-  function prev() {
-    show(current - 1);
+  function prevSlide() {
+    showSlide(current - 1);
   }
 
-  function startAuto() {
+  /* ================================
+     AUTO-PLAY FUNCTIONS
+  ================================ */
+  function startAutoPlay() {
     if (slides.length <= 1) return;
-    stopAuto();
-    autoTimer = setInterval(next, 5000);
+    stopAutoPlay();
+    autoTimer = setInterval(nextSlide, 5000); // 5 seconds
   }
 
-  function stopAuto() {
+  function stopAutoPlay() {
     if (autoTimer) {
       clearInterval(autoTimer);
       autoTimer = null;
     }
   }
 
-  function resetAuto() {
-    stopAuto();
-    startAuto();
+  function resetAutoPlay() {
+    stopAutoPlay();
+    startAutoPlay();
   }
 
+  /* ================================
+     ARROW BUTTON EVENTS
+  ================================ */
   if (leftBtn) {
     leftBtn.addEventListener("click", () => {
-      prev();
-      resetAuto();
+      prevSlide();
+      resetAutoPlay();
     });
   }
 
   if (rightBtn) {
     rightBtn.addEventListener("click", () => {
-      next();
-      resetAuto();
+      nextSlide();
+      resetAutoPlay();
     });
   }
 
-  dots.forEach((dot, i) => {
+  /* ================================
+     DOT NAVIGATION EVENTS
+  ================================ */
+  dots.forEach((dot, index) => {
     dot.addEventListener("click", () => {
-      show(i);
-      resetAuto();
+      showSlide(index);
+      resetAutoPlay();
     });
   });
 
-  // Keyboard
+  /* ================================
+     KEYBOARD NAVIGATION
+  ================================ */
   document.addEventListener("keydown", (e) => {
     const gallery = document.querySelector("#gallery");
     if (!gallery) return;
 
+    // Check if gallery is in viewport
     const rect = gallery.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
+    const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+
+    if (isInView) {
       if (e.key === "ArrowLeft") {
-        prev();
-        resetAuto();
+        prevSlide();
+        resetAutoPlay();
       } else if (e.key === "ArrowRight") {
-        next();
-        resetAuto();
+        nextSlide();
+        resetAutoPlay();
       }
     }
   });
 
-  // Touch/Swipe
-  let touchStart = 0;
-  let touchEnd = 0;
+  /* ================================
+     TOUCH/SWIPE SUPPORT
+  ================================ */
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const minSwipeDistance = 50;
 
-  const container = document.querySelector(".gallery-slider-container");
-  if (container) {
-    container.addEventListener("touchstart", (e) => {
-      touchStart = e.changedTouches[0].screenX;
+  const sliderContainer = document.querySelector(".gallery-slider-wrapper");
+  
+  if (sliderContainer) {
+    sliderContainer.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
-    container.addEventListener("touchend", (e) => {
-      touchEnd = e.changedTouches[0].screenX;
-      const diff = touchStart - touchEnd;
+    sliderContainer.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
 
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-          next();
+    function handleSwipe() {
+      const swipeDistance = touchStartX - touchEndX;
+
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance > 0) {
+          // Swipe left - go to next
+          nextSlide();
         } else {
-          prev();
+          // Swipe right - go to previous
+          prevSlide();
         }
-        resetAuto();
+        resetAutoPlay();
       }
-    }, { passive: true });
+    }
 
-    container.addEventListener("mouseenter", stopAuto);
-    container.addEventListener("mouseleave", startAuto);
+    // Pause on hover (desktop)
+    sliderContainer.addEventListener("mouseenter", stopAutoPlay);
+    sliderContainer.addEventListener("mouseleave", startAutoPlay);
   }
 
-  // Visibility
+  /* ================================
+     PAGE VISIBILITY API
+     Pause when tab is hidden
+  ================================ */
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      stopAuto();
+      stopAutoPlay();
     } else {
-      startAuto();
+      startAutoPlay();
     }
   });
 
-  startAuto();
+  /* ================================
+     INTERSECTION OBSERVER
+     Only auto-play when visible
+  ================================ */
+  if ('IntersectionObserver' in window) {
+    const galleryObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startAutoPlay();
+        } else {
+          stopAutoPlay();
+        }
+      });
+    }, {
+      threshold: 0.5 // 50% of gallery must be visible
+    });
+
+    const gallerySection = document.querySelector("#gallery");
+    if (gallerySection) {
+      galleryObserver.observe(gallerySection);
+    }
+  } else {
+    // Fallback for browsers without IntersectionObserver
+    startAutoPlay();
+  }
+
+  /* ================================
+     PRELOAD IMAGES
+     Improve performance
+  ================================ */
+  function preloadImages() {
+    slides.forEach(slide => {
+      const images = slide.querySelectorAll('img');
+      images.forEach(img => {
+        if (!img.complete) {
+          const tempImg = new Image();
+          tempImg.src = img.src;
+        }
+      });
+    });
+  }
+
+  preloadImages();
+
+});
+
+/* ====================================================
+      ADMIN - BOOKINGS PANEL JS
+==================================================== */
+// SEARCH ONLY – NO STATUS LOGIC
+document.getElementById('searchInput')?.addEventListener('input', function () {
+  const value = this.value.toLowerCase();
+  document.querySelectorAll('.bookings-table tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
+  });
 });

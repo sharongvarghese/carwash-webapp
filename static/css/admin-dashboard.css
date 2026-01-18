@@ -5,7 +5,6 @@
   animation: fadeInUp 0.5s ease-out;
   max-width: 1400px;
 }
-
 /* ===========================
    Glass Card Base Style
    =========================== */
@@ -20,7 +19,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .glass-card::before {
   content: '';
   position: absolute;
@@ -33,25 +31,21 @@
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
-
 .glass-card:hover::before {
   opacity: 1;
 }
-
 .glass-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 215, 0, 0.25);
   box-shadow: 0 12px 40px rgba(255, 215, 0, 0.15), 
               0 0 0 1px rgba(255, 215, 0, 0.1) inset;
 }
-
 /* ===========================
    Dashboard Header
    =========================== */
 .dashboard-header {
   animation: slideInDown 0.6s ease-out;
 }
-
 .section-title {
   font-size: 2rem;
   font-weight: 700;
@@ -60,7 +54,6 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .logout-btn {
   padding: 10px 24px;
   border: 1px solid rgba(255, 215, 0, 0.3);
@@ -70,14 +63,12 @@
   transition: all 0.3s ease;
   background: rgba(255, 215, 0, 0.05);
 }
-
 .logout-btn:hover {
   background: rgba(255, 215, 0, 0.15);
   border-color: #ffd700;
   color: #ffd700;
   transform: translateX(-2px);
 }
-
 /* ===========================
    Stat Card (Booking Count)
    =========================== */
@@ -89,7 +80,6 @@
   min-height: 120px;
   position: relative;
 }
-
 .stat-icon {
   width: 60px;
   height: 60px;
@@ -100,16 +90,13 @@
   justify-content: center;
   flex-shrink: 0;
 }
-
 .stat-icon i {
   font-size: 28px;
   color: #ffd700;
 }
-
 .stat-content {
   flex-grow: 1;
 }
-
 .stat-label {
   font-size: 0.85rem;
   color: #ffd700;
@@ -119,7 +106,6 @@
   font-weight: 600;
   opacity: 0.8;
 }
-
 .stat-number {
   font-size: 2.5rem;
   font-weight: 700;
@@ -128,7 +114,6 @@
   margin: 0;
   text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
-
 .stat-accent {
   position: absolute;
   bottom: 0;
@@ -138,7 +123,6 @@
   background: linear-gradient(90deg, #ffd700 0%, transparent 100%);
   border-radius: 0 0 16px 16px;
 }
-
 /* ===========================
    Notification Card
    =========================== */
@@ -148,7 +132,6 @@
   flex-direction: column;
   padding: 18px 20px;
 }
-
 .notification-header {
   display: flex;
   justify-content: space-between;
@@ -157,14 +140,12 @@
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 215, 0, 0.1);
 }
-
 .notification-header h6 {
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffd700;
   margin: 0;
 }
-
 .notification-badge {
   background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
   color: white;
@@ -174,18 +155,15 @@
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
 }
-
 .notification-body {
   flex-grow: 1;
   overflow: hidden;
 }
-
 .notification-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .notification-item {
   display: flex;
   align-items: center;
@@ -196,12 +174,10 @@
   border-left: 3px solid rgba(255, 215, 0, 0.4);
   transition: all 0.2s ease;
 }
-
 .notification-item:hover {
   background: rgba(255, 215, 0, 0.08);
   border-left-color: #ffd700;
 }
-
 .notification-icon {
   width: 36px;
   height: 36px;
@@ -212,17 +188,14 @@
   justify-content: center;
   flex-shrink: 0;
 }
-
 .notification-icon i {
   font-size: 16px;
   color: #ffd700;
 }
-
 .notification-text {
   flex-grow: 1;
   min-width: 0;
 }
-
 .notification-text p {
   font-size: 0.875rem;
   color: #ffd700;
@@ -231,11 +204,9 @@
   text-overflow: ellipsis;
   opacity: 0.9;
 }
-
 .notification-action {
   flex-shrink: 0;
 }
-
 .btn-gold-minimal {
   padding: 5px 14px;
   background: rgba(255, 215, 0, 0.1);
@@ -246,14 +217,12 @@
   font-weight: 500;
   transition: all 0.2s ease;
 }
-
 .btn-gold-minimal:hover {
   background: rgba(255, 215, 0, 0.2);
   border-color: #ffd700;
   color: #ffd700;
   transform: scale(1.05);
 }
-
 .notification-empty {
   display: flex;
   flex-direction: column;
@@ -262,18 +231,15 @@
   padding: 20px;
   color: #ffd700;
 }
-
 .notification-empty i {
   font-size: 2.5rem;
   color: #ffd700;
   margin-bottom: 8px;
 }
-
 .notification-empty p {
   font-size: 0.9rem;
   opacity: 0.8;
 }
-
 /* ===========================
    Quick Actions Section
    =========================== */
@@ -281,17 +247,14 @@
   margin-top: 30px;
   animation: fadeInUp 0.7s ease-out;
 }
-
 .section-subtitle {
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffd700;
 }
-
 .section-subtitle i {
   color: #ffd700;
 }
-
 .action-card {
   display: flex;
   align-items: center;
@@ -302,7 +265,6 @@
   min-height: 100px;
   cursor: pointer;
 }
-
 .action-icon {
   width: 50px;
   height: 50px;
@@ -314,55 +276,45 @@
   flex-shrink: 0;
   transition: all 0.3s ease;
 }
-
 .action-icon i {
   font-size: 24px;
   color: #ffd700;
   transition: transform 0.3s ease;
 }
-
 .action-content {
   flex-grow: 1;
 }
-
 .action-content h6 {
   font-size: 1rem;
   font-weight: 600;
   color: #ffd700;
   margin-bottom: 4px;
 }
-
 .action-content p {
   font-size: 0.8rem;
   color: rgba(255, 215, 0, 0.7);
 }
-
 .action-arrow {
   flex-shrink: 0;
   opacity: 0;
   transform: translateX(-10px);
   transition: all 0.3s ease;
 }
-
 .action-arrow i {
   font-size: 20px;
   color: #ffd700;
 }
-
 .action-card:hover .action-arrow {
   opacity: 1;
   transform: translateX(0);
 }
-
 .action-card:hover .action-icon {
   transform: scale(1.1);
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.25) 0%, rgba(255, 215, 0, 0.1) 100%);
 }
-
 .action-card:hover .action-icon i {
   transform: rotate(5deg);
 }
-
 /* ===========================
    Animations
    =========================== */
@@ -376,7 +328,6 @@
     transform: translateY(0);
   }
 }
-
 @keyframes slideInDown {
   from {
     opacity: 0;
@@ -387,7 +338,6 @@
     transform: translateY(0);
   }
 }
-
 /* ===========================
    Responsive Design
    =========================== */
@@ -395,120 +345,95 @@
   .stat-card {
     min-height: 110px;
   }
-
   .stat-number {
     font-size: 2rem;
   }
-
   .notification-card {
     margin-top: 15px;
   }
 }
-
 @media (max-width: 767px) {
   .section-title {
     font-size: 1.6rem;
   }
-
   .dashboard-header .d-flex {
     flex-direction: column;
     align-items: flex-start !important;
   }
-
   .logout-btn {
     width: 100%;
     text-align: center;
   }
-
   .stat-card {
     min-height: 100px;
   }
-
   .stat-icon {
     width: 50px;
     height: 50px;
   }
-
   .stat-icon i {
     font-size: 24px;
   }
-
   .stat-number {
     font-size: 1.8rem;
   }
-
   .notification-text p {
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
   }
-
   .action-card {
     min-height: 90px;
     padding: 15px;
   }
-
   .action-icon {
     width: 45px;
     height: 45px;
   }
-
   .action-icon i {
     font-size: 20px;
   }
-
   .action-content h6 {
     font-size: 0.95rem;
   }
-
   .action-content p {
     font-size: 0.75rem;
   }
 }
-
 @media (max-width: 575px) {
   .dashboard-container {
     padding-left: 15px;
     padding-right: 15px;
   }
-
   .glass-card {
     padding: 15px;
   }
-
   .section-title {
     font-size: 1.4rem;
   }
-
   .stat-card {
     flex-direction: column;
     text-align: center;
     padding: 20px 15px;
   }
-
   .stat-accent {
     display: none;
   }
-
   .notification-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-
   .notification-action {
     width: 100%;
   }
-
   .btn-gold-minimal {
     width: 100%;
   }
-
   .action-arrow {
     display: none;
   }
 }
-
 /* ===========================
    Accessibility
    =========================== */
@@ -519,7 +444,6 @@
   .notification-item {
     transition: none;
   }
-
   .dashboard-container,
   .quick-actions-section,
   .dashboard-header {

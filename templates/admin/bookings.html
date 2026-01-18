@@ -1,43 +1,111 @@
 {% extends "base.html" %}
-{% block title %}Admin Bookings{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-bookings-panel.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
 {% block content %}
-<div class="container py-5 mt-5">
-  <h2 class="section-title mb-4">Bookings</h2>
-  <table class="table table-dark table-striped align-middle">
-    <thead>
-      <tr>
-        <th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Service</th>
-        <th>Date</th><th>Time</th><th>Status</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for b in bookings %}
-      <tr>
-        <td>{{ b.id }}</td>
-        <td>{{ b.full_name }}</td>
-        <td>{{ b.phone }}</td>
-        <td>{{ b.email }}</td>
-        <td>{{ b.service.name if b.service else '-' }}</td>
-        <td>{{ b.date }}</td>
-        <td>{{ b.time }}</td>
-        <td>{{ b.status }}</td>
-        <td class="d-flex gap-2">
-          <a href="{{ url_for('admin.update_booking_status', booking_id=b.id, status='Contacted') }}"
-            class="btn btn-sm btn-gold">Contacted</a>
+<section class="admin-bookings">
 
-          <a href="{{ url_for('admin.update_booking_status', booking_id=b.id, status='Completed') }}"
-            class="btn btn-sm btn-outline-gold">Completed</a>
+  <header class="admin-header">
+    <div class="header-left">
+      <h1>
+        <i class="fas fa-calendar-check"></i>
+        <span class="header-text">Booking Management</span>
+      </h1>
+      <p class="subtitle">Manage, update, and track all customer bookings</p>
+    </div>
+    <div class="header-right">
+      <span class="total-count">
+        <span class="count-number">{{ bookings|length }}</span>
+        <span class="count-label">Bookings</span>
+      </span>
+    </div>
+  </header>
 
-          <!-- DELETE FORM (Correct way) -->
-          <form action="{{ url_for('admin.delete_booking', booking_id=b.id) }}" method="POST" style="display:inline;">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button type="submit" class="btn btn-sm btn-danger"
-                      onclick="return confirm('Delete this booking?');">Delete</button>
-          </form>
-        </td>
-      </tr>  
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+  <div class="bookings-card">
+    {% if bookings %}
+    <div class="table-wrapper">
+      <table class="bookings-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Schedule</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td data-label="ID"><span class="mobile-label">ID:</span> #{{ b.id }}</td>
+
+            <td data-label="Customer">
+              <div class="customer-info">
+                <strong>{{ b.full_name }}</strong>
+                <span class="customer-phone">{{ b.phone }}</span>
+                <span class="customer-email">{{ b.email }}</span>
+              </div>
+            </td>
+
+            <td data-label="Service">
+              <span class="service-name">{{ b.service.name if b.service else 'N/A' }}</span>
+            </td>
+
+            <td data-label="Schedule">
+              <div class="schedule-info">
+                <span class="schedule-date">{{ b.date }}</span>
+                <small class="schedule-time">{{ b.time }}</small>
+              </div>
+            </td>
+
+            <td data-label="Status">
+              <span class="status-badge status-{{ b.status.lower() }}">
+                {{ b.status }}
+              </span>
+            </td>
+
+            <td data-label="Action">
+              <div class="action-group">
+                <form method="POST" action="{{ url_for('admin.update_booking_status', booking_id=b.id) }}" class="status-form">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <select name="status" onchange="this.form.submit()" class="status-select">
+                    <option disabled selected>Update</option>
+                    {% for s in ['Pending','Contacted','Confirmed','Completed','Cancelled'] %}
+                    <option value="{{ s }}" {% if b.status == s %}disabled{% endif %}>
+                      {{ s }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </form>
+
+                <form method="POST"
+                      action="{{ url_for('admin.delete_booking', booking_id=b.id) }}"
+                      onsubmit="return confirm('Delete this booking?');"
+                      class="delete-form">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="delete-btn" type="submit" aria-label="Delete booking">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No bookings available</p>
+      </div>
+    {% endif %}
+  </div>
+
+</section>
 {% endblock %}

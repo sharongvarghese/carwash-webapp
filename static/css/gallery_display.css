@@ -1,246 +1,308 @@
-/* =================================================
-   PREMIUM BEFORE / AFTER GALLERY
-================================================= */
+/* ====================================================
+   PREMIUM GALLERY – CLEAN & RESPONSIVE (PROD)
+   Mobile First • Black / Gold • Glass UI
+==================================================== */
 
 /* ===============================
-   SECTION
+   SECTION BASE
 =============================== */
-
 .premium-gallery {
-  padding: 2.5rem 1rem 1.5rem;
+  position: relative;
+  padding: 3.5rem 0;
+  background: radial-gradient(
+      circle at top,
+      rgba(255,215,0,0.08),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #000 0%, #111 50%, #000 100%);
+  overflow: hidden;
 }
 
 /* ===============================
-   WRAPPER
+   HEADER
 =============================== */
+.gallery-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
 
-.gallery-wrapper {
-  position: relative;
-  max-width: 75rem;
+.gallery-header .section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffd700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.section-subtitle {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.7);
+}
+
+/* ===============================
+   CONTAINER
+=============================== */
+.gallery-container {
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 14px;
 }
 
 /* ===============================
-   TRACK
+   SLIDER CORE
 =============================== */
-
-.gallery-track {
+.gallery-slider-wrapper {
   position: relative;
-  pointer-events: none;
+}
+
+.gallery-slides-track {
+  position: relative;
 }
 
 /* ===============================
    SLIDES
 =============================== */
-
 .gallery-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.6s ease;
+  display: none;
 }
 
 .gallery-slide.active {
-  position: relative;
-  opacity: 1;
-  visibility: visible;
+  display: block;
 }
 
 /* ===============================
-   GLASS CONTAINER
+   GLASS CARD
 =============================== */
-
-.gallery-glass {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-
-  padding: 1.25rem;
-  border-radius: 2.25rem;
-
-  background: rgba(15, 15, 15, 0.65);
-  backdrop-filter: blur(1.25rem);
-
-  border: 1px solid rgba(255, 215, 0, 0.28);
+.gallery-card-glass {
+  background: rgba(15,15,15,0.75);
+  backdrop-filter: blur(18px);
+  border-radius: 1.2rem;
+  border: 1px solid rgba(255,215,0,0.25);
+  padding: 1rem;
   box-shadow:
-    0 2rem 4rem rgba(0, 0, 0, 0.85),
-    0 0 4rem rgba(255, 215, 0, 0.25);
+    0 10px 35px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(255,215,0,0.1);
 }
 
 /* ===============================
-   IMAGE BOX (DESKTOP)
+   IMAGES LAYOUT (MOBILE FIRST)
 =============================== */
+.gallery-images-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
 
-.gallery-image-box {
+/* ===============================
+   IMAGE FRAME
+=============================== */
+.gallery-image-container {
   position: relative;
+}
+
+.image-frame {
   width: 100%;
-  aspect-ratio: 16 / 9;
-
-  background: #000;
-  border-radius: 1.75rem;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.85rem;
   overflow: hidden;
+  border: 2px solid rgba(255,215,0,0.2);
+}
 
+.image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===============================
+   BADGES
+=============================== */
+.image-badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-radius: 2rem;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
+}
+
+.before-badge {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.after-badge {
+  background: rgba(255,215,0,0.2);
+  color: #ffd700;
+  border-color: rgba(255,215,0,0.4);
+}
+
+/* ===============================
+   SEPARATOR (MOBILE)
+=============================== */
+.gallery-separator {
+  display: flex;
+  justify-content: center;
+}
+
+.separator-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: rgba(255,215,0,0.15);
+  border: 2px solid rgba(255,215,0,0.35);
+  color: #ffd700;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.15);
+  font-size: 1.3rem;
 }
-
-.gallery-image-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0.75rem;
-
-  border-radius: 1.25rem;
-  background: #000;
-}
-
-/* ===============================
-   TAGS
-=============================== */
-
-.gallery-tag {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-
-  padding: 0.4rem 1.1rem;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-
-  border-radius: 100vmax;
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  backdrop-filter: blur(0.5rem);
-}
-
-.gallery-tag.before { color: #ffd700; }
-.gallery-tag.after  { color: #ffffff; }
 
 /* ===============================
    CAPTION
 =============================== */
-
 .gallery-caption {
-  text-align: center;
   margin-top: 0.75rem;
-  font-size: 0.9rem;
-  color: #ffe27a;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  background: rgba(255,215,0,0.08);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.gallery-caption p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.9);
 }
 
 /* ===============================
-   NAV BUTTONS
+   ARROWS
 =============================== */
-
-.gallery-nav {
+.gallery-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-
-  z-index: 20;
-  pointer-events: auto;
-
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.6rem;
+  height: 2.6rem;
   border-radius: 50%;
-
-  font-size: 1.8rem;
-  line-height: 1;
-
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 215, 0, 0.35);
+  background: rgba(0,0,0,0.7);
+  border: 2px solid rgba(255,215,0,0.4);
   color: #ffd700;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: 0.25s ease;
 }
 
-.gallery-nav:hover {
+.gallery-arrow.left { left: 0.4rem; }
+.gallery-arrow.right { right: 0.4rem; }
+
+.gallery-arrow svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* ===============================
+   DOTS
+=============================== */
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: rgba(255,215,0,0.25);
+  border: 2px solid rgba(255,215,0,0.4);
+}
+
+.dot.active {
+  width: 1.4rem;
+  border-radius: 1rem;
   background: #ffd700;
-  color: #000;
-}
-
-.gallery-nav.prev { left: -3rem; }
-.gallery-nav.next { right: -3rem; }
-
-/* ===============================
-   TABLETS
-=============================== */
-
-@media (max-width: 62rem) {
-  .gallery-nav.prev { left: 0.75rem; }
-  .gallery-nav.next { right: 0.75rem; }
 }
 
 /* ===============================
-   MOBILE – HORIZONTAL SLIDER MODE
+   COUNTER
 =============================== */
-@media (max-width: 48rem) {
+.gallery-counter {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+}
 
+.counter-current {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+/* ====================================================
+   TABLET (≥768px)
+==================================================== */
+@media (min-width: 768px) {
+  .gallery-header .section-title {
+    font-size: 2rem;
+  }
+
+  .gallery-card-glass {
+    padding: 1.4rem;
+  }
+
+  .gallery-images-wrapper {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .separator-icon {
+    transform: rotate(0deg);
+  }
+}
+
+/* ====================================================
+   DESKTOP (≥992px)
+==================================================== */
+@media (min-width: 992px) {
   .premium-gallery {
-    padding: 1rem 0.5rem;
+    padding: 5rem 0;
   }
 
-  /* Glass container becomes single image */
-  .gallery-glass {
-    display: block;
-    padding: 0.5rem;
-    border-radius: 1.25rem;
+  .gallery-header .section-title {
+    font-size: 2.4rem;
   }
 
-  /* Show BOTH images but one at a time */
-  .gallery-image-box {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    min-height: 55vw; /* responsive horizontal */
-    border-radius: 1rem;
+  .gallery-arrow {
+    width: 3.2rem;
+    height: 3.2rem;
   }
 
-  /* Hide AFTER by default */
-  .gallery-image-box:nth-child(2) {
-    display: none;
-  }
-
-  /* Make image FULL WIDTH */
-  .gallery-image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    padding: 0;
-    border-radius: 1rem;
-  }
-
-  /* Center arrows ON image */
-  .gallery-nav {
-    top: 50%;
-    transform: translateY(-50%);
-    width: 2.75rem;
-    height: 2.75rem;
-    font-size: 1.4rem;
-  }
-
-  .gallery-nav.prev { left: 0.5rem; }
-  .gallery-nav.next { right: 0.5rem; }
+  .gallery-arrow.left { left: -3rem; }
+  .gallery-arrow.right { right: -3rem; }
 }
 
-
-
 /* ===============================
-   SMALL MOBILE
+   ACCESSIBILITY
 =============================== */
-
-@media (max-width: 30rem) {
-
-  .gallery-image-box {
-    min-height: 70vh;
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
+}
 
-  .gallery-tag {
-    font-size: 0.6rem;
-    padding: 0.3rem 0.8rem;
-  }
+.gallery-arrow:focus-visible,
+.dot:focus-visible {
+  outline: 3px solid #ffd700;
+  outline-offset: 3px;
 }

@@ -1,5 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Admin Services{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_services.css') }}">
+{% endblock %}
+
 {% block content %}
 
 <div class="container py-4 mt-4 services-container">

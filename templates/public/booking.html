@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Book a Slot - Golden Touch Car Wash{% endblock %}
 
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+{% endblock %}
 {% block content %}
+
 
 <section class="booking-full-wrap">
 

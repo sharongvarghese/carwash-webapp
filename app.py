@@ -24,27 +24,13 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
 
-    # Create default admin user if not exists
-    with app.app_context():
-        admin_username = os.getenv("ADMIN_USERNAME")
-        admin_password = os.getenv("ADMIN_PASSWORD")
-
-        if admin_username and admin_password:
-            if not AdminUser.query.filter_by(username=admin_username).first():
-                admin = AdminUser(username=admin_username)
-                admin.set_password(admin_password)
-                db.session.add(admin)
-                db.session.commit()
-                print(f"Default admin created: {admin_username}")
-        else:
-            print("⚠️ ADMIN_USERNAME or ADMIN_PASSWORD not set in .env")
-
     return app
+
 
 if __name__ == "__main__":
     app = create_app()

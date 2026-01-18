@@ -1,5 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Golden Touch Car Wash{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery_display.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+{% endblock %}
 
 {% block content %}
 
@@ -200,51 +206,117 @@
   </div>
 </section>
 
+<!-- ===============================
+        PREMIUM GALLERY SECTION
+=============================== -->
 
 {% if gallery_items and gallery_items|length > 0 %}
 
 <section id="gallery" class="premium-gallery">
+  
+ 
+  <div class="gallery-container">
+     <!-- Section Header -->
+  <div class="gallery-header">
+    <h2 class="section-title">Our Transformation Gallery</h2>
+    <p class="section-subtitle">See the difference we make</p>
+  </div>
 
-  <h2 class="section-title text-center mb-4">Our Works</h2>
 
-  <div class="gallery-wrapper">
+    <!-- Main Slider Wrapper -->
+    <div class="gallery-slider-wrapper">
 
-    <!-- SLIDES -->
-    <div class="gallery-track">
+      <!-- Slides Track -->
+      <div class="gallery-slides-track">
 
-      {% for item in gallery_items %}
-      <div class="gallery-slide {% if loop.first %}active{% endif %}">
+        {% for item in gallery_items %}
+        <div class="gallery-slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
 
-        <div class="gallery-glass">
+          <!-- Glass Card Container -->
+          <div class="gallery-card-glass">
 
-          <!-- BEFORE -->
-          <div class="gallery-image-box">
-            <span class="gallery-tag before">BEFORE</span>
-            <img src="{{ url_for('static', filename=item.before_image) }}"
-                 alt="Before work">
-          </div>
+            <!-- Before/After Image Container -->
+            <div class="gallery-images-wrapper">
 
-          <!-- AFTER -->
-          <div class="gallery-image-box">
-            <span class="gallery-tag after">AFTER</span>
-            <img src="{{ url_for('static', filename=item.after_image) }}"
-                 alt="After work">
+              <!-- BEFORE Image -->
+              <div class="gallery-image-container before-container">
+                <div class="image-badge before-badge">
+                  <span>BEFORE</span>
+                </div>
+                <div class="image-frame">
+                  <img src="{{ url_for('static', filename=item.before_image) }}" 
+                       alt="Before transformation"
+                       loading="lazy">
+                </div>
+              </div>
+
+              <!-- Arrow Separator -->
+              <div class="gallery-separator">
+                <div class="separator-icon">→</div>
+              </div>
+
+              <!-- AFTER Image -->
+              <div class="gallery-image-container after-container">
+                <div class="image-badge after-badge">
+                  <span>AFTER</span>
+                </div>
+                <div class="image-frame">
+                  <img src="{{ url_for('static', filename=item.after_image) }}" 
+                       alt="After transformation"
+                       loading="lazy">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Caption -->
+            {% if item.caption %}
+            <div class="gallery-caption">
+              <p>{{ item.caption }}</p>
+            </div>
+            {% endif %}
+
           </div>
 
         </div>
-
-        {% if item.caption %}
-        <p class="gallery-caption">{{ item.caption }}</p>
-        {% endif %}
+        {% endfor %}
 
       </div>
-      {% endfor %}
+
+      <!-- Navigation Arrows -->
+      {% if gallery_items|length > 1 %}
+      <button class="gallery-arrow left" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <button class="gallery-arrow right" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+      {% endif %}
 
     </div>
 
+    <!-- Dots Navigation -->
     {% if gallery_items|length > 1 %}
-    <button class="gallery-nav prev">‹</button>
-    <button class="gallery-nav next">›</button>
+    <div class="gallery-dots">
+      {% for item in gallery_items %}
+      <button class="dot {% if loop.first %}active{% endif %}" 
+              aria-label="Go to slide {{ loop.index }}"
+              data-index="{{ loop.index0 }}"></button>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Counter Display -->
+    {% if gallery_items|length > 1 %}
+    <div class="gallery-counter">
+      <span class="counter-current">1</span>
+      <span class="counter-separator">/</span>
+      <span class="counter-total">{{ gallery_items|length }}</span>
+    </div>
     {% endif %}
 
   </div>
@@ -252,7 +324,6 @@
 </section>
 
 {% endif %}
-
 
 <!-- ===============================
         CONTACT SECTION

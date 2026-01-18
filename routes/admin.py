@@ -1,5 +1,5 @@
 # routes/admin.py
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
 from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage
@@ -311,35 +311,43 @@ def delete_package(package_id):
 
 
 # =========================
-# BOOKINGS (UPDATED - Auto-mark booking notifications as read)
+# BOOKINGS MANAGEMENT
 # =========================
 @admin_bp.route("/bookings")
 @login_required
 def bookings():
     bookings = Booking.query.order_by(Booking.created_at.desc()).all()
-    
-    # ✅ AUTO-MARK ALL BOOKING NOTIFICATIONS AS READ
+
     unread_booking_notifications = Notification.query.filter_by(
-        type="booking", 
+        type="booking",
         is_read=False
     ).all()
-    
+
     for notification in unread_booking_notifications:
         notification.is_read = True
-    
+
     if unread_booking_notifications:
         db.session.commit()
-    
+
     return render_template("admin/bookings.html", bookings=bookings)
 
 
-@admin_bp.route("/bookings/status/<int:booking_id>/<status>")
+@admin_bp.route("/bookings/status/<int:booking_id>", methods=["POST"])
 @login_required
-def update_booking_status(booking_id, status):
+def update_booking_status(booking_id):
     booking = Booking.query.get_or_404(booking_id)
+
+    status = request.form.get("status")
+
+    valid_statuses = ['Pending', 'Contacted', 'Confirmed', 'Completed', 'Cancelled']
+    if status not in valid_statuses:
+        flash("Invalid status selected.", "error")
+        return redirect(url_for("admin.bookings"))
+
     booking.status = status
     db.session.commit()
-    flash("Booking status updated.", "success")
+
+    flash("Booking status updated successfully!", "success")
     return redirect(url_for("admin.bookings"))
 
 
@@ -351,6 +359,7 @@ def delete_booking(booking_id):
     db.session.commit()
     flash("Booking deleted successfully!", "success")
     return redirect(url_for("admin.bookings"))
+
 
 
 # =========================
