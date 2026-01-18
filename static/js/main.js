@@ -9,6 +9,47 @@ document.addEventListener("click", function (e) {
   }
 });
 
+/* ====================================================
+      AUTO-DISMISS FLASH MESSAGES
+==================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const flashMessages = document.querySelectorAll(".alert");
+  
+  flashMessages.forEach((alert) => {
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+      alert.style.transition = "opacity 0.5s ease-out";
+      alert.style.opacity = "0";
+      
+      // Remove from DOM after fade out
+      setTimeout(() => {
+        alert.remove();
+      }, 500);
+    }, 4000);
+    
+    // Allow manual close if there's a close button
+    const closeBtn = alert.querySelector(".btn-close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        alert.style.transition = "opacity 0.5s ease-out";
+        alert.style.opacity = "0";
+        setTimeout(() => alert.remove(), 500);
+      });
+    }
+  });
+});
+
+
+/* ====================================================
+      CONFIRM DELETE (ADMIN)
+==================================================== */
+document.addEventListener("click", function (e) {
+  if (e.target.matches(".btn-delete")) {
+    if (!confirm("Are you sure you want to delete this item?")) {
+      e.preventDefault();
+    }
+  }
+});
 
 /* ====================================================
       SMOOTH SCROLL LINKS

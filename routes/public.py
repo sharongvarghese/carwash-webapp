@@ -56,10 +56,6 @@ def service_detail(service_id):
         other_services = other_services
     )
 
-
-    
-
-
 # ----------------------------
 # ALL PACKAGES PAGE
 # ----------------------------
@@ -99,7 +95,7 @@ def contact_submit():
     contact_form = ContactForm(prefix="contact")
 
     if contact_form.validate_on_submit():
-        # 1️⃣ SAVE MESSAGE TO DB
+  
         msg = ContactMessage(
             name=contact_form.name.data,
             email=contact_form.email.data,
@@ -107,15 +103,11 @@ def contact_submit():
             message=contact_form.message.data,
         )
         db.session.add(msg)
-
-        # 2️⃣ CREATE ADMIN NOTIFICATION
         note = Notification(
             type="contact",
             message=f"New contact message from {contact_form.name.data}",
         )
         db.session.add(note)
-
-        # 3️⃣ SEND EMAIL TO ADMIN 🔥
         admin_email = Message(
             subject=f"New Contact – {contact_form.name.data}",
             sender=current_app.config["MAIL_USERNAME"],
@@ -132,7 +124,6 @@ Message:
         )
         mail.send(admin_email)
 
-        # 4️⃣ AUTO-REPLY TO USER (OPTIONAL BUT PROFESSIONAL)
         reply_email = Message(
             subject="Thanks for contacting us!",
             sender=current_app.config["MAIL_USERNAME"],
@@ -148,15 +139,17 @@ We have received your message and will get back to you shortly.
         )
         mail.send(reply_email)
 
-        # 5️⃣ COMMIT EVERYTHING
         db.session.commit()
 
         flash("Thank you! We’ll contact you soon.", "success")
     else:
         flash("Please correct contact form errors.", "danger")
 
-    return redirect(url_for("public.home") + "#contact")
+    return redirect(url_for("public.home"))
 
+# ----------------------------
+# BOOKING PAGE
+# ----------------------------
 
 
 @public_bp.route("/booking", methods=["GET", "POST"])

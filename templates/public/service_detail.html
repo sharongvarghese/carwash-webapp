@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block content %}
 
 <section class="section-dark container py-5 mt-5 service-detail-glass">
@@ -74,29 +73,52 @@
 
 <section class="section-dark container py-5">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="section-title mb-0">Other Services</h3>
+  <div class="other-services-header">
+    <h3 class="section-title other-services-title">Other Services</h3>
+    <p class="other-services-subtitle">Explore our complete range of premium car care services</p>
   </div>
 
-  <div class="services-row ">
+  <div class="other-services-grid">
 
     {% for item in other_services %}
-    <a href="{{ url_for('public.service_detail', service_id=item.id) }}"
-       class="service-link">
+    <div class="service-card-wrapper">
+      <a href="{{ url_for('public.service_detail', service_id=item.id) }}"
+         class="service-link">
 
-      <div class="service-card service-card-page">
+        <div class="service-card service-card-modern service-card-other">
 
-        <img src="{{ url_for('static', filename=item.image_url) }}"
-             class="service-img"
-             alt="{{ item.name }}">
+          <!-- Image Container -->
+          <div class="service-image-container">
+            <img src="{{ url_for('static', filename=item.image_url) }}"
+                 class="service-img"
+                 alt="{{ item.name }}">
+            <div class="service-overlay">
+              <span class="service-view-btn">View Details</span>
+            </div>
+          </div>
 
-        <div class="service-title-box">
-          <p class="service-title">{{ item.name }}</p>
+          <!-- Content -->
+          <div class="service-content">
+            <h3 class="service-title-modern">{{ item.name }}</h3>
+            <div class="service-features">
+              <span class="service-feature-item">
+                <i class="bi bi-check-circle-fill"></i>
+                Professional
+              </span>
+              <span class="service-feature-item">
+                <i class="bi bi-check-circle-fill"></i>
+                Fast Service
+              </span>
+            </div>
+          </div>
+
+          <!-- Shine Effect -->
+          <div class="service-shine"></div>
+
         </div>
 
-      </div>
-
-    </a>
+      </a>
+    </div>
     {% endfor %}
 
   </div>

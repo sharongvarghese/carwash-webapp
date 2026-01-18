@@ -1,6 +1,6 @@
 /* ===============================
-   PACKAGE STYLES - PUBLIC PAGES
-   Combines: package detail, package preview (home), and packages list page
+   PACKAGE STYLES - MODERN VERSION
+   Updated to match services section design
 =============================== */
 
 /* ===============================
@@ -19,19 +19,6 @@
 }
 
 /* ===============================
-   PAGE TITLE (Packages List)
-=============================== */
-
-.premium-packages-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffd700;
-  letter-spacing: 1px;
-  display: inline-block;
-  width: fit-content;
-}
-
-/* ===============================
    PACKAGE DETAIL - HERO GRID
 =============================== */
 
@@ -47,19 +34,29 @@
 =============================== */
 
 .product-image-box {
-  border-radius: 28px;
+  position: relative;
+  border-radius: 30px;
   overflow: hidden;
   background: rgba(15, 15, 15, 0.6);
   border: 1px solid rgba(255, 215, 0, 0.2);
-  box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.85),
-    0 0 60px rgba(255, 215, 0, 0.18);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
 }
 
 .product-image-box img {
   width: 100%;
   height: 420px;
   object-fit: cover;
+}
+
+/* Glass Glow Effect */
+.product-image-box .image-glass-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  box-shadow:
+    0 0 55px rgba(255, 215, 0, 0.25),
+    inset 0 0 35px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
 }
 
 /* ===============================
@@ -71,18 +68,34 @@
   flex-direction: column;
 }
 
+.product-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 6px 18px;
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
 .product-title {
   font-size: 2.4rem;
   font-weight: 800;
   color: #ffd700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .product-price {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.8rem;
 }
 
 .price-new {
@@ -97,37 +110,54 @@
   text-decoration: line-through;
 }
 
-.product-desc {
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: #d6d6d6;
-  margin-bottom: 2rem;
-}
-
 /* CTA Button */
 .product-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   width: fit-content;
-  padding: 0.85rem 2.8rem;
-  border-radius: 999px;
-  background: #ffd700;
+  padding: 0.9rem 2.8rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ffd700 0%, #e4b300 100%);
   color: #000;
   font-weight: 700;
+  font-size: 1.05rem;
   text-decoration: none;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
 .product-cta:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 35px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+  color: #000;
+}
+
+.product-cta i {
+  font-size: 1.1rem;
 }
 
 /* Meta Info */
 .product-meta {
   display: flex;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: #aaa;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.product-meta span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #d0d0d0;
+}
+
+.product-meta i {
+  color: #ffd700;
+  font-size: 1.1rem;
 }
 
 /* ===============================
@@ -137,19 +167,29 @@
 .details-card {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2.6rem;
-  border-radius: 26px;
-  background: rgba(18, 18, 18, 0.55);
-  border: 1px solid rgba(255, 215, 0, 0.22);
+  padding: 2.8rem;
+  border-radius: 30px;
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.75),
-    0 0 45px rgba(255, 215, 0, 0.18);
+    0 20px 45px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(255, 215, 0, 0.05);
 }
 
 .details-title {
-  font-size: 1.9rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 2rem;
   color: #ffd700;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.details-title i {
+  font-size: 1.8rem;
 }
 
 .details-list {
@@ -159,87 +199,65 @@
 }
 
 .details-list li {
-  padding: 0.9rem 0;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
   color: #d6d6d6;
   font-size: 1.05rem;
+  line-height: 1.6;
 }
 
 .details-list li:last-child {
   border-bottom: none;
 }
 
+.details-list li i {
+  color: #ffd700;
+  font-size: 1.1rem;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
 /* ===============================
    PACKAGE DETAIL - RELATED PACKAGES
 =============================== */
 
+.related-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.related-title {
+  margin: 0 0 10px 0;
+  font-size: 2.2rem;
+}
+
+.related-subtitle {
+  color: #b0b0b0;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 300;
+}
+
 .related-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2.2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.8rem;
+  justify-items: center;
 }
 
-.related-card {
-  border-radius: 22px;
-  overflow: hidden;
-  background: rgba(18, 18, 18, 0.55);
-  border: 1px solid rgba(255, 215, 0, 0.18);
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.65),
-    0 0 40px rgba(255, 215, 0, 0.15);
-  transition: 0.35s ease;
-}
-
-.related-card:hover {
-  transform: translateY(-8px);
-}
-
-.related-card img {
+.related-package-card {
   width: 100%;
-  height: 190px;
-  object-fit: cover;
 }
 
-.related-body {
-  padding: 1.4rem;
-  text-align: center;
+.related-package-card:hover {
+  transform: translateY(-10px);
 }
 
-.related-body h4 {
-  color: #ffd700;
-  margin-bottom: 0.4rem;
-}
-
-.related-price {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-}
-
-.related-body a {
-  text-decoration: none;
-  color: #ffd700;
-  font-weight: 600;
-}
-
-.pdv2-view-btn {
-  display: inline-block;
-  padding: 0.55rem 1.8rem;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid #ffd700;
-  color: #ffd700;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.25s ease;
-}
-
-.pdv2-view-btn:hover {
-  background: #ffd700;
-  color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 0 22px rgba(255, 215, 0, 0.45);
+.related-package-card:hover .service-img {
+  transform: scale(1.1);
 }
 
 /* ===============================
@@ -349,6 +367,15 @@
 /* ===============================
    PACKAGES LIST PAGE - PREMIUM CARDS
 =============================== */
+
+.premium-packages-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 1px;
+  display: inline-block;
+  width: fit-content;
+}
 
 .premium-package-card {
   display: flex;
@@ -481,6 +508,13 @@
    RESPONSIVE - PACKAGE DETAIL
 =============================== */
 
+@media (max-width: 991px) {
+  .related-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 900px) {
   .product-grid {
     grid-template-columns: 1fr;
@@ -493,9 +527,24 @@
   .product-title {
     font-size: 2rem;
   }
+
+  .details-card {
+    padding: 2.2rem;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.3rem;
+  }
+
+  .related-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 576px) {
   .product-title {
     font-size: 1.7rem;
   }
@@ -506,7 +555,29 @@
 
   .product-meta {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 10px;
+  }
+
+  .product-cta {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+
+  .details-card {
+    padding: 1.8rem;
+  }
+
+  .details-title {
+    font-size: 1.6rem;
+  }
+
+  .details-list li {
+    font-size: 0.95rem;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 

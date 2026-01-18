@@ -1,7 +1,4 @@
 {% extends "base.html" %}
-
-
-
 {% block content %}
 
 <!-- ===============================
@@ -13,12 +10,15 @@
 
     <!-- IMAGE SIDE -->
     <div class="product-image-box">
+      <div class="image-glass-glow"></div>
       <img src="{{ url_for('static', filename=package.image_url) }}"
            alt="{{ package.title }}">
     </div>
 
     <!-- INFO SIDE -->
     <div class="product-info-box">
+
+      <span class="product-badge">Premium Package</span>
 
       <h1 class="product-title">{{ package.title }}</h1>
 
@@ -31,16 +31,18 @@
           <span class="price-new">₹{{ package.price }}</span>
         {% endif %}
       </div>
+
       <!-- CTA -->
-      <a href="#" class="product-cta">
+      <a href="{{ url_for('public.booking_page') }}" class="product-cta">
+        <i class="bi bi-calendar-check"></i>
         Book This Package
       </a>
 
       <!-- TRUST BADGES -->
       <div class="product-meta">
-        <span>✔ Professional Service</span>
-        <span>✔ Safe Products</span>
-        <span>✔ Trusted by Customers</span>
+        <span><i class="bi bi-check-circle-fill"></i> Professional Service</span>
+        <span><i class="bi bi-shield-check"></i> Safe Products</span>
+        <span><i class="bi bi-star-fill"></i> Trusted by Customers</span>
       </div>
 
     </div>
@@ -55,11 +57,17 @@
 
   <div class="details-card">
 
-    <h2 class="details-title">Package Details</h2>
+    <h2 class="details-title">
+      <i class="bi bi-list-check"></i>
+      Package Details
+    </h2>
 
     <ul class="details-list">
       {% for line in package.details.split('\n') %}
-        <li>{{ line }}</li>
+        <li>
+          <i class="bi bi-check-circle-fill"></i>
+          {{ line }}
+        </li>
       {% endfor %}
     </ul>
 
@@ -74,29 +82,61 @@
 =============================== -->
 <section class="product-related container">
 
-  <h2>You may also like</h2>
+  <div class="related-header">
+    <h2 class="section-title related-title">You may also like</h2>
+    <p class="related-subtitle">Explore our other premium packages</p>
+  </div>
 
   <div class="related-grid">
 
     {% for pkg in related_packages %}
-    <div class="related-card">
+    <div class="service-card-wrapper">
+      <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
+         class="service-link">
 
-      <img src="{{ url_for('static', filename=pkg.image_url) }}"
-           alt="{{ pkg.title }}">
+        <div class="service-card service-card-modern related-package-card">
 
-      <div class="related-body">
-        <h4>{{ pkg.title }}</h4>
+          <!-- Image Container -->
+          <div class="service-image-container">
+            <img src="{{ url_for('static', filename=pkg.image_url) }}"
+                 class="service-img"
+                 alt="{{ pkg.title }}">
+            <div class="service-overlay">
+              <span class="service-view-btn">View Package</span>
+            </div>
+          </div>
 
-        <span class="related-price">
-          ₹{{ pkg.discount_price or pkg.price }}
-        </span>
+          <!-- Content -->
+          <div class="service-content">
+            <h3 class="service-title-modern">{{ pkg.title }}</h3>
+            
+            <div class="package-price-box">
+              {% if pkg.discount_price %}
+                <span class="package-price-new">₹{{ pkg.discount_price }}</span>
+                <span class="package-price-old">₹{{ pkg.price }}</span>
+              {% else %}
+                <span class="package-price-new">₹{{ pkg.price }}</span>
+              {% endif %}
+            </div>
 
-        <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
-           class="pdv2-view-btn">
-          View Package
-        </a>
-      </div>
+            <div class="service-features">
+              <span class="service-feature-item">
+                <i class="bi bi-check-circle-fill"></i>
+                Premium Quality
+              </span>
+              <span class="service-feature-item">
+                <i class="bi bi-check-circle-fill"></i>
+                Best Value
+              </span>
+            </div>
+          </div>
 
+          <!-- Shine Effect -->
+          <div class="service-shine"></div>
+
+        </div>
+
+      </a>
     </div>
     {% endfor %}
 
