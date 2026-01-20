@@ -1,16 +1,10 @@
-import os
 from flask import Flask
-from dotenv import load_dotenv
 from config import Config
 from extensions import db, login_manager, mail
-from models import AdminUser
 from routes.public import public_bp
 from routes.admin import admin_bp
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_wtf import CSRFProtect
-
-# Load .env
-load_dotenv()
 
 csrf = CSRFProtect()
 
@@ -24,15 +18,16 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
-    Migrate(app, db)
+    migrate = Migrate(app, db)
 
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
 
+    # 🔥 AUTO RUN MIGRATIONS (FREE TIER FIX)
+    with app.app_context():
+        upgrade()
+
     return app
-    
+
 app = create_app()
-
-if __name__ == "__main__":
-
-    app.run(debug=True)
+e

@@ -1,21 +1,15 @@
 import os
 
-
 class Config:
     # =========================
     # SECURITY
     # =========================
-    SECRET_KEY = os.getenv("SECRET_KEY")
-
-    if not SECRET_KEY:
-        raise RuntimeError("SECRET_KEY is not set in environment variables")
+    SECRET_KEY = os.getenv("SECRET_KEY", "render-secret-key")
 
     # =========================
     # DATABASE
     # =========================
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///carwash.db")
-
-    # Fix for Render / Heroku postgres URL
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace(
             "postgres://", "postgresql://", 1
@@ -39,8 +33,3 @@ class Config:
 
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
-
-    #  Check for production explicitly
-    if os.getenv("RENDER"):
-        if not MAIL_USERNAME or not MAIL_PASSWORD:
-            raise RuntimeError("Mail credentials are not set in environment variables")
