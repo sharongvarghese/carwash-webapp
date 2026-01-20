@@ -40,5 +40,7 @@ class Config:
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
-    if not MAIL_USERNAME or not MAIL_PASSWORD:
-        raise RuntimeError("Mail credentials are not set in environment variables")
+    #  Check for production explicitly
+    if os.getenv("RENDER"):
+        if not MAIL_USERNAME or not MAIL_PASSWORD:
+            raise RuntimeError("Mail credentials are not set in environment variables")
