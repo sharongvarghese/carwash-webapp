@@ -194,23 +194,24 @@ def manage_services():
 @login_required
 def delete_service(service_id):
     service = Service.query.get_or_404(service_id)
-
-    # 1️⃣ DELETE PHYSICAL IMAGE (if exists)
+    if service.bookings:
+        flash("Cannot delete service with existing bookings. Please cancel or reassign the bookings first.", "error")
+        return redirect(url_for("admin.manage_services"))
     if service.image_url:
         image_path = os.path.join("static", service.image_url)  
-        # service.image_url must be like: "uploads/services/filename.jpg"
-
         if os.path.exists(image_path):
             try:
                 os.remove(image_path)
             except Exception as e:
                 print("Error deleting service image:", e)
-
-    # 2️⃣ DELETE FROM DATABASE
-    db.session.delete(service)
-    db.session.commit()
-
-    flash("Service deleted successfully!", "info")
+    try:
+        db.session.delete(service)
+        db.session.commit()
+        flash("Service deleted successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Error deleting service. Please try again.", "error")
+        print("Database error:", e)
     return redirect(url_for("admin.manage_services"))
 
 
@@ -218,16 +219,11 @@ def delete_service(service_id):
 @login_required
 def edit_service(service_id):
     service = Service.query.get_or_404(service_id)
-    form = ServiceForm(obj=service)   # Prefill existing values
-
+    form = ServiceForm(obj=service)  
     if form.validate_on_submit():
-
-        # Update fields
         service.name = form.name.data
         service.price = form.price.data
         service.description = form.description.data
-
-        # Optional: If new image uploaded
         if form.image.data:
             upload_folder = os.path.join("static", "uploads", "services")
             os.makedirs(upload_folder, exist_ok=True)
@@ -290,22 +286,15 @@ def manage_packages():
 @login_required
 def delete_package(package_id):
     package = Package.query.get_or_404(package_id)
-
-    # 1️⃣ DELETE IMAGE FILE FROM STATIC UPLOADS
     if package.image_url:
         image_path = os.path.join("static", package.image_url)  
-        # package.image_url = "uploads/packages/filename.jpg"
-
         if os.path.exists(image_path):
             try:
                 os.remove(image_path)
             except Exception as e:
                 print("Error deleting image:", e)
-
-    # 2️⃣ DELETE PACKAGE FROM DATABASE
     db.session.delete(package)
     db.session.commit()
-
     flash("Package deleted successfully!", "info")
     return redirect(url_for("admin.manage_packages"))
 

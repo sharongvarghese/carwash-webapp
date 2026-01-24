@@ -34,6 +34,7 @@ class Service(db.Model):
     price = db.Column(db.Float, nullable=True)
     image_url = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    bookings = db.relationship("Booking", backref="service", lazy=True)
 
 
 class Package(db.Model):
@@ -56,7 +57,6 @@ class Booking(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=True)
-    service = db.relationship("Service")
     date = db.Column(db.String(20), nullable=False)   # dd/mm/yyyy
     time = db.Column(db.String(20), nullable=False)   # e.g. 10:30 AM
     status = db.Column(db.String(20), default="Pending")
