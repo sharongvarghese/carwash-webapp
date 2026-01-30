@@ -130,14 +130,21 @@
         {% if package.details %}
         <p class="package-details-mobile">{{ package.details }}</p>
         {% endif %}
-        
-        <div class="package-card-actions">
+        <div class="package-card-actions d-flex gap-2">
+          <!-- EDIT -->
+          <a href="{{ url_for('admin.edit_package', package_id=package.id) }}"
+            class="btn btn-sm admin-btn-edit-mobile w-50">
+            <i class="bi bi-pencil me-1"></i>Edit
+          </a>
+
+          <!-- DELETE -->
           <a href="{{ url_for('admin.delete_package', package_id=package.id) }}"
-             class="btn btn-sm admin-btn-delete-mobile w-100"
-             onclick="return confirm('Delete {{ package.title }}?')">
-            <i class="bi bi-trash me-1"></i>Delete Package
+            class="btn btn-sm admin-btn-delete-mobile w-50"
+            onclick="return confirm('Delete {{ package.title }}?')">
+            <i class="bi bi-trash me-1"></i>Delete
           </a>
         </div>
+
       </div>
     </div>
     {% endfor %}
@@ -208,15 +215,23 @@
           </td>
 
           <!-- ACTIONS -->
-          <td>
-            <a href="{{ url_for('admin.delete_package', package_id=package.id) }}"
-               class="btn btn-sm admin-btn-delete-table"
-               title="Delete Package"
-               onclick="return confirm('Delete {{ package.title }}?')">
-              <i class="bi bi-trash"></i> Delete
+         <td class="d-flex gap-2">
+            <!-- EDIT -->
+            <a href="{{ url_for('admin.edit_package', package_id=package.id) }}"
+              class="btn btn-sm admin-btn-edit-table"
+              title="Edit Package">
+              <i class="bi bi-pencil"></i>
             </a>
-          </td>
-        </tr>
+
+            <!-- DELETE -->
+            <a href="{{ url_for('admin.delete_package', package_id=package.id) }}"
+              class="btn btn-sm admin-btn-delete-table"
+              title="Delete Package"
+              onclick="return confirm('Delete {{ package.title }}?')">
+              <i class="bi bi-trash"></i>
+            </a>
+        </td>
+
         {% endfor %}
       </tbody>
     </table>

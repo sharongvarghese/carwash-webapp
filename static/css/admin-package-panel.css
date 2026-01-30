@@ -423,6 +423,24 @@ textarea.admin-form-control {
   margin-top: 15px;
 }
 
+.admin-btn-edit-mobile {
+  background: rgba(255, 193, 7, 0.12) !important;
+  border: 1px solid rgba(255, 193, 7, 0.45) !important;
+  color: #ffc107 !important;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-btn-edit-mobile:hover {
+  background: rgba(255, 193, 7, 0.25) !important;
+  border-color: #ffc107 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.35);
+}
+
+
 .admin-btn-delete-mobile {
   background: rgba(220, 53, 69, 0.1) !important;
   border: 1px solid rgba(220, 53, 69, 0.4) !important;
@@ -579,6 +597,23 @@ textarea.admin-form-control {
 .table-no-discount {
   color: rgba(255, 215, 0, 0.3);
   font-size: 1.2rem;
+}
+.admin-btn-edit-table {
+  background: rgba(255, 193, 7, 0.12);
+  border: 1px solid rgba(255, 193, 7, 0.45);
+  color: #ffc107 !important;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.admin-btn-edit-table:hover {
+  background: rgba(255, 193, 7, 0.25);
+  border-color: #ffc107;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.35);
 }
 
 .admin-btn-delete-table {

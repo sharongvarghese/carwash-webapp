@@ -149,6 +149,7 @@ def delete_selected_contacts():
 # =========================
 # SERVICES MANAGEMENT
 # =========================
+
 @admin_bp.route("/services", methods=["GET", "POST"])
 @login_required
 def manage_services():
@@ -159,26 +160,24 @@ def manage_services():
 
         # 1️⃣ HANDLE IMAGE UPLOAD
         image_file = form.image.data
-        filename = None
-        
+        image_url = None
+
         if image_file:
             upload_folder = os.path.join("static", "uploads", "services")
             os.makedirs(upload_folder, exist_ok=True)
 
             filename = secure_filename(image_file.filename)
             image_path = os.path.join(upload_folder, filename)
-
             image_file.save(image_path)
 
-            # Save path relative to /static
+            # Save relative path
             image_url = f"uploads/services/{filename}"
-        else:
-            image_url = None
 
-        # 2️⃣ SAVE TO DB
+        # 2️⃣ SAVE TO DB (WITH DISCOUNT PRICE)
         new_service = Service(
             name=form.name.data,
             price=form.price.data,
+            discount_price=form.discount_price.data,
             description=form.description.data,
             image_url=image_url
         )
@@ -189,23 +188,35 @@ def manage_services():
         flash("Service added successfully!", "success")
         return redirect(url_for("admin.manage_services"))
 
-    return render_template("admin/services.html", form=form, services=services)
+    return render_template(
+        "admin/services.html",
+        form=form,
+        services=services
+    )
 
 
 @admin_bp.route("/services/delete/<int:service_id>", methods=["POST"])
 @login_required
 def delete_service(service_id):
     service = Service.query.get_or_404(service_id)
+
+    # Prevent delete if bookings exist
     if service.bookings:
-        flash("Cannot delete service with existing bookings. Please cancel or reassign the bookings first.", "error")
+        flash(
+            "Cannot delete service with existing bookings. Please cancel or reassign the bookings first.",
+            "error"
+        )
         return redirect(url_for("admin.manage_services"))
+
+    # Delete image if exists
     if service.image_url:
-        image_path = os.path.join("static", service.image_url)  
+        image_path = os.path.join("static", service.image_url)
         if os.path.exists(image_path):
             try:
                 os.remove(image_path)
             except Exception as e:
                 print("Error deleting service image:", e)
+
     try:
         db.session.delete(service)
         db.session.commit()
@@ -214,6 +225,7 @@ def delete_service(service_id):
         db.session.rollback()
         flash("Error deleting service. Please try again.", "error")
         print("Database error:", e)
+
     return redirect(url_for("admin.manage_services"))
 
 
@@ -221,11 +233,15 @@ def delete_service(service_id):
 @login_required
 def edit_service(service_id):
     service = Service.query.get_or_404(service_id)
-    form = ServiceForm(obj=service)  
+    form = ServiceForm(obj=service)
+
     if form.validate_on_submit():
         service.name = form.name.data
         service.price = form.price.data
+        service.discount_price = form.discount_price.data
         service.description = form.description.data
+
+        # Handle new image upload
         if form.image.data:
             upload_folder = os.path.join("static", "uploads", "services")
             os.makedirs(upload_folder, exist_ok=True)
@@ -234,14 +250,17 @@ def edit_service(service_id):
             image_path = os.path.join(upload_folder, filename)
             form.image.data.save(image_path)
 
-            # save relative path
             service.image_url = f"uploads/services/{filename}"
 
         db.session.commit()
         flash("Service updated successfully!", "success")
         return redirect(url_for("admin.manage_services"))
 
-    return render_template("admin/edit_service.html", form=form, service=service)
+    return render_template(
+        "admin/edit_service.html",
+        form=form,
+        service=service
+    )
 
 
 # =========================
@@ -283,6 +302,45 @@ def manage_packages():
 
     return render_template("admin/packages.html", form=form, packages=packages)
 
+
+# =========================
+# EDIT PACKAGE
+# =========================
+@admin_bp.route("/packages/edit/<int:package_id>", methods=["GET", "POST"])
+@login_required
+def edit_package(package_id):
+    package = Package.query.get_or_404(package_id)
+    form = PackageForm(obj=package)
+
+    if form.validate_on_submit():
+        package.title = form.title.data
+        package.price = form.price.data
+        package.discount_price = form.discount_price.data
+        package.details = form.details.data
+
+        if form.image.data:
+            upload_folder = os.path.join("static", "uploads", "packages")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filename = secure_filename(form.image.data.filename)
+            image_path = os.path.join(upload_folder, filename)
+            form.image.data.save(image_path)
+
+            package.image_url = f"uploads/packages/{filename}"
+
+        db.session.commit()
+        flash("Package updated successfully!", "success")
+        return redirect(url_for("admin.manage_packages"))
+
+    return render_template(
+        "admin/edit_package.html",
+        form=form,
+        package=package
+    )
+
+# =========================
+# DELETE PACKAGE
+# =========================
 
 @admin_bp.route("/packages/delete/<int:package_id>")
 @login_required

@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="container py-4 mt-4 services-container">
-  
+
   <!-- Page Header -->
   <div class="page-header mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -22,19 +22,20 @@
   </div>
 
   <!-- ADD SERVICE FORM -->
-  <div class="admin-form-card">
+  <div class="admin-form-card mb-4">
     <div class="admin-form-header">
       <h5 class="mb-0">
         <i class="bi bi-plus-circle me-2"></i>Add New Service
       </h5>
     </div>
-    
+
     <form method="post" enctype="multipart/form-data" class="admin-service-form">
       {{ form.hidden_tag() }}
-      
+
       <div class="row g-3">
+
         <!-- SERVICE NAME -->
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-6 col-md-6">
           <label class="admin-form-label">Service Name</label>
           {{ form.name(class_="admin-form-control", placeholder="e.g., Deep Clean") }}
           {% for err in form.name.errors %}
@@ -42,17 +43,26 @@
           {% endfor %}
         </div>
 
-        <!-- PRICE -->
-        <div class="col-lg-4 col-md-6">
-          <label class="admin-form-label">Price (₹)</label>
+        <!-- ORIGINAL PRICE -->
+        <div class="col-lg-3 col-md-6">
+          <label class="admin-form-label">Original Price (₹)</label>
           {{ form.price(class_="admin-form-control", placeholder="e.g., 500") }}
           {% for err in form.price.errors %}
             <small class="text-danger d-block mt-1">{{ err }}</small>
           {% endfor %}
         </div>
 
-        <!-- IMAGE UPLOAD -->
-        <div class="col-lg-4 col-md-12">
+        <!-- DISCOUNT PRICE -->
+        <div class="col-lg-3 col-md-6">
+          <label class="admin-form-label">Discount Price (₹)</label>
+          {{ form.discount_price(class_="admin-form-control", placeholder="e.g., 450") }}
+          {% for err in form.discount_price.errors %}
+            <small class="text-danger d-block mt-1">{{ err }}</small>
+          {% endfor %}
+        </div>
+
+        <!-- IMAGE -->
+        <div class="col-12">
           <label class="admin-form-label">Service Image</label>
           <div class="admin-custom-file-upload">
             {{ form.image(class_="admin-file-input", id="serviceImage") }}
@@ -75,10 +85,11 @@
           {% endfor %}
         </div>
 
-        <!-- SUBMIT BUTTON -->
+        <!-- SUBMIT -->
         <div class="col-12">
           {{ form.submit(class_="btn admin-btn-gold") }}
         </div>
+
       </div>
     </form>
   </div>
@@ -91,11 +102,11 @@
     </h5>
   </div>
 
-  <!-- SERVICES GRID (Mobile & Tablet) - Using Your Card Design -->
+  <!-- SERVICES GRID (Mobile & Tablet) -->
   <div class="services-row-mobile d-lg-none">
     {% for service in services %}
     <div class="admin-service-wrapper-mobile">
-      <!-- Service Card (Your Design) -->
+
       <div class="service-card service-card-admin">
         {% if service.image_url %}
           <img src="{{ url_for('static', filename=service.image_url) }}"
@@ -106,26 +117,33 @@
             <i class="bi bi-image"></i>
           </div>
         {% endif %}
-        
+
         <div class="service-title-box">
           <h3 class="service-title">{{ service.name }}</h3>
         </div>
-        
+
         <div class="admin-service-info">
-          <div class="admin-service-price-desktop">₹{{ service.price }}</div>
+          <div class="package-pricing">
+            {% if service.discount_price %}
+              <span class="package-price-original">₹{{ service.price }}</span>
+              <span class="package-price-discount">₹{{ service.discount_price }}</span>
+            {% else %}
+              <span class="package-price-single">₹{{ service.price }}</span>
+            {% endif %}
+          </div>
+
           {% if service.description %}
           <p class="admin-service-desc-desktop">{{ service.description }}</p>
           {% endif %}
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="admin-card-actions">
         <a href="{{ url_for('admin.edit_service', service_id=service.id) }}"
            class="btn admin-btn-edit">
           <i class="bi bi-pencil me-1"></i>Edit
         </a>
-        
+
         <form method="post"
               action="{{ url_for('admin.delete_service', service_id=service.id) }}"
               style="display:inline;">
@@ -137,58 +155,88 @@
           </button>
         </form>
       </div>
+
     </div>
     {% endfor %}
   </div>
 
-  <!-- SERVICES GRID (Desktop) - Using Your Card Design -->
-  <div class="services-row d-none d-lg-grid">
-    {% for service in services %}
-    <div class="admin-service-wrapper">
-      <!-- Service Card (Your Design) -->
-      <div class="service-card service-card-admin">
-        {% if service.image_url %}
-          <img src="{{ url_for('static', filename=service.image_url) }}"
-               alt="{{ service.name }}"
-               class="service-img">
-        {% else %}
-          <div class="admin-no-image-placeholder-desktop">
-            <i class="bi bi-image"></i>
-          </div>
-        {% endif %}
-        
-        <div class="service-title-box">
-          <h3 class="service-title">{{ service.name }}</h3>
-        </div>
-        
-        <div class="admin-service-info">
-          <div class="admin-service-price-desktop">₹{{ service.price }}</div>
-          {% if service.description %}
-          <p class="admin-service-desc-desktop">{{ service.description }}</p>
-          {% endif %}
-        </div>
-      </div>
+  <!-- SERVICES TABLE (Desktop) -->
+  <div class="table-responsive d-none d-lg-block">
+    <table class="packages-table">
+      <thead>
+        <tr>
+          <th style="width:60px;">#</th>
+          <th style="width:100px;">Image</th>
+          <th>Service Name</th>
+          <th style="width:150px;">Original Price</th>
+          <th style="width:150px;">Discount Price</th>
+          <th style="width:120px;">Actions</th>
+        </tr>
+      </thead>
 
-      <!-- Action Buttons -->
-      <div class="admin-card-actions">
-        <a href="{{ url_for('admin.edit_service', service_id=service.id) }}"
-           class="btn admin-btn-edit">
-          <i class="bi bi-pencil me-1"></i>Edit
-        </a>
-        
-        <form method="post"
-              action="{{ url_for('admin.delete_service', service_id=service.id) }}"
-              style="display:inline;">
-          {{ form.hidden_tag() }}
-          <button type="submit"
-                  class="btn admin-btn-delete"
-                  onclick="return confirm('Delete {{ service.name }}?')">
-            <i class="bi bi-trash me-1"></i>Delete
-          </button>
-        </form>
-      </div>
-    </div>
-    {% endfor %}
+      <tbody>
+        {% for service in services %}
+        <tr>
+          <td><span class="package-id">{{ service.id }}</span></td>
+
+          <td>
+            <div class="table-image-wrapper">
+              {% if service.image_url %}
+                <img src="{{ url_for('static', filename=service.image_url) }}"
+                     class="table-package-image">
+              {% else %}
+                <div class="table-no-image">
+                  <i class="bi bi-image"></i>
+                </div>
+              {% endif %}
+            </div>
+          </td>
+
+          <td>
+            <div class="table-package-info">
+              <span class="table-package-title">{{ service.name }}</span>
+              {% if service.description %}
+              <p class="table-package-details">{{ service.description }}</p>
+              {% endif %}
+            </div>
+          </td>
+
+          <td>
+            <span class="table-price">₹{{ service.price }}</span>
+          </td>
+
+          <td>
+            {% if service.discount_price %}
+              <span class="table-discount-price">₹{{ service.discount_price }}</span>
+              <span class="table-discount-badge">
+                {{ ((service.price - service.discount_price) / service.price * 100) | round | int }}% OFF
+              </span>
+            {% else %}
+              <span class="table-no-discount">-</span>
+            {% endif %}
+          </td>
+
+          <td>
+            <a href="{{ url_for('admin.edit_service', service_id=service.id) }}"
+               class="btn btn-sm admin-btn-edit">
+              <i class="bi bi-pencil"></i>
+            </a>
+
+            <form method="post"
+                  action="{{ url_for('admin.delete_service', service_id=service.id) }}"
+                  style="display:inline;">
+              {{ form.hidden_tag() }}
+              <button type="submit"
+                      class="btn btn-sm admin-btn-delete"
+                      onclick="return confirm('Delete {{ service.name }}?')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
   {% if not services %}
@@ -202,16 +250,13 @@
 </div>
 
 <script>
-// File upload label update
 document.addEventListener('DOMContentLoaded', function() {
   const fileInput = document.getElementById('serviceImage');
   if (fileInput) {
     fileInput.addEventListener('change', function(e) {
       const fileName = e.target.files[0]?.name || 'Choose image...';
       const fileText = document.querySelector('.admin-file-text');
-      if (fileText) {
-        fileText.textContent = fileName;
-      }
+      if (fileText) fileText.textContent = fileName;
     });
   }
 });

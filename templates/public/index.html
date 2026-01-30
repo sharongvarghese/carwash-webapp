@@ -96,61 +96,62 @@
 
   <div class="glass-card glass-glow">
 
-    <!-- Section Header -->
-    <div class="services-header">
-      <div class="services-header-content">
-        <span class="services-badge">Premium Quality</span>
-        <h2 class="section-title">Our Services</h2>
-        <p class="services-subtitle">Experience the golden standard in car care</p>
-      </div>
-      <a href="{{ url_for('public.services_page') }}" class="see-all-link-modern">
-        View All Services
-        <i class="bi bi-arrow-right"></i>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0">Our Services</h2>
+      <a href="{{ url_for('public.services_page') }}" class="see-all-link">
+        See all
       </a>
     </div>
 
-    <!-- Services Grid -->
-    <div class="services-grid">
+    <!-- GRID -->
+    <div class="row g-4">
 
       {% for service in services %}
-      <div class="service-card-wrapper">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <!-- SERVICE PREVIEW CARD -->
+        <div class="service-preview-card">
 
-        <a href="{{ url_for('public.service_detail', service_id=service.id) }}"
-           class="service-link">
-
-          <div class="service-card service-card-modern">
-
-            <!-- Image Container -->
-            <div class="service-image-container">
+          <!-- IMAGE -->
+          <div class="service-preview-image">
+            {% if service.image_url %}
               <img src="{{ url_for('static', filename=service.image_url) }}"
-                   class="service-img"
+                   alt="{{ service.name }}"
+                   loading="lazy">
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default-service.jpg') }}"
                    alt="{{ service.name }}">
-              <div class="service-overlay">
-                <span class="service-view-btn">View Details</span>
-              </div>
-            </div>
+            {% endif %}
+          </div>
 
-            <!-- Content -->
-            <div class="service-content">
-              <h3 class="service-title-modern">{{ service.name }}</h3>
-              <div class="service-features">
-                <span class="service-feature-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  Professional
-                </span>
-                <span class="service-feature-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  Fast Service
-                </span>
-              </div>
-            </div>
+          <!-- BODY -->
+          <div class="service-preview-body">
 
-            <!-- Shine Effect -->
-            <div class="service-shine"></div>
+            <h4 class="service-preview-title">
+              {{ service.name }}
+            </h4>
+            <!-- PRICE -->
+            {% if service.discount_price %}
+            <div class="service-preview-price">
+              <span class="table-discount-badge">
+                {{ ((service.price - service.discount_price) / service.price * 100) | round | int }}% OFF
+              </span><br>
+              <span class="new">₹{{ service.discount_price }}</span>
+              <span class="old">₹{{ service.price }}</span>
+            </div>
+            {% else %}
+            <div class="service-preview-price">
+              <span class="new">₹{{ service.price }}</span>
+            </div>
+            {% endif %}
+
+            <!-- CTA -->
+            <a href="{{ url_for('public.service_detail', service_id=service.id) }}"
+               class="btn btn-gold w-100">View Details</a>
 
           </div>
 
-        </a>
+        </div>
 
       </div>
       {% endfor %}

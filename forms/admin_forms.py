@@ -13,6 +13,7 @@ class AdminLoginForm(FlaskForm):
 class ServiceForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(max=120)])
     price = FloatField("Price", validators=[DataRequired()])
+    discount_price = FloatField("Discount Price", validators=[Optional()])
     image = FileField("Image", validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Images only!")])
     description = TextAreaField("Description", validators=[Optional()])
     submit = SubmitField("Add Service")

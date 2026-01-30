@@ -4,7 +4,7 @@
 
 <section class="section-dark container py-5 mt-5 service-detail-glass">
 
-  <div class="row g-5 align-items-center">
+  <div class="row g-4 g-lg-5 align-items-center">
 
     <!-- LEFT IMAGE -->
     <div class="col-lg-6">
@@ -14,7 +14,8 @@
 
         <img src="{{ url_for('static', filename=service.image_url) }}"
              alt="{{ service.name }}"
-             class="service-glass-image">
+             class="service-glass-image"
+             loading="eager">
       </div>
 
     </div>
@@ -26,18 +27,19 @@
 
         <span class="service-glass-badge">Premium Service</span>
 
-        <h2 class="service-glass-title">
+        <h1 class="service-glass-title">
           {{ service.name }}
-        </h2>
+        </h1>
 
+        <!-- PRICE -->
         {% if service.offer_price %}
           <div class="service-glass-price">
-            ₹ {{ service.offer_price }}
-            <span>₹ {{ service.price }}</span>
+            ₹{{ service.offer_price }}
+            <span>₹{{ service.price }}</span>
           </div>
         {% else %}
           <div class="service-glass-price">
-            ₹ {{ service.price }}
+            ₹{{ service.price }}
           </div>
         {% endif %}
 
@@ -45,15 +47,34 @@
           {{ service.description }}
         </p>
 
-        <div class="service-glass-actions">
+        <!-- META INFO -->
+        <div class="service-meta">
+          <span>
+            <i class="bi bi-check-circle-fill"></i>
+            Professional Service
+          </span>
+          <span>
+            <i class="bi bi-clock-fill"></i>
+            Fast & Efficient
+          </span>
+          <span>
+            <i class="bi bi-shield-check"></i>
+            Quality Guaranteed
+          </span>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="service-glass-actions mt-4">
           <a href="{{ url_for('public.booking_page') }}"
              class="btn btn-gold btn-lg">
+            <i class="bi bi-calendar-check me-2"></i>
             Book Now
           </a>
 
           <a href="{{ url_for('public.services_page') }}"
              class="btn btn-outline-gold btn-lg">
-            ← Back
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Services
           </a>
         </div>
 
@@ -78,46 +99,66 @@
     <p class="other-services-subtitle">Explore our complete range of premium car care services</p>
   </div>
 
-  <div class="other-services-grid">
+  <div class="row g-4">
 
     {% for item in other_services %}
-    <div class="service-card-wrapper">
-      <a href="{{ url_for('public.service_detail', service_id=item.id) }}"
-         class="service-link">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+      
+      <!-- OTHER SERVICE CARD -->
+      <div class="premium-service-card service-card-other">
 
-        <div class="service-card service-card-modern service-card-other">
-
-          <!-- Image Container -->
-          <div class="service-image-container">
+        <!-- IMAGE -->
+        <div class="premium-service-image">
+          {% if item.image_url %}
             <img src="{{ url_for('static', filename=item.image_url) }}"
-                 class="service-img"
+                 alt="{{ item.name }}"
+                 loading="lazy">
+          {% else %}
+            <img src="{{ url_for('static', filename='images/default-service.jpg') }}"
                  alt="{{ item.name }}">
-            <div class="service-overlay">
-              <span class="service-view-btn">View Details</span>
-            </div>
+          {% endif %}
+        </div>
+
+        <!-- BODY -->
+        <div class="premium-service-body">
+
+          <h4 class="premium-service-title">
+            {{ item.name }}
+          </h4>
+
+          <!-- FEATURES -->
+          <div class="premium-service-features">
+            <span class="service-feature-badge">
+              <i class="bi bi-check-circle-fill"></i>
+              Professional
+            </span>
+            <span class="service-feature-badge">
+              <i class="bi bi-clock-fill"></i>
+              Fast Service
+            </span>
           </div>
 
-          <!-- Content -->
-          <div class="service-content">
-            <h3 class="service-title-modern">{{ item.name }}</h3>
-            <div class="service-features">
-              <span class="service-feature-item">
-                <i class="bi bi-check-circle-fill"></i>
-                Professional
-              </span>
-              <span class="service-feature-item">
-                <i class="bi bi-check-circle-fill"></i>
-                Fast Service
-              </span>
-            </div>
+          <!-- PRICE -->
+          <div class="premium-service-price-box">
+            {% if item.offer_price %}
+              <span class="table-discount-badge">
+                {{ ((item.price - item.offer_price) / item.price * 100) | round | int }}% OFF
+              </span><br>
+              <span class="premium-service-price-new">₹{{ item.offer_price }}</span>
+              <span class="premium-service-price-old">₹{{ item.price }}</span>
+            {% else %}
+              <span class="premium-service-price-new">₹{{ item.price }}</span>
+            {% endif %}
           </div>
 
-          <!-- Shine Effect -->
-          <div class="service-shine"></div>
+          <!-- VIEW BUTTON -->
+          <a href="{{ url_for('public.service_detail', service_id=item.id) }}"
+             class="premium-btn">View Details</a>
 
         </div>
 
-      </a>
+      </div>
+
     </div>
     {% endfor %}
 
