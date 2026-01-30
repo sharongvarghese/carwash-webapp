@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reviews-system.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="add-review-section section-dark container py-5">
+  
+  <div class="add-review-container">
+    
+    <!-- Header -->
+    <div class="add-review-header">
+      <h1 class="section-title">Share Your Experience</h1>
+      <p class="add-review-subtitle">
+        We'd love to hear about your experience with Speed 'N' Shine!
+      </p>
+    </div>
+
+    <!-- Review Form -->
+    <div class="review-form-wrapper glass-card glass-glow">
+      
+      <form method="POST" action="{{ url_for('public.add_review') }}" class="review-form">
+        
+        {{ form.hidden_tag() }}
+
+        <!-- Name & Display Name Row -->
+        <div class="form-row">
+          
+          <div class="form-group">
+            <label for="name" class="form-label">
+              Full Name <span class="required">*</span>
+            </label>
+            {{ form.name(class_="form-control dark-input", id="name", placeholder="Enter your full name") }}
+            {% if form.name.errors %}
+              <div class="form-error">
+                {% for error in form.name.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="display_name" class="form-label">
+              Display Name <span class="optional">(Optional)</span>
+            </label>
+            {{ form.display_name(class_="form-control dark-input", id="display_name", placeholder="How you'd like to be shown") }}
+            <small class="form-hint">If provided, this will be shown instead of your full name</small>
+            {% if form.display_name.errors %}
+              <div class="form-error">
+                {% for error in form.display_name.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Email & Phone Row -->
+        <div class="form-row">
+          
+          <div class="form-group">
+            <label for="email" class="form-label">
+              Email Address <span class="required">*</span>
+            </label>
+            {{ form.email(class_="form-control dark-input", id="email", placeholder="your.email@example.com") }}
+            <small class="form-hint">Your email will not be displayed publicly</small>
+            {% if form.email.errors %}
+              <div class="form-error">
+                {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">
+              Phone Number <span class="required">*</span>
+            </label>
+            {{ form.phone(class_="form-control dark-input", id="phone", placeholder="+91 1234567890") }}
+            <small class="form-hint">Your phone will not be displayed publicly</small>
+            {% if form.phone.errors %}
+              <div class="form-error">
+                {% for error in form.phone.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Rating Selection - Interactive Stars -->
+        <div class="form-group">
+          <label class="form-label">
+            Your Rating <span class="required">*</span>
+          </label>
+          
+          <div class="star-rating-interactive">
+            <div class="stars-container">
+              <i class="bi bi-star-fill rating-star" data-rating="1"></i>
+              <i class="bi bi-star-fill rating-star" data-rating="2"></i>
+              <i class="bi bi-star-fill rating-star" data-rating="3"></i>
+              <i class="bi bi-star-fill rating-star" data-rating="4"></i>
+              <i class="bi bi-star-fill rating-star" data-rating="5"></i>
+            </div>
+            <div class="rating-label">
+              <span id="ratingText">Click to rate</span>
+            </div>
+            <!-- Hidden input to store the rating value -->
+            {{ form.rating(style="display: none;", id="ratingInput") }}
+          </div>
+          
+          {% if form.rating.errors %}
+            <div class="form-error">
+              {% for error in form.rating.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Review Text -->
+        <div class="form-group">
+          <label for="review_text" class="form-label">
+            Your Review <span class="required">*</span>
+          </label>
+          {{ form.review_text(class_="form-control dark-input review-textarea", id="review_text", rows="6", placeholder="Tell us about your experience with our service...") }}
+          <small class="form-hint">Minimum 10 characters, maximum 1000 characters</small>
+          {% if form.review_text.errors %}
+            <div class="form-error">
+              {% for error in form.review_text.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Privacy Notice -->
+        <div class="privacy-notice">
+          <i class="bi bi-info-circle"></i>
+          <p>
+            <strong>Privacy Notice:</strong> Your full name, email, and phone number will be stored securely 
+            and will only be visible to administrators. Only your display name (or name) and review will be 
+            shown publicly on our website.
+          </p>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="form-actions">
+          <a href="{{ url_for('public.home') }}#reviews" class="btn btn-outline-gold btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-gold btn-lg">
+            <i class="bi bi-send-fill me-2"></i>
+            Submit Review
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+// Interactive Star Rating System
+const stars = document.querySelectorAll('.rating-star');
+const ratingInput = document.getElementById('ratingInput');
+const ratingText = document.getElementById('ratingText');
+let selectedRating = 0;
+
+const ratingLabels = {
+  1: '1 Star - Poor',
+  2: '2 Stars - Fair',
+  3: '3 Stars - Good',
+  4: '4 Stars - Very Good',
+  5: '5 Stars - Excellent'
+};
+
+// Hover effect
+stars.forEach(star => {
+  star.addEventListener('mouseenter', function() {
+    const rating = parseInt(this.dataset.rating);
+    highlightStars(rating);
+    ratingText.textContent = ratingLabels[rating];
+  });
+});
+
+// Reset on mouse leave
+document.querySelector('.stars-container').addEventListener('mouseleave', function() {
+  if (selectedRating === 0) {
+    resetStars();
+    ratingText.textContent = 'Click to rate';
+  } else {
+    highlightStars(selectedRating);
+    ratingText.textContent = ratingLabels[selectedRating];
+  }
+});
+
+// Click to select
+stars.forEach(star => {
+  star.addEventListener('click', function() {
+    selectedRating = parseInt(this.dataset.rating);
+    ratingInput.value = selectedRating;
+    highlightStars(selectedRating);
+    ratingText.textContent = ratingLabels[selectedRating];
+    
+    // Add selected class
+    document.querySelector('.stars-container').classList.add('selected');
+  });
+});
+
+function highlightStars(rating) {
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.classList.add('active');
+    } else {
+      star.classList.remove('active');
+    }
+  });
+}
+
+function resetStars() {
+  stars.forEach(star => {
+    star.classList.remove('active');
+  });
+}
+</script>
+
+{% endblock %}

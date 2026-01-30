@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}All Reviews - SPEED 'N' SHINE{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reviews-system.css') }}">
+{% endblock %}
+{% block content %}
+
+<!-- ===============================
+        ALL REVIEWS PAGE
+=============================== -->
+<section class="all-reviews-page">
+  
+  <!-- Hero Header -->
+  <div class="reviews-hero">
+    <div class="container">
+      <div class="reviews-hero-content">
+        <h1 class="reviews-hero-title">Customer Reviews</h1>
+        <p class="reviews-hero-subtitle">
+          See what our customers have to say about their experience
+        </p>
+        
+        <!-- Stats Bar -->
+        <div class="reviews-stats">
+          <div class="stat-item">
+            <div class="stat-value">{{ total_reviews_count }}</div>
+            <div class="stat-label">Total Reviews</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-value">
+              {{ "%.1f"|format(average_rating) }}
+              <span class="stat-stars">
+                {% for i in range(average_rating|int) %}★{% endfor %}
+              </span>
+            </div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Content -->
+  <div class="container py-5">
+    
+    {% if reviews and reviews|length > 0 %}
+    
+    <!-- All Reviews Grid -->
+    <div class="all-reviews-grid">
+      
+      {% for review in reviews %}
+      <div class="review-card-full">
+        
+        <!-- Card Header -->
+        <div class="review-card-header">
+          <div class="review-author-info">
+            <div class="author-avatar-large">
+              {{ review.get_display_name()[0].upper() }}
+            </div>
+            <div class="author-details">
+              <h3 class="author-name-large">{{ review.get_display_name() }}</h3>
+              <p class="review-date-large">
+                <i class="bi bi-calendar3 me-1"></i>
+                {{ review.created_at.strftime('%B %d, %Y') }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Rating Stars -->
+          <div class="review-stars-large">
+            {% for i in range(review.rating) %}
+              <span class="star filled">★</span>
+            {% endfor %}
+            {% for i in range(5 - review.rating) %}
+              <span class="star empty">☆</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Review Text -->
+        <div class="review-card-body">
+          <p class="review-text-full">
+            "{{ review.review_text }}"
+          </p>
+        </div>
+
+        <!-- Decorative Quote Icon -->
+        <div class="review-quote-icon">
+          <i class="bi bi-quote"></i>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+    {% else %}
+    
+    <!-- No Reviews State -->
+    <div class="no-reviews-state">
+      <div class="glass-card text-center py-5">
+        <i class="bi bi-chat-quote no-reviews-icon"></i>
+        <h3 class="no-reviews-title">No Reviews Yet</h3>
+        <p class="no-reviews-text">Be the first to share your experience with us!</p>
+        <a href="{{ url_for('public.add_review') }}" class="btn btn-gold btn-lg mt-4">
+          <i class="bi bi-star-fill me-2"></i>
+          Write the First Review
+        </a>
+      </div>
+    </div>
+
+    {% endif %}
+
+    <!-- Call to Action -->
+    <div class="reviews-cta-section">
+      <div class="glass-card text-center py-5">
+        <h3 class="cta-title">Share Your Experience</h3>
+        <p class="cta-text">
+          Your feedback helps us improve and helps others make informed decisions
+        </p>
+        <div class="cta-buttons">
+          <a href="{{ url_for('public.add_review') }}" class="btn btn-gold btn-lg">
+            <i class="bi bi-star-fill me-2"></i>
+            Write a Review
+          </a>
+          <a href="{{ url_for('public.home') }}" class="btn btn-outline-gold btn-lg">
+            <i class="bi bi-house-fill me-2"></i>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

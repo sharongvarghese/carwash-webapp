@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage
+from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage, Review
 from forms.admin_forms import AdminLoginForm, ServiceForm, PackageForm, GalleryUploadForm
 from werkzeug.utils import secure_filename
 import os
@@ -74,6 +74,8 @@ def mark_notification_read(note_id):
         return redirect(url_for("admin.contact_inbox"))
     elif note.type == "booking":
         return redirect(url_for("admin.bookings"))
+    elif note.type == "review":  # ✅ NEW
+        return redirect(url_for("admin.reviews_panel"))
     else:
         return redirect(url_for("admin.dashboard"))
 
@@ -430,3 +432,41 @@ def delete_gallery_image(image_id):
 
     flash("Gallery item deleted.", "success")
     return redirect(url_for("admin.admin_gallery"))
+
+
+# ===============================
+# NEW: REVIEWS MANAGEMENT
+# ===============================
+
+@admin_bp.route("/reviews")
+@login_required
+def reviews_panel():
+    """Admin panel to view all reviews"""
+    reviews = Review.query.order_by(Review.created_at.desc()).all()
+    
+    # ✅ AUTO-MARK ALL REVIEW NOTIFICATIONS AS READ
+    unread_review_notifications = Notification.query.filter_by(
+        type="review",
+        is_read=False
+    ).all()
+    
+    for notification in unread_review_notifications:
+        notification.is_read = True
+    
+    if unread_review_notifications:
+        db.session.commit()
+    
+    return render_template("admin/reviews_panel.html", reviews=reviews)
+
+
+@admin_bp.route("/reviews/delete/<int:review_id>", methods=["POST"])
+@login_required
+def delete_review(review_id):
+    """Delete a review"""
+    review = Review.query.get_or_404(review_id)
+    
+    db.session.delete(review)
+    db.session.commit()
+    
+    flash('Review deleted successfully.', 'success')
+    return redirect(url_for('admin.reviews_panel'))

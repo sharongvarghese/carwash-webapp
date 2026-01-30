@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery_display.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reviews-system.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -351,6 +352,91 @@
 </section>
 
 {% endif %}
+
+<!-- ===============================
+        CUSTOMER REVIEWS SECTION 
+=============================== -->
+<section id="reviews" class="section-dark container py-5">
+  
+  <div class="glass-card glass-glow">
+    
+    <!-- Section Header with See All Button -->
+    <div class="reviews-header">
+      <div class="reviews-header-content">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <p class="reviews-subtitle">Real experiences from real customers</p>
+      </div>
+      
+      {% if total_reviews_count > 4 %}
+      <div class="reviews-header-action">
+        <a href="{{ url_for('public.all_reviews') }}" class="see-all-link">
+          See All Reviews
+          <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if reviews and reviews|length > 0 %}
+    
+    <!-- Reviews Grid -->
+    <div class="reviews-grid">
+      
+      {% for review in reviews %}
+      <div class="review-card">
+        
+        <!-- Rating Stars -->
+        <div class="review-stars">
+          {% for i in range(review.rating) %}
+            <span class="star filled">★</span>
+          {% endfor %}
+          {% for i in range(5 - review.rating) %}
+            <span class="star empty">☆</span>
+          {% endfor %}
+        </div>
+
+        <!-- Review Text -->
+        <p class="review-text">
+          "{{ review.review_text }}"
+        </p>
+
+        <!-- Customer Name -->
+        <div class="review-author">
+          <div class="author-avatar">
+            {{ review.get_display_name()[0].upper() }}
+          </div>
+          <div class="author-info">
+            <h4 class="author-name">{{ review.get_display_name() }}</h4>
+            <p class="review-date">{{ review.created_at.strftime('%B %d, %Y') }}</p>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+    {% else %}
+    
+    <!-- No Reviews Yet -->
+    <div class="no-reviews">
+      <i class="bi bi-chat-quote"></i>
+      <p>Be the first to share your experience!</p>
+    </div>
+
+    {% endif %}
+
+    <!-- Add Review Button -->
+    <div class="add-review-cta">
+      <a href="{{ url_for('public.add_review') }}" class="btn btn-gold btn-lg">
+        <i class="bi bi-star-fill me-2"></i>
+        Write a Review
+      </a>
+    </div>
+
+  </div>
+
+</section>
 
 <!-- ===============================
         CONTACT SECTION

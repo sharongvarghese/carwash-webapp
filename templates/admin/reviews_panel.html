@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block body_class %}fixed-footer{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reviews-system.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reviews-system-addon.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-reviews-panel container mt-4 py-5">
+  
+  <!-- Back Button -->
+  <div class="back-navigation mb-4">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn-back">
+      <i class="bi bi-arrow-left"></i>
+      Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Header -->
+  <div class="admin-panel-header mb-4">
+    <div class="header-content">
+      <h1 class="section-title mb-2">Customer Reviews</h1>
+      <p class="admin-subtitle">Manage and monitor customer feedback</p>
+    </div>
+    <div class="admin-stats">
+      <div class="stat-card">
+        <i class="bi bi-chat-quote-fill"></i>
+        <div>
+          <h3>{{ reviews|length }}</h3>
+          <p>Total Reviews</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Table -->
+  {% if reviews and reviews|length > 0 %}
+  
+  <div class="reviews-table-wrapper glass-card">
+    
+    <div class="table-responsive">
+      <table class="admin-reviews-table">
+        
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Display Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Rating</th>
+            <th>Review</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for review in reviews %}
+          <tr>
+            
+            <!-- ID -->
+            <td class="review-id" data-label="ID">#{{ review.id }}</td>
+
+            <!-- Name -->
+            <td class="review-name" data-label="Name">
+              <div class="user-avatar">
+                {{ review.name[0].upper() }}
+              </div>
+              {{ review.name }}
+            </td>
+
+            <!-- Display Name -->
+            <td class="review-display-name" data-label="Display Name">
+              {% if review.display_name %}
+                <span class="badge-display-name">{{ review.display_name }}</span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Email -->
+            <td class="review-email" data-label="Email">
+              <a href="mailto:{{ review.email }}">{{ review.email }}</a>
+            </td>
+
+            <!-- Phone -->
+            <td class="review-phone" data-label="Phone">
+              <a href="tel:{{ review.phone }}">{{ review.phone }}</a>
+            </td>
+
+            <!-- Rating -->
+            <td class="review-rating" data-label="Rating">
+              <div class="stars-display">
+                {% for i in range(review.rating) %}
+                  <span class="star filled">★</span>
+                {% endfor %}
+                {% for i in range(5 - review.rating) %}
+                  <span class="star empty">☆</span>
+                {% endfor %}
+              </div>
+              <span class="rating-number">{{ review.rating }}/5</span>
+            </td>
+
+            <!-- Review Text -->
+            <td class="review-text-cell" data-label="Review">
+              <div class="review-text-preview">
+                {{ review.review_text[:100] }}{% if review.review_text|length > 100 %}...{% endif %}
+              </div>
+              {% if review.review_text|length > 100 %}
+              <button 
+                class="btn-read-more" 
+                data-review-id="{{ review.id }}" 
+                onclick="handleReadMore(this)">
+                Read More
+              </button>
+              {% endif %}
+            </td>
+
+            <!-- Date -->
+            <td class="review-date" data-label="Date">
+              {{ review.created_at.strftime('%b %d, %Y') }}
+              <small>{{ review.created_at.strftime('%I:%M %p') }}</small>
+            </td>
+
+            <!-- Actions -->
+            <td class="review-actions" data-label="Actions">
+              <button 
+                class="btn-delete" 
+                data-review-id="{{ review.id }}" 
+                data-review-author="{{ review.name }}" 
+                onclick="handleDelete(this)">
+                <i class="bi bi-trash-fill"></i>
+                Delete
+              </button>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+
+  {% else %}
+  
+  <!-- No Reviews -->
+  <div class="no-reviews-admin glass-card">
+    <i class="bi bi-inbox"></i>
+    <h3>No Reviews Yet</h3>
+    <p>Customer reviews will appear here once they start submitting feedback.</p>
+  </div>
+
+  {% endif %}
+
+</div>
+
+<!-- Hidden JSON data for JavaScript -->
+<script id="review-data" type="application/json">
+{
+  {% for review in reviews %}
+  "{{ review.id }}": {{ review.review_text|tojson }}{% if not loop.last %},{% endif %}
+  {% endfor %}
+}
+</script>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content glass-card">
+    <div class="modal-header">
+      <h3>Confirm Deletion</h3>
+      <button class="modal-close" onclick="closeDeleteModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+      <p>Are you sure you want to delete the review from <strong id="reviewAuthor"></strong>?</p>
+      <p class="warning-text">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-gold" onclick="closeDeleteModal()">
+        Cancel
+      </button>
+      <form id="deleteForm" method="POST" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type="submit" class="btn btn-danger">
+          <i class="bi bi-trash-fill me-2"></i>
+          Delete Review
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Full Review Modal -->
+<div id="fullReviewModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content glass-card">
+    <div class="modal-header">
+      <h3>Full Review</h3>
+      <button class="modal-close" onclick="closeReviewModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p id="fullReviewText"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" onclick="closeReviewModal()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===========================
+   Reviews Admin Panel JS
+   =========================== */
+
+// Parse review texts from JSON script
+const reviewTexts = JSON.parse(
+  document.getElementById('review-data').textContent
+);
+
+/* ---------- READ FULL REVIEW ---------- */
+function handleReadMore(button) {
+  const reviewId = button.dataset.reviewId;
+
+  document.getElementById('fullReviewText').textContent =
+    reviewTexts[reviewId] || 'Review not found.';
+
+  document.getElementById('fullReviewModal').style.display = 'flex';
+}
+
+function closeReviewModal() {
+  document.getElementById('fullReviewModal').style.display = 'none';
+}
+
+/* ---------- DELETE REVIEW ---------- */
+function handleDelete(button) {
+  const reviewId = button.dataset.reviewId;
+  const authorName = button.dataset.reviewAuthor;
+
+  document.getElementById('reviewAuthor').textContent = authorName;
+
+  // Set form action dynamically
+  document.getElementById('deleteForm').action =
+    `/admin/reviews/delete/${reviewId}`;
+
+  document.getElementById('deleteModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+/* ---------- CLOSE MODAL ON OUTSIDE CLICK ---------- */
+window.addEventListener('click', function (event) {
+  if (event.target.classList.contains('modal-overlay')) {
+    event.target.style.display = 'none';
+  }
+});
+
+/* ---------- ESC KEY CLOSE MODALS ---------- */
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    closeDeleteModal();
+    closeReviewModal();
+  }
+});
+</script>
+
+{% endblock %}

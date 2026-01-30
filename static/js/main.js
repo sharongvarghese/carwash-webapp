@@ -1,15 +1,4 @@
 /* ====================================================
-      CONFIRM DELETE (ADMIN)
-==================================================== */
-document.addEventListener("click", function (e) {
-  if (e.target.matches(".btn-delete")) {
-    if (!confirm("Are you sure you want to delete this item?")) {
-      e.preventDefault();
-    }
-  }
-});
-
-/* ====================================================
       AUTO-DISMISS FLASH MESSAGES
 ==================================================== */
 document.addEventListener("DOMContentLoaded", () => {

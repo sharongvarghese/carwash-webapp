@@ -60,6 +60,8 @@
                       <i class="bi bi-envelope-fill"></i>
                     {% elif note.type == "booking" %}
                       <i class="bi bi-calendar-event"></i>
+                    {% elif note.type == "review" %}
+                      <i class="bi bi-star-fill"></i>
                     {% else %}
                       <i class="bi bi-info-circle-fill"></i>
                     {% endif %}
@@ -74,6 +76,11 @@
                         View
                       </a>
                     {% elif note.type == "booking" %}
+                      <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
+                        class="btn btn-sm btn-gold-minimal">
+                        View
+                      </a>
+                    {% elif note.type == "review" %}
                       <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
                         class="btn btn-sm btn-gold-minimal">
                         View
@@ -174,6 +181,22 @@
           <div class="action-content">
             <h6>Contact Inbox</h6>
             <p class="mb-0">View customer messages</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <!-- ✅ NEW: REVIEWS PANEL LINK -->
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.reviews_panel') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <div class="action-content">
+            <h6>Customer Reviews</h6>
+            <p class="mb-0">Manage customer feedback</p>
           </div>
           <div class="action-arrow">
             <i class="bi bi-arrow-right"></i>

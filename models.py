@@ -67,7 +67,7 @@ class Notification(db.Model):
     __tablename__ = "notifications"
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50))  # booking / package / contact
+    type = db.Column(db.String(50))  # booking / package / contact / review
     message = db.Column(db.String(255))
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -96,4 +96,28 @@ class GalleryImage(db.Model):
     service = db.relationship("Service")
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-
+class Review(db.Model):
+    __tablename__ = "reviews"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    display_name = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    review_text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)  # 1-5 stars
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_approved = db.Column(db.Boolean, default=True)  # Auto-approve, admin can delete
+    
+    def __repr__(self):
+        return f'<Review {self.id} - {self.get_display_name()}>'
+    
+    def get_display_name(self):
+        """Returns display_name if available, otherwise returns name"""
+        return self.display_name if self.display_name else self.name
+    
+    def get_star_display(self):
+        """Returns filled and empty stars for display"""
+        filled = '★' * self.rating
+        empty = '☆' * (5 - self.rating)
+        return filled + empty
