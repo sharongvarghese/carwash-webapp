@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
-
 {% block content %}
+
 <div class="container py-5 mt-5">
 
   <h2 class="section-title mb-4">Edit Package</h2>
@@ -11,21 +10,45 @@
 
     <div class="row g-3">
 
-      <!-- Title -->
+      <!-- TITLE -->
       <div class="col-md-4">
         {{ form.title(class_="form-control dark-input", placeholder="Package Title") }}
       </div>
 
-      <!-- Price -->
+      <!-- BADGE -->
       <div class="col-md-4">
+        {{ form.badge(class_="form-control dark-input", placeholder="Badge (Popular / Best Value)") }}
+      </div>
+
+      <!-- PRICE -->
+      <div class="col-md-2">
         {{ form.price(class_="form-control dark-input", placeholder="Price") }}
       </div>
 
-      <!-- Discount Price -->
-      <div class="col-md-4">
+      <!-- DISCOUNT PRICE -->
+      <div class="col-md-2">
         {{ form.discount_price(class_="form-control dark-input", placeholder="Discount Price") }}
       </div>
 
+      <!-- TOTAL USES -->
+      <div class="col-md-3">
+        {{ form.total_uses(class_="form-control dark-input", placeholder="Total Uses") }}
+      </div>
+
+      <!-- VALIDITY DAYS -->
+      <div class="col-md-3">
+        {{ form.validity_days(class_="form-control dark-input", placeholder="Validity (Days)") }}
+      </div>
+
+      <!-- ACTIVE -->
+      <div class="col-md-6 d-flex align-items-center">
+        <div class="form-check mt-3">
+          {{ form.is_active(class_="form-check-input") }}
+          <label class="form-check-label text-light ms-2">
+            Package is Active
+          </label>
+        </div>
+      </div>
 
       <!-- IMAGE UPLOAD -->
       <div class="col-md-6">
@@ -33,33 +56,35 @@
         {{ form.image(class_="form-control dark-input") }}
       </div>
 
-      <!-- CURRENT IMAGE PREVIEW -->
+      <!-- CURRENT IMAGE -->
       <div class="col-md-6">
         <label class="text-light mb-2">Current Image</label><br>
 
         {% if package.image_url %}
-          <img src="/static/{{ package.image_url }}" 
-               class="admin-pkg-thumb" 
+          <img src="{{ url_for('static', filename=package.image_url) }}"
+               class="admin-pkg-thumb"
                style="width:130px; height:130px; object-fit:cover; border-radius:10px;">
         {% else %}
           <p class="text-muted small">No image uploaded</p>
         {% endif %}
       </div>
 
-
       <!-- DETAILS -->
       <div class="col-md-12">
         {{ form.details(class_="form-control dark-input", rows="3", placeholder="Package Details") }}
       </div>
 
-      <!-- BUTTON -->
+      <!-- SUBMIT -->
       <div class="col-md-12">
         {{ form.submit(class_="btn btn-gold") }}
+        <a href="{{ url_for('admin.manage_packages') }}" class="btn btn-secondary ms-2">
+          Cancel
+        </a>
       </div>
 
     </div>
-
   </form>
 
 </div>
+
 {% endblock %}
