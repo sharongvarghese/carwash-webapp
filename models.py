@@ -44,7 +44,7 @@ class Package(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     total_uses = db.Column(db.Integer, nullable=False, default=0)      
-    validity_days = db.Column(db.Integer, nullable=False)
+    validity_days = db.Column(db.Integer, nullable=False, default=30)
     price = db.Column(db.Float, nullable=False)
     discount_price = db.Column(db.Float, nullable=True)
     details = db.Column(db.Text, nullable=True)
