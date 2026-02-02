@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Package Bookings Management{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-package-bookings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-package-bookings-wrapper">
+  
+  <!-- Header -->
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">
+        <i class="bi bi-box-seam"></i> Package Bookings
+      </h1>
+      <p class="admin-subtitle">Manage customer package purchases and track usage</p>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon total">
+        <i class="bi bi-boxes"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ total_bookings }}</h3>
+        <p>Total Bookings</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <i class="bi bi-check-circle"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ active_bookings }}</h3>
+        <p>Active</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon completed">
+        <i class="bi bi-check-all"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ completed_bookings }}</h3>
+        <p>Completed</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon expired">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ expired_bookings }}</h3>
+        <p>Expired</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <a href="{{ url_for('admin.package_bookings', status='all') }}" 
+       class="filter-tab {% if status_filter == 'all' %}active{% endif %}">
+      All Bookings
+    </a>
+    <a href="{{ url_for('admin.package_bookings', status='active') }}" 
+       class="filter-tab {% if status_filter == 'active' %}active{% endif %}">
+      Active
+    </a>
+    <a href="{{ url_for('admin.package_bookings', status='completed') }}" 
+       class="filter-tab {% if status_filter == 'completed' %}active{% endif %}">
+      Completed
+    </a>
+    <a href="{{ url_for('admin.package_bookings', status='expired') }}" 
+       class="filter-tab {% if status_filter == 'expired' %}active{% endif %}">
+      Expired
+    </a>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="admin-card">
+    {% if bookings %}
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Package</th>
+            <th>Contact</th>
+            <th>Usage</th>
+            <th>Validity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr>
+            <td><strong>#{{ booking.id }}</strong></td>
+            
+            <td>
+              <div class="customer-info">
+                <strong>{{ booking.full_name }}</strong>
+                <small>Booked: {{ booking.created_at.strftime('%b %d, %Y') }}</small>
+              </div>
+            </td>
+            
+            <td>
+              <div class="package-info">
+                <strong>{{ booking.package.title }}</strong>
+                <small>{{ booking.total_uses }} sessions total</small>
+              </div>
+            </td>
+            
+            <td>
+              <div class="contact-info">
+                <div><i class="bi bi-envelope"></i> {{ booking.email }}</div>
+                <div><i class="bi bi-phone"></i> {{ booking.phone }}</div>
+              </div>
+            </td>
+            
+            <td>
+              <div class="usage-cell">
+                {% if booking.remaining_uses > 0 %}
+                  <div class="usage-bar-container">
+                    <div class="usage-bar" 
+                         style="width: {{ (booking.remaining_uses / booking.total_uses * 100) }}%">
+                    </div>
+                  </div>
+                  <span class="usage-text">
+                    {{ booking.remaining_uses }} / {{ booking.total_uses }} left
+                  </span>
+                {% else %}
+                  <span class="badge-completed">All Used</span>
+                {% endif %}
+              </div>
+            </td>
+            
+            <td>
+              <div class="validity-info">
+                <div>
+                  <i class="bi bi-calendar-check"></i> 
+                  {{ booking.start_date.strftime('%b %d, %Y') }}
+                </div>
+                <div>
+                  <i class="bi bi-calendar-x"></i> 
+                  {{ booking.expiry_date.strftime('%b %d, %Y') }}
+                </div>
+                {% if booking.is_expired %}
+                  <small class="text-danger">Expired</small>
+                {% else %}
+                  <small class="text-success">{{ booking.days_remaining }} days left</small>
+                {% endif %}
+              </div>
+            </td>
+            
+            <td>
+              {% if booking.status == 'Active' %}
+                <span class="status-badge status-active">
+                  <i class="bi bi-check-circle"></i> Active
+                </span>
+              {% elif booking.status == 'Completed' %}
+                <span class="status-badge status-completed">
+                  <i class="bi bi-check-all"></i> Completed
+                </span>
+              {% elif booking.status == 'Expired' %}
+                <span class="status-badge status-expired">
+                  <i class="bi bi-clock-history"></i> Expired
+                </span>
+              {% endif %}
+            </td>
+            
+            <td>
+              <div class="action-buttons">
+                <a href="{{ url_for('admin.package_booking_detail', booking_id=booking.id) }}" 
+                   class="btn-action btn-view" 
+                   title="View Details">
+                  <i class="bi bi-eye"></i>
+                </a>
+                
+                {% if booking.status == 'Active' %}
+                <form method="POST" 
+                      action="{{ url_for('admin.update_remaining_uses', booking_id=booking.id) }}"
+                      onsubmit="return confirm('Are you sure you want to record a service for {{ booking.full_name }}? This will decrease remaining sessions from {{ booking.remaining_uses }} to {{ booking.remaining_uses - 1 }}.');"
+                      style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="action" value="decrement">
+                  <button type="submit" 
+                          class="btn-action btn-use" 
+                          title="Record Service"
+                          {% if booking.remaining_uses <= 0 %}disabled{% endif %}>
+                    <i class="bi bi-dash-circle"></i>
+                  </button>
+                </form>
+                {% endif %}
+                
+                <form method="POST" 
+                      action="{{ url_for('admin.delete_package_booking', booking_id=booking.id) }}"
+                      onsubmit="return confirm('Are you sure you want to delete this booking?');"
+                      style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" 
+                          class="btn-action btn-delete" 
+                          title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-inbox"></i>
+      <h3>No Package Bookings</h3>
+      <p>No package bookings found matching your filter criteria.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

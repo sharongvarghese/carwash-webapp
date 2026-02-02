@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/package_booking.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="booking-full-wrap">
+  <div class="booking-background-glow"></div>
+
+  <div class="container py-5">
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="row mb-4">
+          <div class="col-12">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="row g-4 g-lg-5 align-items-start justify-content-center">
+
+      <!-- LEFT: Package Summary -->
+      <div class="col-12 col-lg-6 fade-up delay-100">
+        <div class="checkout-product-card">
+
+          <!-- IMAGE -->
+          <div class="checkout-image-wrap">
+            {% if package.image_url %}
+              <img src="{{ url_for('static', filename=package.image_url) }}"
+                   alt="{{ package.title }}"
+                   loading="lazy">
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default-package.jpg') }}"
+                   alt="{{ package.title }}"
+                   loading="lazy">
+            {% endif %}
+          </div>
+
+          <!-- INFO -->
+          <div class="checkout-product-info">
+
+            {% if package.badge %}
+              <span class="checkout-badge">{{ package.badge }}</span>
+            {% endif %}
+
+            <h3 class="checkout-title">
+              {{ package.title }}
+            </h3>
+
+            <p class="checkout-subtext">
+              {{ package.description or "Ideal for regular maintenance & premium car care" }}
+            </p>
+
+            <!-- FEATURES -->
+            <ul class="checkout-features">
+              <li><i class="bi bi-check-circle-fill"></i> {{ package.total_uses }} service sessions</li>
+              <li><i class="bi bi-check-circle-fill"></i> Valid for {{ package.validity_days }} days</li>
+              <li><i class="bi bi-check-circle-fill"></i> Interior & exterior cleaning</li>
+              <li><i class="bi bi-check-circle-fill"></i> Premium quality service</li>
+            </ul>
+
+            <!-- PRICE -->
+            <div class="checkout-price-box">
+              {% if package.discount_price and package.discount_price < package.price %}
+
+                <!-- SAVE PILL -->
+                <div class="checkout-discount-pill">
+                  SAVE ₹{{ package.price - package.discount_price }}
+                </div>
+
+                <div class="checkout-price">
+                  <span class="price-new">₹{{ package.discount_price }}</span>
+                  <span class="price-old">₹{{ package.price }}</span>
+                </div>
+
+              {% else %}
+                <div class="checkout-price">
+                  <span class="price-new">₹{{ package.price }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- TRUST -->
+            <div class="checkout-trust">
+              <span><i class="bi bi-shield-check"></i> Secure booking</span>
+              <span><i class="bi bi-clock-history"></i> Flexible scheduling</span>
+              <span><i class="bi bi-star-fill"></i> Trusted by customers</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Booking Form -->
+      <div class="col-12 col-lg-6 fade-up delay-200">
+        <div class="booking-animated-card">
+
+          <h2 class="booking-title text-center mb-4 fade-up delay-300">
+            Book {{ package.title }}
+          </h2>
+
+          <form method="POST"
+                action="{{ url_for('public.package_booking', package_id=package.id) }}"
+                class="booking-form fade-up delay-400"
+                novalidate>
+
+            {{ package_booking_form.hidden_tag() }}
+            {{ package_booking_form.package_id() }}
+
+            <!-- FULL NAME -->
+            <div class="form-group-animated">
+              <i class="bi bi-person-fill booking-icon"></i>
+              {{ package_booking_form.full_name(
+                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.full_name.errors else ''),
+                placeholder="Full Name",
+                required=true,
+                autocomplete="name"
+              ) }}
+              {% if package_booking_form.full_name.errors %}
+                <div class="invalid-feedback">
+                  {{ package_booking_form.full_name.errors[0] }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- PHONE -->
+            <div class="form-group-animated">
+              <i class="bi bi-phone-fill booking-icon"></i>
+              {{ package_booking_form.phone(
+                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.phone.errors else ''),
+                placeholder="Phone Number",
+                required=true,
+                autocomplete="tel"
+              ) }}
+              {% if package_booking_form.phone.errors %}
+                <div class="invalid-feedback">
+                  {{ package_booking_form.phone.errors[0] }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group-animated">
+              <i class="bi bi-envelope-fill booking-icon"></i>
+              {{ package_booking_form.email(
+                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.email.errors else ''),
+                placeholder="Email Address",
+                required=true,
+                autocomplete="email"
+              ) }}
+              {% if package_booking_form.email.errors %}
+                <div class="invalid-feedback">
+                  {{ package_booking_form.email.errors[0] }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- SUBMIT -->
+            <button type="submit"
+                    class="btn btn-gold btn-lg booking-cta-btn">
+              <i class="bi bi-check-circle me-2"></i>
+              Confirm Package Booking
+            </button>
+
+            <!-- Info Text -->
+            <p class="text-center mt-3 mb-0" style="font-size: 0.85rem; color: #999;">
+              <i class="bi bi-info-circle me-1"></i>
+              You'll receive booking confirmation via email
+            </p>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/package_booking.js') }}"></script>
+{% endblock %}

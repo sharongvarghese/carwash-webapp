@@ -1,0 +1,700 @@
+/* ======================================================
+   GLOBAL RESET & BASE
+====================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0b0e14;
+  color: #eaeaea;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ======================================================
+   BOOKING PAGE WRAPPER
+====================================================== */
+.booking-full-wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+.booking-background-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 215, 120, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(0, 160, 255, 0.12), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======================================================
+   LEFT SIDE — DARK GLASS CHECKOUT CARD
+====================================================== */
+.checkout-product-card {
+  position: sticky;
+  top: 90px;
+  background: rgba(15, 15, 22, 0.68);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.checkout-product-card:hover {
+  transform: translateY(-5px);
+}
+
+/* IMAGE */
+.checkout-image-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.checkout-image-wrap img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.4s ease;
+}
+
+.checkout-image-wrap:hover img {
+  transform: scale(1.05);
+}
+
+/* CONTENT */
+.checkout-product-info {
+  padding: 26px;
+}
+
+/* BADGE */
+.checkout-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f6c453, #ffdd8a);
+  color: #111;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* TITLE */
+.checkout-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+/* SUBTEXT */
+.checkout-subtext {
+  font-size: 0.9rem;
+  color: #bdbdbd;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* FEATURES */
+.checkout-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
+.checkout-features li {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  line-height: 1.6;
+}
+
+.checkout-features i {
+  color: #4cd964;
+  margin-right: 8px;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ======================================================
+   PRICE SECTION
+====================================================== */
+.checkout-price-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
+}
+
+.checkout-price-box:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255,193,7,0.3);
+}
+
+/* SAVE PILL */
+.checkout-discount-pill {
+  display: inline-block;
+  background: linear-gradient(135deg, #28a745, #1fbf75);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 0.4px;
+  box-shadow: 0 6px 14px rgba(40, 167, 69, 0.4);
+  text-transform: uppercase;
+}
+
+/* PRICE */
+.checkout-price {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.checkout-price .price-new {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.checkout-price .price-old {
+  font-size: 1rem;
+  text-decoration: line-through;
+  color: #9a9a9a;
+}
+
+/* ======================================================
+   TRUST INFO
+====================================================== */
+.checkout-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.8rem;
+  color: #bdbdbd;
+}
+
+.checkout-trust span {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.checkout-trust i {
+  color: #5dade2;
+  margin-right: 4px;
+  font-size: 1rem;
+}
+
+/* ======================================================
+   RIGHT SIDE — BOOKING FORM
+====================================================== */
+.booking-animated-card {
+  background: rgba(20, 20, 30, 0.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+  transition: transform 0.3s ease;
+}
+
+.booking-animated-card:hover {
+  transform: translateY(-3px);
+}
+
+.booking-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+/* INPUTS */
+.form-group-animated {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.booking-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 1rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.premium-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  padding-left: 45px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.premium-input::placeholder {
+  color: #aaa;
+}
+
+.premium-input:focus {
+  outline: none;
+  border-color: #ffc107;
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 0 3px rgba(255,193,7,0.25);
+}
+
+/* Error States */
+.premium-input.is-invalid {
+  border-color: #ff6b6b !important;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.premium-input.is-invalid:focus {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25) !important;
+}
+
+.invalid-feedback {
+  display: block;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  padding-left: 45px;
+}
+
+/* BUTTON */
+.booking-cta-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ffc107, #ffb300);
+  border: none;
+  color: #111;
+  font-weight: 800;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1.5rem;
+}
+
+.booking-cta-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255,193,7,0.45);
+  background: linear-gradient(135deg, #ffb300, #ffa000);
+}
+
+.booking-cta-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.booking-cta-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.booking-cta-btn i {
+  margin-right: 8px;
+}
+
+/* ======================================================
+   FLASH MESSAGES / ALERTS
+====================================================== */
+.alert {
+  border-radius: 14px;
+  border: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  background: rgba(76, 217, 100, 0.15);
+  color: #4cd964;
+  border: 1px solid rgba(76, 217, 100, 0.3);
+}
+
+.alert-danger {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.alert-info {
+  background: rgba(93, 173, 226, 0.15);
+  color: #5dade2;
+  border: 1px solid rgba(93, 173, 226, 0.3);
+}
+
+.alert .btn-close {
+  margin-left: auto;
+  opacity: 0.7;
+  filter: invert(1);
+}
+
+.alert .btn-close:hover {
+  opacity: 1;
+}
+
+/* ======================================================
+   SMOOTH ANIMATIONS
+====================================================== */
+.fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ======================================================
+   RESPONSIVE BREAKPOINTS
+====================================================== */
+
+/* Large Tablets & Small Desktops (992px - 1199px) */
+@media (max-width: 1199px) {
+  .checkout-title {
+    font-size: 1.35rem;
+  }
+  
+  .booking-title {
+    font-size: 1.5rem;
+  }
+  
+  .checkout-price .price-new {
+    font-size: 1.75rem;
+  }
+}
+
+/* Tablets (768px - 991px) */
+@media (max-width: 991px) {
+  .booking-full-wrap {
+    padding: 15px 0;
+  }
+  
+  .checkout-product-card {
+    position: relative;
+    top: 0;
+    margin-bottom: 28px;
+  }
+
+  .checkout-image-wrap img {
+    height: 220px;
+  }
+
+  .booking-animated-card {
+    padding: 26px;
+  }
+  
+  .checkout-product-info {
+    padding: 22px;
+  }
+  
+  .booking-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Mobile Landscape & Small Tablets (576px - 767px) */
+@media (max-width: 767px) {
+  .checkout-title {
+    font-size: 1.25rem;
+  }
+  
+  .checkout-price .price-new {
+    font-size: 1.6rem;
+  }
+  
+  .checkout-price .price-old {
+    font-size: 0.9rem;
+  }
+  
+  .checkout-features li {
+    font-size: 0.85rem;
+  }
+  
+  .booking-animated-card {
+    padding: 22px;
+  }
+  
+  .booking-title {
+    font-size: 1.3rem;
+  }
+  
+  .premium-input {
+    font-size: 0.9rem;
+    padding: 13px 14px;
+    padding-left: 42px;
+  }
+  
+  .booking-icon {
+    font-size: 0.9rem;
+    left: 12px;
+  }
+}
+
+/* Mobile Portrait (up to 575px) */
+@media (max-width: 575px) {
+  .booking-full-wrap {
+    padding: 10px 0;
+  }
+  
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .checkout-product-card {
+    border-radius: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .checkout-image-wrap img {
+    height: 200px;
+  }
+  
+  .checkout-product-info {
+    padding: 18px;
+  }
+  
+  .checkout-title {
+    font-size: 1.2rem;
+  }
+  
+  .checkout-subtext {
+    font-size: 0.85rem;
+  }
+  
+  .checkout-badge {
+    font-size: 0.65rem;
+    padding: 5px 12px;
+  }
+  
+  .checkout-price-box {
+    padding: 15px;
+  }
+  
+  .checkout-discount-pill {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+  }
+  
+  .checkout-price .price-new {
+    font-size: 1.5rem;
+  }
+  
+  .checkout-price .price-old {
+    font-size: 0.85rem;
+  }
+  
+  .checkout-features li {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .checkout-features i {
+    font-size: 1rem;
+    margin-right: 6px;
+  }
+  
+  .checkout-trust {
+    gap: 10px;
+    font-size: 0.75rem;
+  }
+  
+  .checkout-trust i {
+    font-size: 0.9rem;
+  }
+  
+  .booking-animated-card {
+    border-radius: 18px;
+    padding: 20px;
+  }
+  
+  .booking-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-group-animated {
+    margin-bottom: 1rem;
+  }
+  
+  .premium-input {
+    font-size: 0.85rem;
+    padding: 12px 12px;
+    padding-left: 40px;
+    border-radius: 10px;
+  }
+  
+  .booking-icon {
+    font-size: 0.85rem;
+    left: 12px;
+  }
+  
+  .invalid-feedback {
+    font-size: 0.8rem;
+    padding-left: 40px;
+  }
+  
+  .booking-cta-btn {
+    padding: 14px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+  }
+  
+  .alert {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+  }
+}
+
+/* Extra Small Mobile (up to 375px) */
+@media (max-width: 375px) {
+  .checkout-title {
+    font-size: 1.1rem;
+  }
+  
+  .checkout-price .price-new {
+    font-size: 1.4rem;
+  }
+  
+  .booking-title {
+    font-size: 1.15rem;
+  }
+  
+  .premium-input {
+    font-size: 0.8rem;
+    padding: 11px 10px;
+    padding-left: 38px;
+  }
+  
+  .booking-icon {
+    font-size: 0.8rem;
+    left: 10px;
+  }
+  
+  .booking-cta-btn {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ======================================================
+   PRINT STYLES
+====================================================== */
+@media print {
+  .booking-background-glow,
+  .booking-cta-btn,
+  .alert {
+    display: none;
+  }
+  
+  .checkout-product-card,
+  .booking-animated-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+/* ======================================================
+   ACCESSIBILITY IMPROVEMENTS
+====================================================== */
+.premium-input:focus-visible,
+.booking-cta-btn:focus-visible {
+  outline: 3px solid #ffc107;
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .checkout-product-card,
+  .booking-animated-card {
+    border: 2px solid #fff;
+  }
+  
+  .premium-input {
+    border: 2px solid #fff;
+  }
+}

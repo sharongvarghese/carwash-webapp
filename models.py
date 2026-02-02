@@ -53,6 +53,61 @@ class Package(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+from extensions import db
+from datetime import datetime, date
+
+class PackagePurchase(db.Model):
+    __tablename__ = "package_purchases"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Customer info
+    full_name = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+
+    # Package relation
+    package_id = db.Column(db.Integer, db.ForeignKey("packages.id"), nullable=False)
+    package = db.relationship("Package", backref="purchases")
+
+    # Tracking
+    total_uses = db.Column(db.Integer, nullable=False)
+    remaining_uses = db.Column(db.Integer, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    expiry_date = db.Column(db.Date, nullable=False)
+
+    status = db.Column(db.String(20), default="Active")  # Active / Expired / Completed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<PackagePurchase {self.id} - {self.full_name}>'
+    
+    @property
+    def is_expired(self):
+        """Check if package has expired"""
+        return date.today() > self.expiry_date
+    
+    @property
+    def is_completed(self):
+        """Check if all uses are consumed"""
+        return self.remaining_uses <= 0
+    
+    @property
+    def days_remaining(self):
+        """Calculate days remaining until expiry"""
+        delta = self.expiry_date - date.today()
+        return max(0, delta.days)
+    
+    @property
+    def auto_status(self):
+        """Automatically determine status"""
+        if self.remaining_uses <= 0:
+            return "Completed"
+        elif self.is_expired:
+            return "Expired"
+        else:
+            return "Active"
 
 
 class Booking(db.Model):
@@ -73,8 +128,9 @@ class Notification(db.Model):
     __tablename__ = "notifications"
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50))  # booking / package / contact / review
+    type = db.Column(db.String(50))  # booking / package_booking / contact / review
     message = db.Column(db.String(255))
+    reference_id = db.Column(db.Integer, nullable=True)  
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

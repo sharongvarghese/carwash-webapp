@@ -60,6 +60,8 @@
                       <i class="bi bi-envelope-fill"></i>
                     {% elif note.type == "booking" %}
                       <i class="bi bi-calendar-event"></i>
+                    {% elif note.type == "package_booking" %}
+                      <i class="bi bi-box-seam"></i>
                     {% elif note.type == "review" %}
                       <i class="bi bi-star-fill"></i>
                     {% else %}
@@ -76,6 +78,11 @@
                         View
                       </a>
                     {% elif note.type == "booking" %}
+                      <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
+                        class="btn btn-sm btn-gold-minimal">
+                        View
+                      </a>
+                    {% elif note.type == "package_booking" %}
                       <a href="{{ url_for('admin.mark_notification_read', note_id=note.id) }}"
                         class="btn btn-sm btn-gold-minimal">
                         View
@@ -142,6 +149,22 @@
           </div>
         </a>
       </div>
+
+       <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="{{ url_for('admin.package_bookings') }}" class="action-card glass-card">
+          <div class="action-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+          <div class="action-content">
+            <h6>Manage Packages Bookings</h6>
+            <p class="mb-0">Review all package bookings</p>
+          </div>
+          <div class="action-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+      
 
       <div class="col-lg-4 col-md-6 col-sm-6">
         <a href="{{ url_for('admin.admin_gallery') }}" class="action-card glass-card">

@@ -1,7 +1,8 @@
 # forms/public_forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, SelectField
+from wtforms import StringField, SubmitField, TextAreaField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, Regexp, Optional
+
 
 
 class ContactForm(FlaskForm):
@@ -44,6 +45,29 @@ class BookingForm(FlaskForm):
     def validate_service_id(self, field):
         if not field.data or field.data == 0:
             raise ValidationError("Please select a service")
+
+class PackageBookingForm(FlaskForm):
+    full_name = StringField(
+        "Full Name",
+        validators=[DataRequired(message="Full name is required"), 
+                    Length(max=120, message="Name too long")]
+    )
+
+    phone = StringField(
+        "Phone Number",
+        validators=[DataRequired(message="Phone number is required"), 
+                    Length(min=8, max=20, message="Invalid phone number")]
+    )
+
+    email = StringField(
+        "Email",
+        validators=[DataRequired(message="Email is required"), 
+                    Email(message="Invalid email address")]
+    )
+    
+    package_id = HiddenField(validators=[DataRequired()])
+
+    submit = SubmitField("Confirm Package Booking")
 
 
 # ===============================

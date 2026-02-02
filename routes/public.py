@@ -1,8 +1,9 @@
 # routes/public.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from extensions import db, mail
-from models import Service, Package, Booking, Notification, ContactMessage, GalleryImage, Review
-from forms.public_forms import ContactForm, BookingForm, ReviewForm
+from models import Service, Package, Booking, Notification, ContactMessage, GalleryImage, Review, PackagePurchase
+from forms.public_forms import ContactForm, BookingForm, ReviewForm, PackageBookingForm
+from datetime import datetime, timedelta
 from flask_mail import Message
 
 public_bp = Blueprint("public", __name__)
@@ -48,6 +49,7 @@ def services_page():
     services = Service.query.all()
     return render_template("public/services.html", services=services)
 
+
 @public_bp.route("/services/<int:service_id>")
 def service_detail(service_id):
     service = Service.query.get_or_404(service_id)
@@ -61,12 +63,9 @@ def service_detail(service_id):
     return render_template(
         "public/service_detail.html",
         service=service,
-        other_services = other_services
+        other_services=other_services
     )
 
-from flask import render_template
-from routes.public import public_bp
-from models import Package
 
 # ----------------------------
 # ALL PACKAGES PAGE
@@ -114,7 +113,77 @@ def package_details(package_id):
     )
 
 
+# ----------------------------
+# PACKAGE BOOKING PAGE
+# ----------------------------
+@public_bp.route("/packages/<int:package_id>/book", methods=["GET", "POST"])
+def package_booking(package_id):
+    """Handle package booking - endpoint: public.package_booking"""
+    package = Package.query.get_or_404(package_id)
 
+    form = PackageBookingForm()
+    
+    # Pre-populate package_id on GET request
+    if request.method == 'GET':
+        form.package_id.data = package.id  
+
+    if form.validate_on_submit():
+        try:
+            # Calculate dates
+            start_date = datetime.utcnow().date()
+            expiry_date = start_date + timedelta(days=package.validity_days)
+
+            # Create purchase record
+            purchase = PackagePurchase(
+                full_name=form.full_name.data.strip(),
+                phone=form.phone.data.strip(),
+                email=form.email.data.strip().lower(),
+                package_id=form.package_id.data,
+                total_uses=package.total_uses,
+                remaining_uses=package.total_uses,
+                start_date=start_date,
+                expiry_date=expiry_date,
+                status="Active"
+            )
+
+            db.session.add(purchase)
+            db.session.commit()
+            
+            # Create notification for admin
+            notification = Notification(
+                type="package_booking",
+                message=f"New package booking: {form.full_name.data} purchased {package.title}"
+            )
+            db.session.add(notification)
+            db.session.commit()
+            
+            flash(
+                f"✅ Package '{package.title}' booked successfully! "
+                f"Valid until {expiry_date.strftime('%B %d, %Y')}. "
+                f"You have {package.total_uses} service sessions.", 
+                "success"
+            )
+            
+            # ✅ FIXED: Use correct endpoint name
+            return redirect(url_for("public.packages_page"))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash("❌ An error occurred while processing your booking. Please try again.", "danger")
+            print(f"Package Booking Error: {e}")  # Log the error
+    
+    # Display form validation errors
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                field_name = field.replace('_', ' ').title()
+                flash(f"❌ {field_name}: {error}", "danger")
+
+    return render_template(
+        "public/package_booking.html",
+        package=package,
+        package_booking_form=form
+    )
 
 
 # ----------------------------
@@ -125,25 +194,28 @@ def contact_submit():
     contact_form = ContactForm(prefix="contact")
 
     if contact_form.validate_on_submit():
-  
-        msg = ContactMessage(
-            name=contact_form.name.data,
-            email=contact_form.email.data,
-            phone=contact_form.phone.data,
-            message=contact_form.message.data,
-        )
-        db.session.add(msg)
-        note = Notification(
-            type="contact",
-            message=f"New contact message from {contact_form.name.data}",
-        )
-        db.session.add(note)
-        admin_email = Message(
-            subject=f"New Contact – {contact_form.name.data}",
-            sender=current_app.config["MAIL_USERNAME"],
-            recipients=[current_app.config["MAIL_USERNAME"]],
-            reply_to=contact_form.email.data,
-            body=f"""
+        try:
+            msg = ContactMessage(
+                name=contact_form.name.data,
+                email=contact_form.email.data,
+                phone=contact_form.phone.data,
+                message=contact_form.message.data,
+            )
+            db.session.add(msg)
+            
+            note = Notification(
+                type="contact",
+                message=f"New contact message from {contact_form.name.data}",
+            )
+            db.session.add(note)
+            
+            # Admin email
+            admin_email = Message(
+                subject=f"New Contact – {contact_form.name.data}",
+                sender=current_app.config["MAIL_USERNAME"],
+                recipients=[current_app.config["MAIL_USERNAME"]],
+                reply_to=contact_form.email.data,
+                body=f"""
 Name: {contact_form.name.data}
 Email: {contact_form.email.data}
 Phone: {contact_form.phone.data}
@@ -151,14 +223,15 @@ Phone: {contact_form.phone.data}
 Message:
 {contact_form.message.data}
 """
-        )
-        mail.send(admin_email)
+            )
+            mail.send(admin_email)
 
-        reply_email = Message(
-            subject="Thanks for contacting us!",
-            sender=current_app.config["MAIL_USERNAME"],
-            recipients=[contact_form.email.data],
-            body=f"""
+            # Reply email
+            reply_email = Message(
+                subject="Thanks for contacting us!",
+                sender=current_app.config["MAIL_USERNAME"],
+                recipients=[contact_form.email.data],
+                body=f"""
 Hi {contact_form.name.data},
 
 Thank you for contacting us.
@@ -166,49 +239,59 @@ We have received your message and will get back to you shortly.
 
 — SPEED 'N' SHINE
 """
-        )
-        mail.send(reply_email)
+            )
+            mail.send(reply_email)
 
-        db.session.commit()
+            db.session.commit()
 
-        flash("Thank you! We'll contact you soon.", "success")
+            flash("Thank you! We'll contact you soon.", "success")
+        
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred. Please try again.", "danger")
+            print(f"Contact Form Error: {e}")
     else:
         flash("Please correct contact form errors.", "danger")
 
     return redirect(url_for("public.home"))
 
+
 # ----------------------------
 # BOOKING PAGE
 # ----------------------------
-
-
 @public_bp.route("/booking", methods=["GET", "POST"])
 def booking_page():
-
     services = Service.query.all()
     booking_form = BookingForm()
     booking_form.service_id.choices = [(s.id, s.name) for s in services]
+    
     if booking_form.validate_on_submit():
-        booking = Booking(
-            full_name=booking_form.full_name.data,
-            phone=booking_form.phone.data,
-            email=booking_form.email.data,
-            date=booking_form.date.data,
-            time=booking_form.time.data,
-            service_id=booking_form.service_id.data
-        )
+        try:
+            booking = Booking(
+                full_name=booking_form.full_name.data,
+                phone=booking_form.phone.data,
+                email=booking_form.email.data,
+                date=booking_form.date.data,
+                time=booking_form.time.data,
+                service_id=booking_form.service_id.data
+            )
 
-        db.session.add(booking)
+            db.session.add(booking)
 
-        notification = Notification(
-            type="booking",
-            message=f"New booking from {booking.full_name} for {booking.date} at {booking.time}"
-        )
-        db.session.add(notification)
-        db.session.commit()
+            notification = Notification(
+                type="booking",
+                message=f"New booking from {booking.full_name} for {booking.date} at {booking.time}"
+            )
+            db.session.add(notification)
+            db.session.commit()
 
-        flash("🎉 Booking successful! We will contact you shortly.", "success")
-        return redirect(url_for("public.booking_page"))
+            flash("🎉 Booking successful! We will contact you shortly.", "success")
+            return redirect(url_for("public.booking_page"))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred. Please try again.", "danger")
+            print(f"Booking Error: {e}")
 
     return render_template(
         "public/booking.html",
@@ -220,40 +303,45 @@ def booking_page():
 # ===============================
 # REVIEW ROUTES
 # ===============================
-
 @public_bp.route('/add-review', methods=['GET', 'POST'])
 def add_review():
     """Page where users submit reviews"""
     form = ReviewForm()
     
     if form.validate_on_submit():
-        review = Review(
-            name=form.name.data,
-            display_name=form.display_name.data if form.display_name.data else None,
-            email=form.email.data,
-            phone=form.phone.data,
-            review_text=form.review_text.data,
-            rating=form.rating.data
-        )
+        try:
+            review = Review(
+                name=form.name.data,
+                display_name=form.display_name.data if form.display_name.data else None,
+                email=form.email.data,
+                phone=form.phone.data,
+                review_text=form.review_text.data,
+                rating=form.rating.data
+            )
+            
+            db.session.add(review)
+            
+            # Create notification for admin
+            notification = Notification(
+                type="review",
+                message=f"New review from {form.name.data} - {form.rating.data} stars"
+            )
+            db.session.add(notification)
+            
+            db.session.commit()
+            
+            flash('✅ Thank you for your review! It has been submitted for approval.', 'success')
+            return redirect(url_for('public.home') + '#reviews')
         
-        db.session.add(review)
-        
-        # Create notification for admin
-        notification = Notification(
-            type="review",
-            message=f"New review from {form.name.data} - {form.rating.data} stars"
-        )
-        db.session.add(notification)
-        
-        db.session.commit()
-        
-        flash('Thank you for your review! It has been submitted successfully.', 'success')
-        return redirect(url_for('public.home') + '#reviews')
+        except Exception as e:
+            db.session.rollback()
+            flash('❌ An error occurred. Please try again.', 'danger')
+            print(f"Review Submission Error: {e}")
     
     return render_template('public/add_review.html', form=form)
 
 
-# ✅ NEW: ALL REVIEWS PAGE
+# ✅ ALL REVIEWS PAGE
 @public_bp.route('/reviews')
 def all_reviews():
     """Page displaying all approved reviews"""

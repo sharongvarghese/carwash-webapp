@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Details - {{ booking.full_name }}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-package-bookings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-package-bookings-wrapper">
+  
+  <!-- Back Button -->
+  <div class="mb-3">
+    <a href="{{ url_for('admin.package_bookings') }}" class="btn-back">
+      <i class="bi bi-arrow-left"></i> Back to Bookings
+    </a>
+  </div>
+
+  <!-- Header -->
+  <div class="detail-header">
+    <div>
+      <h1 class="admin-title">Booking #{{ booking.id }}</h1>
+      <p class="admin-subtitle">{{ booking.full_name }}</p>
+    </div>
+    
+    {% if booking.status == 'Active' %}
+      <span class="status-badge status-active">
+        <i class="bi bi-check-circle"></i> Active
+      </span>
+    {% elif booking.status == 'Completed' %}
+      <span class="status-badge status-completed">
+        <i class="bi bi-check-all"></i> Completed
+      </span>
+    {% elif booking.status == 'Expired' %}
+      <span class="status-badge status-expired">
+        <i class="bi bi-clock-history"></i> Expired
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="row g-4">
+    
+    <!-- Left Column: Customer & Package Info -->
+    <div class="col-lg-8">
+      
+      <!-- Customer Information -->
+      <div class="admin-card">
+        <h3 class="card-title">
+          <i class="bi bi-person-circle"></i> Customer Information
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Full Name</label>
+            <p>{{ booking.full_name }}</p>
+          </div>
+          <div class="info-item">
+            <label>Email</label>
+            <p><a href="mailto:{{ booking.email }}">{{ booking.email }}</a></p>
+          </div>
+          <div class="info-item">
+            <label>Phone</label>
+            <p><a href="tel:{{ booking.phone }}">{{ booking.phone }}</a></p>
+          </div>
+          <div class="info-item">
+            <label>Booking Date</label>
+            <p>{{ booking.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package Information -->
+      <div class="admin-card mt-4">
+        <h3 class="card-title">
+          <i class="bi bi-box-seam"></i> Package Details
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Package Name</label>
+            <p><strong>{{ booking.package.title }}</strong></p>
+          </div>
+          <div class="info-item">
+            <label>Total Sessions</label>
+            <p>{{ booking.total_uses }} sessions</p>
+          </div>
+          <div class="info-item">
+            <label>Start Date</label>
+            <p>{{ booking.start_date.strftime('%B %d, %Y') }}</p>
+          </div>
+          <div class="info-item">
+            <label>Expiry Date</label>
+            <p>{{ booking.expiry_date.strftime('%B %d, %Y') }}</p>
+          </div>
+          <div class="info-item">
+            <label>Validity Period</label>
+            <p>{{ booking.package.validity_days }} days</p>
+          </div>
+          <div class="info-item">
+            <label>Days Remaining</label>
+            <p>
+              {% if booking.is_expired %}
+                <span class="text-danger">Expired</span>
+              {% else %}
+                <span class="text-success">{{ booking.days_remaining }} days</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Usage Management -->
+    <div class="col-lg-4">
+      
+      <!-- Usage Status Card -->
+      <div class="admin-card usage-card">
+        <h3 class="card-title">
+          <i class="bi bi-speedometer2"></i> Usage Status
+        </h3>
+        
+        <!-- Progress Circle -->
+        <div class="usage-circle-container">
+          {% set usage_percent = (booking.remaining_uses / booking.total_uses * 100) | int %}
+          <div class="usage-circle">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" class="usage-bg"></circle>
+              <circle cx="50" cy="50" r="45" 
+                      class="usage-progress" 
+                      style="--percent: {{ usage_percent }}"></circle>
+            </svg>
+            <div class="usage-number">
+              <strong>{{ booking.remaining_uses }}</strong>
+              <span>/ {{ booking.total_uses }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="usage-stats mt-3">
+          <div class="stat-row">
+            <span>Used Sessions</span>
+            <strong>{{ booking.total_uses - booking.remaining_uses }}</strong>
+          </div>
+          <div class="stat-row">
+            <span>Remaining Sessions</span>
+            <strong>{{ booking.remaining_uses }}</strong>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        {% if booking.status == 'Active' and not booking.is_expired and booking.remaining_uses > 0 %}
+        <div class="quick-actions mt-4">
+          <form method="POST" 
+                action="{{ url_for('admin.update_remaining_uses', booking_id=booking.id) }}"
+                onsubmit="return confirm('Are you sure you want to record a service? This will decrease remaining sessions from {{ booking.remaining_uses }} to {{ booking.remaining_uses - 1 }}.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="decrement">
+            <button type="submit" class="btn-quick-action decrement">
+              <i class="bi bi-dash-circle"></i>
+              Record Service Completed
+            </button>
+          </form>
+          
+          <form method="POST" 
+                action="{{ url_for('admin.update_remaining_uses', booking_id=booking.id) }}"
+                class="mt-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="increment">
+            <button type="submit" 
+                    class="btn-quick-action increment"
+                    {% if booking.remaining_uses >= booking.total_uses %}disabled{% endif %}>
+              <i class="bi bi-plus-circle"></i>
+              Restore Session
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+        <!-- Manual Update -->
+        <div class="manual-update mt-4">
+          <form method="POST" 
+                action="{{ url_for('admin.update_remaining_uses', booking_id=booking.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="manual">
+            <label>Manual Update</label>
+            <div class="input-group">
+              <input type="number" 
+                     name="remaining_uses" 
+                     class="form-control" 
+                     min="0" 
+                     max="{{ booking.total_uses }}"
+                     value="{{ booking.remaining_uses }}"
+                     {% if booking.is_expired or booking.remaining_uses <= 0 %}readonly{% endif %}>
+              <button type="submit" 
+                      class="btn-update"
+                      {% if booking.is_expired or booking.remaining_uses <= 0 %}disabled{% endif %}>
+                Update
+              </button>
+            </div>
+            <small class="text-muted">Enter value between 0 and {{ booking.total_uses }}</small>
+          </form>
+        </div>
+
+        <!-- Status Alerts -->
+        {% if booking.remaining_uses <= 0 %}
+        <div class="alert-box alert-completed mt-3">
+          <i class="bi bi-check-all"></i>
+          <strong>All Sessions Used</strong>
+          <p>This package has been fully utilized.</p>
+        </div>
+        {% elif booking.is_expired %}
+        <div class="alert-box alert-expired mt-3">
+          <i class="bi bi-exclamation-triangle"></i>
+          <strong>Package Expired</strong>
+          <p>This package expired on {{ booking.expiry_date.strftime('%B %d, %Y') }}</p>
+        </div>
+        {% elif booking.days_remaining <= 7 %}
+        <div class="alert-box alert-warning mt-3">
+          <i class="bi bi-clock-history"></i>
+          <strong>Expiring Soon</strong>
+          <p>Only {{ booking.days_remaining }} days remaining</p>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Delete Button -->
+      <div class="admin-card mt-4">
+        <h3 class="card-title text-danger">
+          <i class="bi bi-trash"></i> Danger Zone
+        </h3>
+        <p class="text-muted mb-3">Permanently delete this booking</p>
+        <form method="POST" 
+              action="{{ url_for('admin.delete_package_booking', booking_id=booking.id) }}"
+              onsubmit="return confirm('Are you sure? This action cannot be undone.');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-danger w-100">
+            <i class="bi bi-trash"></i> Delete Booking
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

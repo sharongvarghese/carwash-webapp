@@ -2,9 +2,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage, Review
+from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage, Review, PackagePurchase
 from forms.admin_forms import AdminLoginForm, ServiceForm, PackageForm, GalleryUploadForm
 from werkzeug.utils import secure_filename
+from datetime import datetime, date
 import os
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -60,7 +61,7 @@ def dashboard():
 
 
 # =========================
-# MARK NOTIFICATION AS READ (UPDATED)
+# MARK NOTIFICATION AS READ 
 # =========================
 @admin_bp.route("/notifications/read/<int:note_id>")
 @login_required
@@ -74,7 +75,14 @@ def mark_notification_read(note_id):
         return redirect(url_for("admin.contact_inbox"))
     elif note.type == "booking":
         return redirect(url_for("admin.bookings"))
-    elif note.type == "review":  # ✅ NEW
+    elif note.type == "package_booking": 
+        # If there's a reference_id (booking_id), go to detail page
+        if note.reference_id:
+            return redirect(url_for("admin.package_booking_detail", booking_id=note.reference_id))
+        else:
+            # Otherwise go to package bookings list
+            return redirect(url_for("admin.package_bookings"))
+    elif note.type == "review":
         return redirect(url_for("admin.reviews_panel"))
     else:
         return redirect(url_for("admin.dashboard"))
@@ -418,6 +426,156 @@ def delete_booking(booking_id):
     flash("Booking deleted successfully!", "success")
     return redirect(url_for("admin.bookings"))
 
+# ===============================
+# PACKAGE BOOKINGS MANAGEMENT
+# ===============================
+
+@admin_bp.route('/package-bookings')
+@login_required
+def package_bookings():
+    """Display all package bookings"""
+    # Get filter parameter
+    status_filter = request.args.get('status', 'all')
+    
+    # Base query
+    query = PackagePurchase.query
+    
+    # Apply filters
+    if status_filter == 'active':
+        query = query.filter(
+            PackagePurchase.remaining_uses > 0,
+            PackagePurchase.expiry_date >= date.today()
+        )
+    elif status_filter == 'expired':
+        query = query.filter(PackagePurchase.expiry_date < date.today())
+    elif status_filter == 'completed':
+        query = query.filter(PackagePurchase.remaining_uses <= 0)
+    
+    # Get all bookings ordered by most recent
+    bookings = query.order_by(PackagePurchase.created_at.desc()).all()
+    
+    # Update statuses automatically
+    for booking in bookings:
+        old_status = booking.status
+        new_status = booking.auto_status
+        if old_status != new_status:
+            booking.status = new_status
+    
+    # ✅ AUTO-MARK ALL PACKAGE BOOKING NOTIFICATIONS AS READ
+    unread_package_notifications = Notification.query.filter_by(
+        type="package_booking",
+        is_read=False
+    ).all()
+    
+    for notification in unread_package_notifications:
+        notification.is_read = True
+    
+    if unread_package_notifications:
+        db.session.commit()
+    else:
+        db.session.commit()
+    
+    # Count statistics
+    total_bookings = PackagePurchase.query.count()
+    active_bookings = PackagePurchase.query.filter(
+        PackagePurchase.remaining_uses > 0,
+        PackagePurchase.expiry_date >= date.today()
+    ).count()
+    expired_bookings = PackagePurchase.query.filter(
+        PackagePurchase.expiry_date < date.today()
+    ).count()
+    completed_bookings = PackagePurchase.query.filter(
+        PackagePurchase.remaining_uses <= 0
+    ).count()
+    
+    return render_template(
+        'admin/package_bookings.html',
+        bookings=bookings,
+        status_filter=status_filter,
+        total_bookings=total_bookings,
+        active_bookings=active_bookings,
+        expired_bookings=expired_bookings,
+        completed_bookings=completed_bookings
+    )
+
+
+@admin_bp.route('/package-bookings/<int:booking_id>')
+@login_required
+def package_booking_detail(booking_id):
+    """View detailed information about a package booking"""
+    booking = PackagePurchase.query.get_or_404(booking_id)
+    
+    # Update status
+    booking.status = booking.auto_status
+    db.session.commit()
+    
+    return render_template(
+        'admin/package_booking_detail.html',
+        booking=booking
+    )
+
+
+@admin_bp.route('/package-bookings/<int:booking_id>/update-remaining', methods=['POST'])
+@login_required
+def update_remaining_uses(booking_id):
+    """Update remaining uses for a package booking"""
+    booking = PackagePurchase.query.get_or_404(booking_id)
+    
+    # Get the action from form
+    action = request.form.get('action')
+    
+    if action == 'decrement':
+        if booking.remaining_uses > 0:
+            booking.remaining_uses -= 1
+            flash(f'✅ Service session recorded. {booking.remaining_uses} sessions remaining.', 'success')
+        else:
+            flash('⚠️ No remaining sessions to deduct.', 'warning')
+    
+    elif action == 'increment':
+        if booking.remaining_uses < booking.total_uses:
+            booking.remaining_uses += 1
+            flash(f'✅ Session restored. {booking.remaining_uses} sessions remaining.', 'success')
+        else:
+            flash('⚠️ Cannot exceed total sessions.', 'warning')
+    
+    elif action == 'manual':
+        try:
+            new_value = int(request.form.get('remaining_uses', 0))
+            if 0 <= new_value <= booking.total_uses:
+                old_value = booking.remaining_uses
+                booking.remaining_uses = new_value
+                flash(f'✅ Remaining sessions updated from {old_value} to {new_value}.', 'success')
+            else:
+                flash(f'⚠️ Value must be between 0 and {booking.total_uses}.', 'warning')
+        except ValueError:
+            flash('❌ Invalid value provided.', 'danger')
+    
+    # Update status
+    booking.status = booking.auto_status
+    booking.updated_at = datetime.utcnow()
+    
+    db.session.commit()
+    
+    # Check if referrer is detail page
+    if 'package_booking_detail' in request.referrer:
+        return redirect(url_for('admin.package_booking_detail', booking_id=booking_id))
+    
+    return redirect(url_for('admin.package_bookings'))
+
+
+@admin_bp.route('/package-bookings/<int:booking_id>/delete', methods=['POST'])
+@login_required
+def delete_package_booking(booking_id):
+    """Delete a package booking"""
+    booking = PackagePurchase.query.get_or_404(booking_id)
+    
+    customer_name = booking.full_name
+    
+    db.session.delete(booking)
+    db.session.commit()
+    
+    flash(f'✅ Package booking for {customer_name} has been deleted.', 'success')
+    return redirect(url_for('admin.package_bookings'))
 
 
 # =========================

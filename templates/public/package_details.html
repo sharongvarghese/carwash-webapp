@@ -33,7 +33,7 @@
 
       <!-- FEATURES -->
       <div class="product-features mb-3">
-        <span>✔ {{ package.total_uses }} Uses</span>
+        <span>✔ {{ package.total_uses }} service sessions</span>
         <span>✔ Valid for {{ package.validity_days }} days</span>
       </div>
 
@@ -51,7 +51,7 @@
       </div>
 
       <!-- CTA -->
-      <a href="#"
+      <a href="{{ url_for('public.package_booking', package_id=package.id) }}"
          class="product-cta disabled"
          title="Purchase coming soon">
         <i class="bi bi-cart-check"></i>

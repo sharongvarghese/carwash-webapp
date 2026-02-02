@@ -534,13 +534,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/* ====================================================
-      ADMIN - BOOKINGS PANEL JS
-==================================================== */
-// SEARCH ONLY – NO STATUS LOGIC
-document.getElementById('searchInput')?.addEventListener('input', function () {
-  const value = this.value.toLowerCase();
-  document.querySelectorAll('.bookings-table tbody tr').forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
-  });
-});
