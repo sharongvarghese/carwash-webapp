@@ -11,20 +11,38 @@
     <!-- IMAGE SIDE -->
     <div class="product-image-box">
       <div class="image-glass-glow"></div>
-      <img src="{{ url_for('static', filename=package.image_url) }}"
-           alt="{{ package.title }}">
+
+      {% if package.image_url %}
+        <img src="{{ url_for('static', filename=package.image_url) }}"
+             alt="{{ package.title }}">
+      {% else %}
+        <img src="{{ url_for('static', filename='images/default-package.jpg') }}"
+             alt="{{ package.title }}">
+      {% endif %}
     </div>
 
     <!-- INFO SIDE -->
     <div class="product-info-box">
 
-      <span class="product-badge">Premium Package</span>
+      <!-- BADGE -->
+      {% if package.badge %}
+        <span class="product-badge">{{ package.badge }}</span>
+      {% endif %}
 
       <h1 class="product-title">{{ package.title }}</h1>
+
+      <!-- FEATURES -->
+      <div class="product-features mb-3">
+        <span>✔ {{ package.total_uses }} Uses</span>
+        <span>✔ Valid for {{ package.validity_days }} days</span>
+      </div>
 
       <!-- PRICE -->
       <div class="product-price">
         {% if package.discount_price %}
+          <span class="table-discount-badge">
+                  {{ ((package.price - package.discount_price) / package.price * 100) | round | int }}% OFF
+                </span><br>
           <span class="price-new">₹{{ package.discount_price }}</span>
           <span class="price-old">₹{{ package.price }}</span>
         {% else %}
@@ -33,9 +51,11 @@
       </div>
 
       <!-- CTA -->
-      <a href="{{ url_for('public.booking_page') }}" class="product-cta">
-        <i class="bi bi-calendar-check"></i>
-        Book This Package
+      <a href="#"
+         class="product-cta disabled"
+         title="Purchase coming soon">
+        <i class="bi bi-cart-check"></i>
+        Book Package
       </a>
 
       <!-- TRUST BADGES -->
@@ -51,7 +71,7 @@
 </section>
 
 <!-- ===============================
-   FULL DETAILS – FEATURE CARD
+   FULL DETAILS
 =============================== -->
 <section class="product-details container">
 
@@ -62,14 +82,20 @@
       Package Details
     </h2>
 
-    <ul class="details-list">
-      {% for line in package.details.split('\n') %}
-        <li>
-          <i class="bi bi-check-circle-fill"></i>
-          {{ line }}
-        </li>
-      {% endfor %}
-    </ul>
+    {% if package.details %}
+      <ul class="details-list">
+        {% for line in package.details.split('\n') %}
+          {% if line.strip() %}
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            {{ line }}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No additional details available.</p>
+    {% endif %}
 
   </div>
 
@@ -87,7 +113,6 @@
     {% for pkg in related_packages %}
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
 
-      <!-- PACKAGE PREVIEW CARD (SAME AS INDEX) -->
       <div class="package-preview-card">
 
         <!-- IMAGE -->
@@ -104,9 +129,13 @@
         <!-- BODY -->
         <div class="package-preview-body">
 
-          <h4 class="package-preview-title">
-            {{ pkg.title }}
-          </h4>
+          <h4 class="package-preview-title">{{ pkg.title }}</h4>
+
+          <!-- FEATURES -->
+          <small class="d-block mb-2">
+            ✔ {{ pkg.total_uses }} Uses<br>
+            ✔ {{ pkg.validity_days }} days validity
+          </small>
 
           <!-- PRICE -->
           <div class="package-preview-price">
@@ -137,8 +166,5 @@
   </div>
 
 </section>
-
-
-
 
 {% endblock %}

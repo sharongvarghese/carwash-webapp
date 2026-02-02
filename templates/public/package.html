@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
-
 {% block content %}
 
-
-
 <section class="container py-5 mt-5">
-  
+
   <h2 class="premium-packages-title text-center mb-5">
     Our Premium Packages
   </h2>
@@ -32,23 +28,46 @@
         <!-- CONTENT -->
         <div class="premium-pkg-body">
 
+          <!-- TITLE -->
           <h4 class="premium-pkg-title">{{ pkg.title }}</h4>
 
+          <!-- BADGE -->
+          {% if pkg.badge %}
+            <span class="table-discount-badge d-inline-block mb-2">
+              {{ pkg.badge }}
+            </span>
+          {% endif %}
+
+          <!-- DETAILS -->
           {% if pkg.details %}
             <p class="premium-pkg-details">{{ pkg.details }}</p>
           {% endif %}
 
-          <div class="premium-pkg-price-box">
-            {% if pkg.discount_price %}
-              <span class="premium-price-new">₹{{ pkg.discount_price }}</span>
-              <span class="premium-price-old">₹{{ pkg.price }}</span>
-            {% else %}
-              <span class="premium-price-new">₹{{ pkg.price }}</span>
-            {% endif %}
+          <!-- FEATURES -->
+          <div class="premium-pkg-features mb-2">
+            <small>
+              ✔ {{ pkg.total_uses }} Uses<br>
+              ✔ Valid for {{ pkg.validity_days }} days
+            </small>
           </div>
 
-          <a href="/booking" class="premium-btn">
-            Book This Package
+           <!-- PRICE -->
+            <div class="package-preview-price mt-2">
+              {% if pkg.discount_price %}
+                <span class="table-discount-badge">
+                  {{ ((pkg.price - pkg.discount_price) / pkg.price * 100) | round | int }}% OFF
+                </span><br>
+                <span class="new">₹{{ pkg.discount_price }}</span>
+                <span class="old">₹{{ pkg.price }}</span>
+              {% else %}
+                <span class="new">₹{{ pkg.price }}</span>
+              {% endif %}
+            </div>
+
+          <!-- CTA -->
+          <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
+             class="premium-btn mt-3">
+            View Package
           </a>
 
         </div>
@@ -58,6 +77,12 @@
     {% endfor %}
 
   </div>
+
+  {% if not packages %}
+  <div class="text-center py-5">
+    <p class="text-muted">No packages available at the moment.</p>
+  </div>
+  {% endif %}
 
 </section>
 

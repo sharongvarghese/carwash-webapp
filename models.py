@@ -43,11 +43,16 @@ class Package(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
-    details = db.Column(db.Text, nullable=True)
-    price = db.Column(db.Float, nullable=True)
+    total_uses = db.Column(db.Integer, nullable=False)      
+    validity_days = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
     discount_price = db.Column(db.Float, nullable=True)
+    details = db.Column(db.Text, nullable=True)
     image_url = db.Column(db.String(255), nullable=True)
+    badge = db.Column(db.String(50), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 
 class Booking(db.Model):

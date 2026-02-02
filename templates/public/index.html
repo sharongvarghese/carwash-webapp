@@ -162,7 +162,6 @@
 </section>
 
 
-
 <!-- ===============================
         PACKAGES PREVIEW SECTION
 =============================== -->
@@ -183,7 +182,7 @@
 
       {% for pkg in packages %}
       <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-        <!-- PREVIEW CARD -->
+
         <div class="package-preview-card">
 
           <!-- IMAGE -->
@@ -200,17 +199,32 @@
           <!-- BODY -->
           <div class="package-preview-body">
 
+            <!-- TITLE -->
             <h4 class="package-preview-title">
               {{ pkg.title }}
             </h4>
 
+            <!-- BADGE -->
+            {% if pkg.badge %}
+              <span class="table-discount-badge mb-2 d-inline-block">
+                {{ pkg.badge }}
+              </span>
+            {% endif %}
+
+            <!-- FEATURES -->
+            <div class="package-preview-features">
+              <small>
+                ✔ {{ pkg.total_uses }} Uses <br>
+                ✔ Valid for {{ pkg.validity_days }} days
+              </small>
+            </div>
 
             <!-- PRICE -->
-            <div class="package-preview-price">
+            <div class="package-preview-price mt-2">
               {% if pkg.discount_price %}
-              <span class="table-discount-badge">
-                {{ ((pkg.price - pkg.discount_price) / pkg.price * 100) | round | int }}% OFF
-              </span><br>
+                <span class="table-discount-badge">
+                  {{ ((pkg.price - pkg.discount_price) / pkg.price * 100) | round | int }}% OFF
+                </span><br>
                 <span class="new">₹{{ pkg.discount_price }}</span>
                 <span class="old">₹{{ pkg.price }}</span>
               {% else %}
@@ -220,11 +234,11 @@
 
             <!-- CTA -->
             <a href="{{ url_for('public.package_details', package_id=pkg.id) }}"
-            class="btn btn-gold w-100">Book This Package </a>
-
+               class="btn btn-gold w-100 mt-3">
+              View Package
+            </a>
 
           </div>
-
         </div>
 
       </div>
@@ -234,6 +248,7 @@
 
   </div>
 </section>
+
 
 <!-- ===============================
         PREMIUM GALLERY SECTION

@@ -270,9 +270,11 @@ def edit_service(service_id):
 @login_required
 def manage_packages():
     form = PackageForm()
-    packages = Package.query.all()
+    packages = Package.query.order_by(Package.created_at.desc()).all()
 
     if form.validate_on_submit():
+        image_url = None
+
         if form.image.data:
             file = form.image.data
             filename = secure_filename(file.filename)
@@ -284,24 +286,30 @@ def manage_packages():
             file.save(filepath)
 
             image_url = f"uploads/packages/{filename}"
-        else:
-            image_url = None
 
         package = Package(
             title=form.title.data,
-            details=form.details.data,
+            total_uses=form.total_uses.data,
+            validity_days=form.validity_days.data,
             price=form.price.data,
             discount_price=form.discount_price.data,
+            details=form.details.data,
+            badge=form.badge.data,
+            is_active=form.is_active.data,
             image_url=image_url
         )
 
         db.session.add(package)
         db.session.commit()
+
         flash("Package added successfully!", "success")
         return redirect(url_for("admin.manage_packages"))
 
-    return render_template("admin/packages.html", form=form, packages=packages)
-
+    return render_template(
+        "admin/packages.html",
+        form=form,
+        packages=packages
+    )
 
 # =========================
 # EDIT PACKAGE
@@ -314,9 +322,13 @@ def edit_package(package_id):
 
     if form.validate_on_submit():
         package.title = form.title.data
+        package.total_uses = form.total_uses.data
+        package.validity_days = form.validity_days.data
         package.price = form.price.data
         package.discount_price = form.discount_price.data
         package.details = form.details.data
+        package.badge = form.badge.data
+        package.is_active = form.is_active.data
 
         if form.image.data:
             upload_folder = os.path.join("static", "uploads", "packages")
@@ -338,25 +350,22 @@ def edit_package(package_id):
         package=package
     )
 
+
 # =========================
 # DELETE PACKAGE
 # =========================
 
-@admin_bp.route("/packages/delete/<int:package_id>")
+@admin_bp.route("/packages/delete/<int:package_id>", methods=["POST"])
 @login_required
 def delete_package(package_id):
     package = Package.query.get_or_404(package_id)
-    if package.image_url:
-        image_path = os.path.join("static", package.image_url)  
-        if os.path.exists(image_path):
-            try:
-                os.remove(image_path)
-            except Exception as e:
-                print("Error deleting image:", e)
-    db.session.delete(package)
+
+    package.is_active = False
     db.session.commit()
-    flash("Package deleted successfully!", "info")
+
+    flash("Package disabled successfully!", "info")
     return redirect(url_for("admin.manage_packages"))
+
 
 
 # =========================

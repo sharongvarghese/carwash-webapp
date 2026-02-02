@@ -64,24 +64,45 @@ def service_detail(service_id):
         other_services = other_services
     )
 
+from flask import render_template
+from routes.public import public_bp
+from models import Package
+
 # ----------------------------
 # ALL PACKAGES PAGE
 # ----------------------------
-@public_bp.route('/packages')
+@public_bp.route("/packages")
 def packages_page():
-    packages = Package.query.all()  
-    return render_template('public/package.html', packages=packages)   
+    packages = (
+        Package.query
+        .filter_by(is_active=True)
+        .order_by(Package.created_at.desc())
+        .all()
+    )
+
+    return render_template(
+        "public/package.html",
+        packages=packages
+    )
+
 
 # ----------------------------
 # PACKAGE DETAIL PAGE
 # ----------------------------
 @public_bp.route("/packages/<int:package_id>")
 def package_details(package_id):
-    package = Package.query.get_or_404(package_id)
+    package = (
+        Package.query
+        .filter_by(id=package_id, is_active=True)
+        .first_or_404()
+    )
 
     related_packages = (
         Package.query
-        .filter(Package.id != package_id)
+        .filter(
+            Package.id != package_id,
+            Package.is_active == True
+        )
         .limit(3)
         .all()
     )
@@ -91,6 +112,7 @@ def package_details(package_id):
         package=package,
         related_packages=related_packages
     )
+
 
 
 

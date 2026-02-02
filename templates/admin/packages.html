@@ -1,13 +1,9 @@
 {% extends "base.html" %}
-
-
-
-
 {% block content %}
 
 <div class="container py-4 mt-4 packages-container">
-  
-  <!-- Page Header -->
+
+  <!-- PAGE HEADER -->
   <div class="page-header mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div>
@@ -27,240 +23,159 @@
         <i class="bi bi-plus-circle me-2"></i>Add New Package
       </h5>
     </div>
-    
-    <form method="post" enctype="multipart/form-data" class="package-form">
+
+    <form method="post" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
-      
+
       <div class="row g-3">
-        <!-- PACKAGE TITLE -->
-        <div class="col-lg-6 col-md-6">
+
+        <!-- TITLE -->
+        <div class="col-lg-6">
           <label class="admin-form-label">Package Title</label>
-          {{ form.title(class_="admin-form-control", placeholder="e.g., Premium Bridal Package") }}
-          {% for err in form.title.errors %}
-            <small class="text-danger d-block mt-1">{{ err }}</small>
-          {% endfor %}
+          {{ form.title(class_="admin-form-control") }}
+        </div>
+
+        <!-- BADGE -->
+        <div class="col-lg-6">
+          <label class="admin-form-label">Badge</label>
+          {{ form.badge(class_="admin-form-control", placeholder="Popular / Best Value") }}
         </div>
 
         <!-- PRICE -->
-        <div class="col-lg-3 col-md-6">
-          <label class="admin-form-label">Original Price (₹)</label>
-          {{ form.price(class_="admin-form-control", placeholder="e.g., 5000") }}
-          {% for err in form.price.errors %}
-            <small class="text-danger d-block mt-1">{{ err }}</small>
-          {% endfor %}
+        <div class="col-lg-3">
+          <label class="admin-form-label">Price (₹)</label>
+          {{ form.price(class_="admin-form-control") }}
         </div>
 
-        <!-- DISCOUNT PRICE -->
-        <div class="col-lg-3 col-md-6">
+        <!-- DISCOUNT -->
+        <div class="col-lg-3">
           <label class="admin-form-label">Discount Price (₹)</label>
-          {{ form.discount_price(class_="admin-form-control", placeholder="e.g., 4500") }}
-          {% for err in form.discount_price.errors %}
-            <small class="text-danger d-block mt-1">{{ err }}</small>
-          {% endfor %}
+          {{ form.discount_price(class_="admin-form-control") }}
         </div>
 
-        <!-- IMAGE UPLOAD -->
+        <!-- TOTAL USES -->
+        <div class="col-lg-3">
+          <label class="admin-form-label">Total Uses</label>
+          {{ form.total_uses(class_="admin-form-control") }}
+        </div>
+
+        <!-- VALIDITY -->
+        <div class="col-lg-3">
+          <label class="admin-form-label">Validity (Days)</label>
+          {{ form.validity_days(class_="admin-form-control") }}
+        </div>
+
+        <!-- IMAGE -->
         <div class="col-12">
           <label class="admin-form-label">Package Image</label>
-          <div class="admin-custom-file-upload">
-            {{ form.image(class_="admin-file-input", id="packageImage") }}
-            <label for="packageImage" class="admin-file-label">
-              <i class="bi bi-cloud-upload me-2"></i>
-              <span class="admin-file-text">Choose image...</span>
-            </label>
-          </div>
-          {% for err in form.image.errors %}
-            <small class="text-danger d-block mt-1">{{ err }}</small>
-          {% endfor %}
+          {{ form.image(class_="admin-form-control") }}
         </div>
 
         <!-- DETAILS -->
         <div class="col-12">
-          <label class="admin-form-label">Package Details</label>
-          {{ form.details(class_="admin-form-control", placeholder="Enter package details and inclusions...", rows="3") }}
-          {% for err in form.details.errors %}
-            <small class="text-danger d-block mt-1">{{ err }}</small>
-          {% endfor %}
+          <label class="admin-form-label">Details</label>
+          {{ form.details(class_="admin-form-control", rows="3") }}
         </div>
 
-        <!-- SUBMIT BUTTON -->
+        <!-- ACTIVE -->
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.is_active(class_="form-check-input") }}
+            <label class="form-check-label ms-2">Active (visible to users)</label>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
         <div class="col-12">
           {{ form.submit(class_="btn admin-btn-gold") }}
         </div>
+
       </div>
     </form>
   </div>
 
-  <!-- PACKAGES LIST HEADER -->
-  <div class="admin-packages-list-header mb-3">
-    <h5 class="mb-0">
-      <i class="bi bi-box-seam me-2"></i>All Packages
-      <span class="admin-badge-gold">{{ packages|length }}</span>
-    </h5>
-  </div>
-
-  <!-- PACKAGES GRID (Mobile & Tablet) -->
-  <div class="packages-grid d-lg-none">
-    {% for package in packages %}
-    <div class="package-card-mobile">
-      <div class="package-card-image">
-        {% if package.image_url %}
-          <img src="{{ url_for('static', filename=package.image_url) }}"
-               alt="{{ package.title }}"
-               class="mobile-package-img">
-        {% else %}
-          <div class="package-no-image-placeholder">
-            <i class="bi bi-image"></i>
-          </div>
-        {% endif %}
-      </div>
-      
-      <div class="package-card-content">
-        <h6 class="package-card-title">{{ package.title }}</h6>
-        
-        <div class="package-pricing">
-          {% if package.discount_price %}
-            <span class="package-price-original">₹{{ package.price }}</span>
-            <span class="package-price-discount">₹{{ package.discount_price }}</span>
-          {% else %}
-            <span class="package-price-single">₹{{ package.price }}</span>
-          {% endif %}
-        </div>
-
-        {% if package.details %}
-        <p class="package-details-mobile">{{ package.details }}</p>
-        {% endif %}
-        <div class="package-card-actions d-flex gap-2">
-          <!-- EDIT -->
-          <a href="{{ url_for('admin.edit_package', package_id=package.id) }}"
-            class="btn btn-sm admin-btn-edit-mobile w-50">
-            <i class="bi bi-pencil me-1"></i>Edit
-          </a>
-
-          <!-- DELETE -->
-          <a href="{{ url_for('admin.delete_package', package_id=package.id) }}"
-            class="btn btn-sm admin-btn-delete-mobile w-50"
-            onclick="return confirm('Delete {{ package.title }}?')">
-            <i class="bi bi-trash me-1"></i>Delete
-          </a>
-        </div>
-
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-
-  <!-- PACKAGES TABLE (Desktop) -->
-  <div class="table-responsive d-none d-lg-block">
+  <!-- PACKAGES LIST -->
+  <div class="table-responsive">
     <table class="packages-table">
       <thead>
         <tr>
-          <th style="width: 60px;">#</th>
-          <th style="width: 100px;">Image</th>
-          <th>Package Title</th>
-          <th style="width: 150px;">Original Price</th>
-          <th style="width: 150px;">Discount Price</th>
-          <th style="width: 120px;">Actions</th>
+          <th>#</th>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Uses</th>
+          <th>Validity</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
 
       <tbody>
         {% for package in packages %}
         <tr>
-          <!-- ID -->
-          <td>
-            <span class="package-id">{{ package.id }}</span>
-          </td>
+          <td>{{ package.id }}</td>
 
-          <!-- IMAGE -->
           <td>
-            <div class="table-image-wrapper">
-              {% if package.image_url %}
-                <img src="{{ url_for('static', filename=package.image_url) }}"
-                     alt="{{ package.title }}"
-                     class="table-package-image">
-              {% else %}
-                <div class="table-no-image">
-                  <i class="bi bi-image"></i>
-                </div>
-              {% endif %}
-            </div>
-          </td>
-
-          <!-- TITLE -->
-          <td>
-            <div class="table-package-info">
-              <span class="table-package-title">{{ package.title }}</span>
-              {% if package.details %}
-              <p class="table-package-details">{{ package.details }}</p>
-              {% endif %}
-            </div>
-          </td>
-
-          <!-- PRICE -->
-          <td>
-            <span class="table-price">₹{{ package.price }}</span>
-          </td>
-
-          <!-- DISCOUNT PRICE -->
-          <td>
-            {% if package.discount_price %}
-              <span class="table-discount-price">₹{{ package.discount_price }}</span>
-              <span class="table-discount-badge">
-                {{ ((package.price - package.discount_price) / package.price * 100) | round | int }}% OFF
-              </span>
+            {% if package.image_url %}
+              <img src="{{ url_for('static', filename=package.image_url) }}" width="60">
             {% else %}
-              <span class="table-no-discount">-</span>
+              -
             {% endif %}
           </td>
 
-          <!-- ACTIONS -->
-         <td class="d-flex gap-2">
-            <!-- EDIT -->
+          <td>
+            <strong>{{ package.title }}</strong><br>
+            {% if package.badge %}
+              <span class="badge bg-warning">{{ package.badge }}</span>
+            {% endif %}
+          </td>
+
+          <td>{{ package.total_uses }}</td>
+          <td>{{ package.validity_days }} days</td>
+
+          <td>
+            {% if package.discount_price %}
+              <del>₹{{ package.price }}</del>
+              <strong>₹{{ package.discount_price }}</strong>
+            {% else %}
+              ₹{{ package.price }}
+            {% endif %}
+          </td>
+
+          <td>
+            {% if package.is_active %}
+              <span class="badge bg-success">Active</span>
+            {% else %}
+              <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+          </td>
+
+          <td class="d-flex gap-2">
             <a href="{{ url_for('admin.edit_package', package_id=package.id) }}"
-              class="btn btn-sm admin-btn-edit-table"
-              title="Edit Package">
+               class="btn btn-sm admin-btn-edit-table">
               <i class="bi bi-pencil"></i>
             </a>
 
-            <!-- DELETE -->
-            <a href="{{ url_for('admin.delete_package', package_id=package.id) }}"
-              class="btn btn-sm admin-btn-delete-table"
-              title="Delete Package"
-              onclick="return confirm('Delete {{ package.title }}?')">
-              <i class="bi bi-trash"></i>
-            </a>
-        </td>
-
+            <form method="post"
+                  action="{{ url_for('admin.delete_package', package_id=package.id) }}"
+                  onsubmit="return confirm('Disable this package?');">
+              <button type="submit" class="btn btn-sm admin-btn-delete-table">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
   {% if not packages %}
-  <div class="admin-empty-state text-center py-5">
-    <i class="bi bi-inbox"></i>
-    <h5>No Packages Yet</h5>
-    <p class="text-muted">Create your first package using the form above</p>
+  <div class="text-center py-5">
+    <p class="text-muted">No packages created yet</p>
   </div>
   {% endif %}
 
 </div>
-
-<script>
-// File upload label update
-document.addEventListener('DOMContentLoaded', function() {
-  const fileInput = document.getElementById('packageImage');
-  if (fileInput) {
-    fileInput.addEventListener('change', function(e) {
-      const fileName = e.target.files[0]?.name || 'Choose image...';
-      const fileText = document.querySelector('.admin-file-text');
-      if (fileText) {
-        fileText.textContent = fileName;
-      }
-    });
-  }
-});
-</script>
 
 {% endblock %}

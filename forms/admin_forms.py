@@ -1,7 +1,7 @@
 # forms/admin_forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField, TextAreaField
-from wtforms.validators import DataRequired, Length, Optional
+from wtforms import StringField, PasswordField, SubmitField, FloatField, TextAreaField, IntegerField, BooleanField
+from wtforms.validators import DataRequired, Length, Optional, NumberRange
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 
 class AdminLoginForm(FlaskForm):
@@ -21,14 +21,17 @@ class ServiceForm(FlaskForm):
 
 
 class PackageForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired(), Length(max=120)])
-    details = TextAreaField("Details", validators=[Optional()])
-    price = FloatField("Price", validators=[Optional()])
-    discount_price = FloatField("Discount Price", validators=[Optional()])
-    image = FileField("Image", validators=[
-        FileAllowed(["jpg", "jpeg", "png", "webp"], "Images only!")
-    ])
-    submit = SubmitField("Add Package")
+    title = StringField("Title",validators=[DataRequired(), Length(max=120)])
+    total_uses = IntegerField("Total Uses",validators=[DataRequired(), NumberRange(min=1)])
+    validity_days = IntegerField( "Validity (Days)",validators=[DataRequired(), NumberRange(min=1)])
+    price = FloatField("Price",validators=[DataRequired()])
+    discount_price = FloatField("Discount Price",validators=[Optional()])
+    badge = StringField("Badge",validators=[Optional(), Length(max=50)])
+    details = TextAreaField("Details",validators=[Optional()])
+    is_active = BooleanField("Is Active")
+    image = FileField("Image",validators=[Optional(),
+            FileAllowed(["jpg", "jpeg", "png", "webp"], "Images only!")])
+    submit = SubmitField("Save Package")
 
 
 

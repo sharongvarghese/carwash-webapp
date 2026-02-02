@@ -3,9 +3,8 @@ from config import Config
 from extensions import db, login_manager, mail
 from routes.public import public_bp
 from routes.admin import admin_bp
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-
 
 csrf = CSRFProtect()
 
@@ -19,13 +18,10 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
-    
-    with app.app_context():
-        upgrade()
 
     return app
 
