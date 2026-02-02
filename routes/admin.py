@@ -2,8 +2,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage, Review, PackagePurchase
-from forms.admin_forms import AdminLoginForm, ServiceForm, PackageForm, GalleryUploadForm
+from models import AdminUser, Service, Package, Booking, Notification, GalleryImage, ContactMessage, Review, PackagePurchase, Stock, StockTransaction
+from forms.admin_forms import AdminLoginForm, ServiceForm, PackageForm, GalleryUploadForm, StockForm, StockTransactionForm
 from werkzeug.utils import secure_filename
 from datetime import datetime, date
 import os
@@ -695,3 +695,210 @@ def delete_review(review_id):
     
     flash('Review deleted successfully.', 'success')
     return redirect(url_for('admin.reviews_panel'))
+
+
+@admin_bp.route('/stock', methods=['GET', 'POST'])
+@login_required
+def stock_management():
+    """Stock management page"""
+    form = StockForm()
+    
+    if form.validate_on_submit():
+        # Create new stock item
+        stock = Stock(
+            item_name=form.item_name.data,
+            category=form.category.data,
+            quantity=form.quantity.data,
+            unit=form.unit.data,
+            notes=form.notes.data
+        )
+        db.session.add(stock)
+        
+        # Create initial transaction
+        transaction = StockTransaction(
+            stock=stock,
+            transaction_type='add',
+            quantity=form.quantity.data,
+            previous_quantity=0,
+            new_quantity=form.quantity.data,
+            reason='Initial stock entry'
+        )
+        db.session.add(transaction)
+        
+        db.session.commit()
+        flash(f'Stock item "{stock.item_name}" added successfully!', 'success')
+        return redirect(url_for('admin.stock_management'))
+    
+    # Get filter parameters
+    category_filter = request.args.get('category', 'all')
+    status_filter = request.args.get('status', 'all')
+    
+    # Base query
+    query = Stock.query
+    
+    # Apply category filter
+    if category_filter != 'all':
+        query = query.filter_by(category=category_filter)
+    
+    # Apply status filter
+    if status_filter == 'low':
+        query = query.filter(Stock.quantity > 0, Stock.quantity <= 5)
+    elif status_filter == 'out':
+        query = query.filter_by(quantity=0)
+    
+    stocks = query.order_by(Stock.item_name).all()
+    
+    # Calculate statistics
+    all_stocks = Stock.query.all()
+    total_items = len(all_stocks)
+    low_stock_items = sum(1 for s in all_stocks if s.is_low_stock)
+    out_of_stock_items = sum(1 for s in all_stocks if s.quantity == 0)
+    
+    return render_template('admin/stock_management.html',
+                         form=form,
+                         stocks=stocks,
+                         total_items=total_items,
+                         low_stock_items=low_stock_items,
+                         out_of_stock_items=out_of_stock_items,
+                         category_filter=category_filter,
+                         status_filter=status_filter)
+
+
+@admin_bp.route('/stock/<int:stock_id>', methods=['GET', 'POST'])
+@login_required
+def stock_detail(stock_id):
+    """Stock detail and transaction page"""
+    stock = Stock.query.get_or_404(stock_id)
+    form = StockTransactionForm()
+    
+    if form.validate_on_submit():
+        transaction_type = form.transaction_type.data
+        quantity = form.quantity.data
+        previous_quantity = stock.quantity
+        
+        # Calculate new quantity based on transaction type
+        if transaction_type == 'add':
+            new_quantity = previous_quantity + quantity
+        elif transaction_type == 'reduce':
+            if quantity > previous_quantity:
+                flash('Cannot reduce more than available stock!', 'error')
+                return redirect(url_for('admin.stock_detail', stock_id=stock_id))
+            new_quantity = previous_quantity - quantity
+        else:  # adjust
+            new_quantity = quantity
+        
+        # Update stock
+        stock.quantity = new_quantity
+        
+        # Create transaction record
+        transaction = StockTransaction(
+            stock_id=stock.id,
+            transaction_type=transaction_type,
+            quantity=quantity,
+            previous_quantity=previous_quantity,
+            new_quantity=new_quantity,
+            reason=form.reason.data
+        )
+        db.session.add(transaction)
+        db.session.commit()
+        
+        flash(f'Stock updated successfully! New quantity: {new_quantity} {stock.unit}', 'success')
+        return redirect(url_for('admin.stock_detail', stock_id=stock_id))
+    
+    # Get transaction history
+    transactions = stock.transactions.limit(20).all()
+    
+    return render_template('admin/stock_details.html',
+                         stock=stock,
+                         form=form,
+                         transactions=transactions)
+
+
+@admin_bp.route('/stock/<int:stock_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_stock(stock_id):
+    """Edit stock item details"""
+    stock = Stock.query.get_or_404(stock_id)
+    form = StockForm(obj=stock)
+    
+    if form.validate_on_submit():
+        old_quantity = stock.quantity
+        
+        stock.item_name = form.item_name.data
+        stock.category = form.category.data
+        stock.quantity = form.quantity.data
+        stock.unit = form.unit.data
+        stock.notes = form.notes.data
+        
+        # If quantity changed, create a transaction
+        if old_quantity != form.quantity.data:
+            transaction = StockTransaction(
+                stock_id=stock.id,
+                transaction_type='adjust',
+                quantity=abs(form.quantity.data - old_quantity),
+                previous_quantity=old_quantity,
+                new_quantity=form.quantity.data,
+                reason='Manual adjustment via edit'
+            )
+            db.session.add(transaction)
+        
+        db.session.commit()
+        flash(f'Stock item "{stock.item_name}" updated successfully!', 'success')
+        return redirect(url_for('admin.stock_detail', stock_id=stock_id))
+    
+    return render_template('admin/edit_stock_form.html', form=form, stock=stock)
+
+
+@admin_bp.route('/stock/<int:stock_id>/delete', methods=['POST'])
+@login_required
+def delete_stock(stock_id):
+    """Delete stock item"""
+    stock = Stock.query.get_or_404(stock_id)
+    item_name = stock.item_name
+    
+    # Delete all transactions first
+    StockTransaction.query.filter_by(stock_id=stock_id).delete()
+    
+    # Delete stock item
+    db.session.delete(stock)
+    db.session.commit()
+    
+    flash(f'Stock item "{item_name}" deleted successfully!', 'success')
+    return redirect(url_for('admin.stock_management'))
+
+
+@admin_bp.route('/stock/<int:stock_id>/quick-reduce', methods=['POST'])
+@login_required
+def quick_reduce_stock(stock_id):
+    """Quick reduce stock quantity"""
+    stock = Stock.query.get_or_404(stock_id)
+    quantity = float(request.form.get('quantity', 0))
+    
+    if quantity <= 0:
+        flash('Invalid quantity!', 'error')
+        return redirect(url_for('admin.stock_management'))
+    
+    if quantity > stock.quantity:
+        flash('Cannot reduce more than available stock!', 'error')
+        return redirect(url_for('admin.stock_management'))
+    
+    previous_quantity = stock.quantity
+    new_quantity = previous_quantity - quantity
+    
+    # Update stock
+    stock.quantity = new_quantity
+    
+    # Create transaction
+    transaction = StockTransaction(
+        stock_id=stock.id,
+        transaction_type='reduce',
+        quantity=quantity,
+        previous_quantity=previous_quantity,
+        new_quantity=new_quantity,
+        reason='Quick reduce from stock list'
+    )
+    db.session.add(transaction)
+    db.session.commit()
+    
+    flash(f'Reduced {quantity} {stock.unit} from {stock.item_name}', 'success')
+    return redirect(url_for('admin.stock_management'))

@@ -1,6 +1,6 @@
 # forms/admin_forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField, TextAreaField, IntegerField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, FloatField, TextAreaField, IntegerField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, Optional, NumberRange
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 
@@ -55,3 +55,66 @@ class GalleryUploadForm(FlaskForm):
     caption = StringField("Caption", validators=[Optional()])
 
     submit = SubmitField("Upload")
+
+
+class StockForm(FlaskForm):
+    """Form for adding/editing stock items"""
+    
+    item_name = StringField('Item Name', validators=[DataRequired()], 
+                           render_kw={"placeholder": "e.g., Car Shampoo"})
+    
+    category = SelectField('Category', 
+                          choices=[
+                              ('Chemicals', 'Chemicals'),
+                              ('Shampoos', 'Shampoos'),
+                              ('Wax', 'Wax'),
+                              ('Polish', 'Polish'),
+                              ('Towels', 'Towels'),
+                              ('Brushes', 'Brushes'),
+                              ('Other', 'Other')
+                          ],
+                          validators=[DataRequired()])
+    
+    quantity = FloatField('Quantity', 
+                         validators=[DataRequired(), NumberRange(min=0)],
+                         render_kw={"placeholder": "0.00"})
+    
+    unit = SelectField('Unit', 
+                      choices=[
+                          ('ltr', 'Liters (ltr)'),
+                          ('ml', 'Milliliters (ml)'),
+                          ('kg', 'Kilograms (kg)'),
+                          ('g', 'Grams (g)'),
+                          ('pcs', 'Pieces (pcs)'),
+                          ('bottles', 'Bottles'),
+                          ('cans', 'Cans'),
+                          ('boxes', 'Boxes')
+                      ],
+                      validators=[DataRequired()])
+    
+    notes = TextAreaField('Notes (Optional)', 
+                         render_kw={"placeholder": "Additional notes about this item..."})
+    
+    submit = SubmitField('Save Item')
+
+
+class StockTransactionForm(FlaskForm):
+    """Form for stock transactions (add/reduce/adjust)"""
+    
+    transaction_type = SelectField('Action',
+                                  choices=[
+                                      ('add', 'Add Stock'),
+                                      ('reduce', 'Reduce Stock'),
+                                      ('adjust', 'Adjust Stock')
+                                  ],
+                                  validators=[DataRequired()])
+    
+    quantity = FloatField('Quantity',
+                         validators=[DataRequired(), NumberRange(min=0.01)],
+                         render_kw={"placeholder": "0.00"})
+    
+    reason = StringField('Reason',
+                        validators=[DataRequired()],
+                        render_kw={"placeholder": "e.g., Used for service, Restocked"})
+    
+    submit = SubmitField('Update Stock')

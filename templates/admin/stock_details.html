@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ stock.item_name }} - Stock Details{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-stock.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="stock-management-wrapper">
+  
+  <!-- Back Button -->
+  <div class="mb-3">
+    <a href="{{ url_for('admin.stock_management') }}" class="btn-back">
+      <i class="bi bi-arrow-left"></i> Back to Stock Management
+    </a>
+  </div>
+
+  <!-- Header -->
+  <div class="detail-header">
+    <div>
+      <h1 class="page-title">
+        <i class="bi bi-box-seam"></i> {{ stock.item_name }}
+      </h1>
+      <p class="page-subtitle">Stock item details and transaction history</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.edit_stock', stock_id=stock.id) }}" class="btn btn-primary">
+        <i class="bi bi-pencil"></i> Edit Stock
+      </a>
+    </div>
+  </div>
+
+  <!-- Stock Status Alert -->
+  {% if stock.quantity == 0 %}
+  <div class="alert-box alert-danger mb-3">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-x-circle"></i>
+      <div>
+        <strong>Out of Stock</strong>
+        <p>This item is currently out of stock and needs to be restocked immediately.</p>
+      </div>
+    </div>
+  </div>
+  {% elif stock.is_low_stock %}
+  <div class="alert-box alert-warning mb-3">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-triangle"></i>
+      <div>
+        <strong>Low Stock Warning</strong>
+        <p>This item is running low on stock. Consider restocking soon.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- Left Column: Stock Information -->
+    <div class="col-lg-7">
+      <div class="stock-card mb-3">
+        <h2 class="card-title">
+          <i class="bi bi-info-circle"></i> Stock Information
+        </h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Item Name</label>
+            <p><strong>{{ stock.item_name }}</strong></p>
+          </div>
+          
+          <div class="info-item">
+            <label>Category</label>
+            <p>
+              <span class="badge-category">{{ stock.category }}</span>
+            </p>
+          </div>
+          
+          <div class="info-item">
+            <label>Current Quantity</label>
+            <p>
+              <strong class="text-primary">{{ stock.quantity }} {{ stock.unit }}</strong>
+            </p>
+          </div>
+          
+          <div class="info-item">
+            <label>Status</label>
+            <p>
+              {% if stock.quantity == 0 %}
+                <span class="status-badge status-out">
+                  <i class="bi bi-x-circle"></i> Out of Stock
+                </span>
+              {% elif stock.is_low_stock %}
+                <span class="status-badge status-low">
+                  <i class="bi bi-exclamation-triangle"></i> Low Stock
+                </span>
+              {% else %}
+                <span class="status-badge status-good">
+                  <i class="bi bi-check-circle"></i> In Stock
+                </span>
+              {% endif %}
+            </p>
+          </div>
+          
+          {% if stock.notes %}
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <label>Notes</label>
+            <p class="text-muted">{{ stock.notes }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="stock-card">
+        <h2 class="card-title">
+          <i class="bi bi-clock-history"></i> Transaction History
+        </h2>
+        
+        {% if transactions %}
+        <div class="transaction-list">
+          {% for transaction in transactions %}
+          <div class="transaction-item">
+            <div class="transaction-icon {{ 'add' if transaction.transaction_type == 'add' else 'reduce' if transaction.transaction_type == 'reduce' else 'adjust' }}">
+              {% if transaction.transaction_type == 'add' %}
+                <i class="bi bi-plus-circle"></i>
+              {% elif transaction.transaction_type == 'reduce' %}
+                <i class="bi bi-dash-circle"></i>
+              {% else %}
+                <i class="bi bi-arrow-repeat"></i>
+              {% endif %}
+            </div>
+            
+            <div class="transaction-details">
+              <div class="transaction-title">
+                {% if transaction.transaction_type == 'add' %}
+                  Stock Added
+                {% elif transaction.transaction_type == 'reduce' %}
+                  Stock Reduced
+                {% else %}
+                  Stock Adjusted
+                {% endif %}
+              </div>
+              
+              <div class="transaction-info">
+                {% if transaction.reason %}
+                  {{ transaction.reason }}
+                {% else %}
+                  No notes provided
+                {% endif %}
+              </div>
+              
+              <div class="transaction-change">
+                <span>Change:</span>
+                {% if transaction.transaction_type == 'add' %}
+                  <span class="badge bg-success">+{{ transaction.quantity }} {{ stock.unit }}</span>
+                {% elif transaction.transaction_type == 'reduce' %}
+                  <span class="badge bg-danger">-{{ transaction.quantity }} {{ stock.unit }}</span>
+                {% else %}
+                  <span class="badge bg-info">{{ transaction.quantity }} {{ stock.unit }}</span>
+                {% endif %}
+                <span class="text-muted">
+                  {{ transaction.previous_quantity }} → {{ transaction.new_quantity }} {{ stock.unit }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="transaction-date">
+              <div class="text-muted" style="font-size: 0.85rem;">
+                {{ (transaction.created_at|ist_time).strftime('%b %d, %Y') }}<br>
+                {{ (transaction.created_at|ist_time).strftime('%I:%M %p') }} IST
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state-small">
+          <i class="bi bi-inbox"></i>
+          <p>No transaction history available</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column: Add Transaction Form -->
+    <div class="col-lg-5">
+      <div class="stock-card sticky-top" style="top: 20px;">
+        <h2 class="card-title">
+          <i class="bi bi-arrow-repeat"></i> Update Stock
+        </h2>
+        
+        <form method="POST" action="{{ url_for('admin.stock_detail', stock_id=stock.id) }}">
+          {{ form.hidden_tag() }}
+          
+          <div class="mb-3">
+            <label class="form-label">{{ form.transaction_type.label }}</label>
+            {{ form.transaction_type(class="form-select") }}
+            {% if form.transaction_type.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.transaction_type.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">{{ form.quantity.label }}</label>
+            <div class="input-group">
+              {{ form.quantity(class="form-control", placeholder="0.00") }}
+              <span class="input-group-text">{{ stock.unit }}</span>
+            </div>
+            {% if form.quantity.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.quantity.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% endif %}
+            <small class="text-muted">Available: {{ stock.quantity }} {{ stock.unit }}</small>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">{{ form.reason.label }}</label>
+            {{ form.reason(class="form-control", placeholder="e.g., Used for service, Restocked") }}
+            {% if form.reason.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.reason.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+
+        <!-- Quick Info -->
+        <div class="mt-4 p-3 bg-dark rounded">
+          <h6 class="mb-2">
+            <i class="bi bi-info-circle"></i> Quick Info
+          </h6>
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-1">
+              <strong>Add:</strong> Increase stock quantity
+            </li>
+            <li class="mb-1">
+              <strong>Reduce:</strong> Decrease when used
+            </li>
+            <li class="mb-1">
+              <strong>Adjust:</strong> Set exact quantity
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

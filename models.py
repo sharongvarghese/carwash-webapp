@@ -182,4 +182,55 @@ class Review(db.Model):
         """Returns filled and empty stars for display"""
         filled = '★' * self.rating
         empty = '☆' * (5 - self.rating)
-        return filled + empty
+        return filled + empty 
+
+class Stock(db.Model):
+    __tablename__ = "stocks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50))  # Chemicals, Shampoos, Wax, Polish, Towels, etc.
+    quantity = db.Column(db.Float, default=0.0)
+    unit = db.Column(db.String(20))  # kg, ltr, pcs, bottles, etc.
+    notes = db.Column(db.Text)  # Optional notes about the item
+    last_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @property
+    def stock_status(self):
+        """Get stock status"""
+        if self.quantity == 0:
+            return "Out of Stock"
+        elif self.quantity <= 5:  # Low stock if 5 or less units
+            return "Low Stock"
+        else:
+            return "In Stock"
+    
+    @property
+    def is_low_stock(self):
+        """Check if stock is low (5 or less units)"""
+        return 0 < self.quantity <= 5
+    
+    @property
+    def is_out_of_stock(self):
+        """Check if completely out of stock"""
+        return self.quantity == 0
+
+
+class StockTransaction(db.Model):
+    __tablename__ = "stock_transactions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    stock_id = db.Column(db.Integer, db.ForeignKey('stocks.id'), nullable=False)
+    transaction_type = db.Column(db.String(20))  # 'add', 'reduce', 'adjust'
+    quantity = db.Column(db.Float)
+    previous_quantity = db.Column(db.Float)
+    new_quantity = db.Column(db.Float)
+    reason = db.Column(db.String(255))  # "Used for service", "Restocked", "Inventory adjustment", etc.
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship
+    stock = db.relationship('Stock', backref=db.backref('transactions', lazy='dynamic', order_by='StockTransaction.created_at.desc()'))
+
+    def __repr__(self):
+        return f'<StockTransaction {self.transaction_type} - {self.quantity}>'
