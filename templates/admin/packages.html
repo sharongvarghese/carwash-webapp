@@ -56,7 +56,7 @@
         <!-- TOTAL USES -->
         <div class="col-lg-3">
           <label class="admin-form-label">Total Uses</label>
-          {{ form.total_uses(class_="admin-form-control") }}
+          {{ form.included_uses(class_="admin-form-control") }}
         </div>
 
         <!-- VALIDITY -->
@@ -130,7 +130,7 @@
             {% endif %}
           </td>
 
-          <td>{{ package.total_uses }}</td>
+          <td>{{ package.included_uses }}</td>
           <td>{{ package.validity_days }} days</td>
 
           <td>

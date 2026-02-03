@@ -297,7 +297,7 @@ def manage_packages():
 
         package = Package(
             title=form.title.data,
-            total_uses=form.total_uses.data,
+            included_uses=form.included_uses.data,
             validity_days=form.validity_days.data,
             price=form.price.data,
             discount_price=form.discount_price.data,
@@ -330,7 +330,7 @@ def edit_package(package_id):
 
     if form.validate_on_submit():
         package.title = form.title.data
-        package.total_uses = form.total_uses.data
+        package.included_uses = form.included_uses.data
         package.validity_days = form.validity_days.data
         package.price = form.price.data
         package.discount_price = form.discount_price.data
