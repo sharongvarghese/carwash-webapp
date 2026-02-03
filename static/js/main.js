@@ -71,7 +71,7 @@ function clickOutside(element, callback) {
 
 
 /* ====================================================
-      PREMIUM DATE PICKER (FINAL FIXED VERSION)
+      PREMIUM DATE PICKER - WITH PERSISTENCE FIX
 ==================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const display = document.getElementById("premiumDateDisplay");
@@ -82,6 +82,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!display) return; // Only run on booking page
 
   let currentDate = new Date();
+  let selectedDate = null;
+
+  // RESTORE SELECTED DATE FROM HIDDEN INPUT (FIX FOR FORM ERRORS)
+  if (hiddenDate && hiddenDate.value) {
+    selectedDate = hiddenDate.value;
+    selectedText.textContent = selectedDate;
+    selectedText.style.color = "#ffd700";
+    
+    // Parse the date to set currentDate to the correct month
+    const [year, month] = selectedDate.split('-');
+    currentDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+  }
 
   function renderCalendar() {
     dropdown.innerHTML = "";
@@ -89,14 +101,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     // HEADER
     const header = document.createElement("div");
     header.className = "calendar-header";
     header.innerHTML = `
-      <span id="prevMonth" class="calendar-arrow">⟨</span>
+      <span id="prevMonth" class="calendar-arrow" aria-label="Previous month">‹</span>
       <span>${currentDate.toLocaleString("en-US", { month: "long" })} ${year}</span>
-      <span id="nextMonth" class="calendar-arrow">⟩</span>
+      <span id="nextMonth" class="calendar-arrow" aria-label="Next month">›</span>
     `;
     dropdown.appendChild(header);
 
@@ -133,23 +146,40 @@ document.addEventListener("DOMContentLoaded", () => {
     let firstDay = new Date(year, month, 1).getDay();
     let lastDate = new Date(year, month + 1, 0).getDate();
 
+    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
       grid.appendChild(document.createElement("div"));
     }
 
+    // Date cells
     for (let d = 1; d <= lastDate; d++) {
       const dateEl = document.createElement("div");
       dateEl.className = "calendar-date";
       dateEl.textContent = d;
 
       let fullDate = new Date(year, month, d);
+      fullDate.setHours(0, 0, 0, 0);
+      
+      const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
-      if (fullDate < new Date().setHours(0, 0, 0, 0)) {
+      // Disable past dates
+      if (fullDate < today) {
         dateEl.classList.add("disabled");
       }
 
+      // Disable Sundays
       if (fullDate.getDay() === 0) {
         dateEl.classList.add("disabled");
+      }
+
+      // Highlight today
+      if (fullDate.getTime() === today.getTime()) {
+        dateEl.classList.add("today");
+      }
+
+      // Highlight selected date
+      if (selectedDate === dateString) {
+        dateEl.classList.add("selected");
       }
 
       dateEl.addEventListener("click", (e) => {
@@ -157,9 +187,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (dateEl.classList.contains("disabled")) return;
 
-        const value = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-        selectedText.textContent = value;
-        hiddenDate.value = value;
+        // Remove previous selection
+        grid.querySelectorAll('.calendar-date').forEach(el => {
+          el.classList.remove('selected');
+        });
+
+        // Set new selection
+        dateEl.classList.add('selected');
+        selectedDate = dateString;
+        selectedText.textContent = dateString;
+        selectedText.style.color = "#ffd700";
+        hiddenDate.value = dateString;
+
+        // Remove error styling if present
+        display.removeAttribute('data-error');
+        display.style.borderColor = "rgba(255, 215, 0, 0.2)";
 
         dropdown.style.display = "none"; // CLOSE after select
       });
@@ -175,16 +217,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // OPEN/CLOSE PICKER
   display.addEventListener("click", (e) => {
     e.stopPropagation();
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    const isVisible = dropdown.style.display === "block";
+    dropdown.style.display = isVisible ? "none" : "block";
   });
 
   // CLOSE ON OUTSIDE CLICK
-  clickOutside(dropdown, () => (dropdown.style.display = "none"));
+  clickOutside(display, () => {
+    dropdown.style.display = "none";
+  });
 });
 
 
 /* ====================================================
-      PREMIUM TIME PICKER (FINAL VERSION)
+      PREMIUM TIME PICKER - WITH PERSISTENCE FIX
 ==================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const display = document.getElementById("premiumTimeDisplay");
@@ -194,22 +239,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!display) return;
 
+  let selectedTime = null;
+
+  // RESTORE SELECTED TIME FROM HIDDEN INPUT (FIX FOR FORM ERRORS)
+  if (hiddenTime && hiddenTime.value) {
+    selectedTime = hiddenTime.value;
+    selectedText.textContent = selectedTime;
+    selectedText.style.color = "#ffd700";
+  }
+
   function generateTimes() {
     dropdown.innerHTML = "";
 
+    // Generate time slots from 6:00 AM to 6:30 PM
     for (let hour = 6; hour <= 18; hour++) {
       for (let min of ["00", "30"]) {
+        // Skip 6:30 PM and beyond
+        if (hour === 18 && min === "30") break;
+        
         let label = `${hour.toString().padStart(2, "0")}:${min}`;
 
         const opt = document.createElement("div");
         opt.className = "premium-time-option";
         opt.textContent = label;
 
+        // Highlight selected time
+        if (selectedTime === label) {
+          opt.classList.add('selected');
+        }
+
         opt.addEventListener("click", (e) => {
           e.stopPropagation();
 
+          // Remove previous selection
+          dropdown.querySelectorAll('.premium-time-option').forEach(el => {
+            el.classList.remove('selected');
+          });
+
+          // Set new selection
+          opt.classList.add('selected');
+          selectedTime = label;
           selectedText.textContent = label;
+          selectedText.style.color = "#ffd700";
           hiddenTime.value = label;
+
+          // Remove error styling if present
+          display.removeAttribute('data-error');
+          display.style.borderColor = "rgba(255, 215, 0, 0.2)";
 
           dropdown.style.display = "none"; // CLOSE after select
         });
@@ -223,58 +299,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   display.addEventListener("click", (e) => {
     e.stopPropagation();
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    const isVisible = dropdown.style.display === "block";
+    dropdown.style.display = isVisible ? "none" : "block";
   });
 
-  clickOutside(dropdown, () => (dropdown.style.display = "none"));
+  clickOutside(display, () => {
+    dropdown.style.display = "none";
+  });
 });
-
-
-/* ====================================================
-      AJAX BOOKING SUBMISSION (SUPER CLEAN VERSION)
-==================================================== */
-async function submitBooking(event) {
-  event.preventDefault(); // Stop page reload
-
-  const form = document.getElementById("booking-form");
-  const formData = new FormData(form);
-
-  // Clear previous errors
-  document.querySelectorAll(".text-danger.small").forEach(el => {
-    el.textContent = "";
-  });
-
-  // Send AJAX request
-  const response = await fetch("/booking", {
-    method: "POST",
-    headers: { "X-Requested-With": "XMLHttpRequest" },
-    body: formData
-  });
-
-  const data = await response.json();
-
-  if (!data.success) {
-    // Show validation errors
-    for (let field in data.errors) {
-      const errorBox = document.getElementById(`${field}-error`);
-      if (errorBox) {
-        errorBox.textContent = data.errors[field][0];
-      }
-    }
-    return false;
-  }
-
-  // SUCCESS
-  alert(data.message);
-
-  // Reset form
-  form.reset();
-
-  document.getElementById("selectedDateText").textContent = "Select Date";
-  document.getElementById("selectedTimeText").textContent = "Select Time";
-
-  return false;
-}
 
 
 /* ====================================================
@@ -534,3 +566,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+
+/* ====================================================
+      FORM SUBMISSION LOADING STATE
+==================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const bookingForm = document.getElementById("booking-form");
+  
+  if (bookingForm) {
+    bookingForm.addEventListener("submit", function(e) {
+      const submitBtn = this.querySelector(".booking-cta-btn");
+      
+      // Add loading state
+      if (submitBtn) {
+        submitBtn.classList.add("loading");
+        submitBtn.disabled = true;
+      }
+      
+      // If form validation fails, re-enable button after a delay
+      setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.classList.remove("loading");
+          submitBtn.disabled = false;
+        }
+      }, 2000);
+    });
+  }
+});

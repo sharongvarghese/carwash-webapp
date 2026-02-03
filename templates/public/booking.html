@@ -1,120 +1,144 @@
 {% extends "base.html" %}
 
-
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
 {% endblock %}
+
 {% block content %}
-
-
 <section class="booking-full-wrap">
-
   <div class="booking-background-glow"></div>
 
   <div class="container py-5">
     <div class="row g-5 align-items-center justify-content-center">
 
       <!-- LEFT IMAGE -->
-<div class="col-12 col-lg-6 fade-up delay-100">
-  <div class="booking-hero-image-box position-relative text-center">
-    <div class="booking-hero-glow"></div>
-    <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
-         class="booking-hero-image"
-         alt="Premium Car Wash">
-  </div>
-</div>
+      <div class="col-12 col-lg-6 fade-up delay-100">
+        <div class="booking-hero-image-box position-relative text-center">
+          <div class="booking-hero-glow"></div>
+          <img src="{{ url_for('static', filename='img/booking-car.jpg') }}"
+               class="booking-hero-image"
+               alt="Premium Car Wash">
+        </div>
+      </div>
 
-<!-- RIGHT FORM -->
-<div class="col-12 col-lg-6 fade-up delay-200">
-  <div class="booking-animated-card">
+      <!-- RIGHT FORM -->
+      <div class="col-12 col-lg-6 fade-up delay-200">
+        <div class="booking-animated-card">
 
-    <h2 class="booking-title text-center mb-4 fade-up delay-300">
-      Book Your Slot
-    </h2>
-
+          <h2 class="booking-title text-center mb-4 fade-up delay-300">
+            Book Your Slot
+          </h2>
 
           <!-- ================== BOOKING FORM ================== -->
-          <form method="POST" action="{{ url_for('public.booking_page') }}" class="booking-form fade-up delay-400">
+          <form method="POST" action="{{ url_for('public.booking_page') }}" class="booking-form fade-up delay-400" id="booking-form">
 
             {{ booking_form.hidden_tag() }}
 
             <!-- FULL NAME -->
-            <div class="form-group-animated mb-1">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-person-fill booking-icon"></i>
-              {{ booking_form.full_name(class_="form-control dark-input premium-input ps-5", placeholder="Full Name") }}
+              {{ booking_form.full_name(
+                class_="form-control dark-input premium-input ps-5", 
+                placeholder="Full Name",
+                value=booking_form.full_name.data if booking_form.full_name.data else ''
+              ) }}
               
               {% if booking_form.full_name.errors %}
-                <small class="text-danger">{{ booking_form.full_name.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.full_name.errors[0] }}</small>
               {% endif %}
               
               <span class="input-glow"></span>
             </div>
-            <br>
 
             <!-- PHONE -->
-            <div class="form-group-animated mb-1">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-phone-fill booking-icon"></i>
-              {{ booking_form.phone(class_="form-control dark-input premium-input ps-5", placeholder="Phone Number") }}
+              {{ booking_form.phone(
+                class_="form-control dark-input premium-input ps-5", 
+                placeholder="Phone Number",
+                value=booking_form.phone.data if booking_form.phone.data else ''
+              ) }}
               
               {% if booking_form.phone.errors %}
-                <small class="text-danger">{{ booking_form.phone.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.phone.errors[0] }}</small>
               {% endif %}
               
               <span class="input-glow"></span>
             </div>
-            <br>
 
             <!-- EMAIL -->
-            <div class="form-group-animated mb-1">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-envelope-fill booking-icon"></i>
-              {{ booking_form.email(class_="form-control dark-input premium-input ps-5", placeholder="Email") }}
+              {{ booking_form.email(
+                class_="form-control dark-input premium-input ps-5", 
+                placeholder="Email",
+                value=booking_form.email.data if booking_form.email.data else ''
+              ) }}
               
               {% if booking_form.email.errors %}
-                <small class="text-danger">{{ booking_form.email.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.email.errors[0] }}</small>
               {% endif %}
               
               <span class="input-glow"></span>
             </div>
-            <br>
 
             <!-- DATE -->
-            <div class="mb-1 premium-date-wrapper">
+            <div class="mb-3 premium-date-wrapper">
               <i class="fa-solid fa-calendar booking-icon"></i>
-              <div id="premiumDateDisplay" class="premium-date-display">
-                <span id="selectedDateText">Select Date</span>
+              <div id="premiumDateDisplay" class="premium-date-display" data-error="{{ 'error' if booking_form.date.errors else '' }}">
+                <span id="selectedDateText">
+                  {% if booking_form.date.data %}
+                    {{ booking_form.date.data }}
+                  {% else %}
+                    Select Date
+                  {% endif %}
+                </span>
               </div>
               
               <div id="premiumDateDropdown" class="premium-date-dropdown"></div>
-              {{ booking_form.date(type="hidden", id="booking-date") }}
+              {{ booking_form.date(
+                type="hidden", 
+                id="booking-date",
+                value=booking_form.date.data if booking_form.date.data else ''
+              ) }}
 
               {% if booking_form.date.errors %}
-                <small class="text-danger">{{ booking_form.date.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.date.errors[0] }}</small>
               {% endif %}
             </div>
-            <br>
 
             <!-- TIME -->
             <div class="premium-time-wrapper mb-3">
-              <div id="premiumTimeDisplay" class="premium-time-display">
+              <div id="premiumTimeDisplay" class="premium-time-display" data-error="{{ 'error' if booking_form.time.errors else '' }}">
                 <i class="fa-solid fa-clock booking-icon"></i>
-                <span id="selectedTimeText">Select Time</span>
+                <span id="selectedTimeText">
+                  {% if booking_form.time.data %}
+                    {{ booking_form.time.data }}
+                  {% else %}
+                    Select Time
+                  {% endif %}
+                </span>
               </div>
               
               <div id="premiumTimeDropdown" class="premium-time-dropdown"></div>
-              {{ booking_form.time(type="hidden", id="booking-time") }}
+              {{ booking_form.time(
+                type="hidden", 
+                id="booking-time",
+                value=booking_form.time.data if booking_form.time.data else ''
+              ) }}
 
               {% if booking_form.time.errors %}
-                <small class="text-danger">{{ booking_form.time.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.time.errors[0] }}</small>
               {% endif %}
             </div>
 
             <!-- SERVICE -->
-            <div class="form-group-animated mb-3">
+            <div class="form-group-animated mb-4">
               <i class="bi bi-list-ul booking-icon"></i>
               {{ booking_form.service_id(class_="form-select dark-input premium-input ps-5") }}
               
               {% if booking_form.service_id.errors %}
-                <small class="text-danger">{{ booking_form.service_id.errors[0] }}</small>
+                <small class="text-danger d-block mt-1">{{ booking_form.service_id.errors[0] }}</small>
               {% endif %}
               
               <span class="input-glow"></span>
@@ -122,7 +146,11 @@
 
             <!-- SUBMIT BUTTON -->
             <button type="submit" class="btn btn-gold w-100 btn-lg booking-cta-btn fade-up delay-350">
-              Confirm Booking
+              <span class="btn-text">Confirm Booking</span>
+              <span class="btn-loader d-none">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Processing...
+              </span>
             </button>
 
           </form>
@@ -135,9 +163,7 @@
 
 </section>
 
-{% endblock %}
-
-<!-- =========== LIVE VALIDATION SCRIPT =========== -->
+<!-- LIVE VALIDATION SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -148,33 +174,82 @@ document.addEventListener("DOMContentLoaded", function() {
   const timeInput = document.querySelector('#booking-time');
   const service = document.querySelector('[name="service_id"]');
 
-  function show(input,msg){
+  function showError(input, msg) {
     input.classList.remove("is-valid");
     input.classList.add("is-invalid");
-    input.parentElement.querySelector("small")?.remove();
-    const s=document.createElement("small");
-    s.className="text-danger mt-1 d-block";
-    s.innerText=msg;
-    input.parentElement.appendChild(s);
+    
+    // Remove existing error message
+    const existingError = input.parentElement.querySelector("small.validation-error");
+    if (existingError) existingError.remove();
+    
+    // Add new error message
+    const errorEl = document.createElement("small");
+    errorEl.className = "text-danger mt-1 d-block validation-error";
+    errorEl.innerText = msg;
+    input.parentElement.appendChild(errorEl);
   }
 
-  function ok(input){
+  function showValid(input) {
     input.classList.remove("is-invalid");
     input.classList.add("is-valid");
-    input.parentElement.querySelector("small")?.remove();
+    
+    // Remove error message
+    const existingError = input.parentElement.querySelector("small.validation-error");
+    if (existingError) existingError.remove();
   }
 
-  fullName.addEventListener("input",()=>{
-    fullName.value.trim().length < 2 ? show(fullName,"Enter a valid name") : ok(fullName);
-  });
+  // Full name validation
+  if (fullName) {
+    fullName.addEventListener("input", () => {
+      const value = fullName.value.trim();
+      if (value.length < 2) {
+        showError(fullName, "Enter a valid name (at least 2 characters)");
+      } else {
+        showValid(fullName);
+      }
+    });
+  }
 
-  phone.addEventListener("input",()=>{
-    /^[0-9]{10}$/.test(phone.value) ? ok(phone) : show(phone,"Phone must be 10 digits");
-  });
+  // Phone validation
+  if (phone) {
+    phone.addEventListener("input", () => {
+      const value = phone.value.replace(/\s/g, '');
+      if (!/^[0-9]{10}$/.test(value)) {
+        showError(phone, "Phone must be 10 digits");
+      } else {
+        showValid(phone);
+      }
+    });
+  }
 
-  email.addEventListener("input",()=>{
-    /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/.test(email.value) ? ok(email) : show(email,"Invalid email format");
-  });
+  // Email validation
+  if (email) {
+    email.addEventListener("input", () => {
+      const emailRegex = /^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$/;
+      if (!emailRegex.test(email.value)) {
+        showError(email, "Invalid email format");
+      } else {
+        showValid(email);
+      }
+    });
+  }
+
+  // Restore date/time values on page load (for error cases)
+  if (dateInput && dateInput.value) {
+    const selectedDateText = document.getElementById('selectedDateText');
+    if (selectedDateText) {
+      selectedDateText.textContent = dateInput.value;
+    }
+  }
+
+  if (timeInput && timeInput.value) {
+    const selectedTimeText = document.getElementById('selectedTimeText');
+    if (selectedTimeText) {
+      selectedTimeText.textContent = timeInput.value;
+    }
+  }
 
 });
 </script>
+
+{% endblock %}
