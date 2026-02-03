@@ -32,16 +32,19 @@
         </h1>
 
         <!-- PRICE -->
-        {% if service.offer_price %}
-          <div class="service-glass-price">
-            ₹{{ service.offer_price }}
-            <span>₹{{ service.price }}</span>
-          </div>
-        {% else %}
-          <div class="service-glass-price">
-            ₹{{ service.price }}
-          </div>
-        {% endif %}
+            {% if service.discount_price %}
+            <div class="service-preview-price">
+              <span class="table-discount-badge">
+                {{ ((service.price - service.discount_price) / service.price * 100) | round | int }}% OFF
+              </span><br>
+              <span class="new">₹{{ service.discount_price }}</span>
+              <span class="old">₹{{ service.price }}</span>
+            </div>
+            {% else %}
+            <div class="service-preview-price">
+              <span class="new">₹{{ service.price }}</span>
+            </div>
+            {% endif %}
 
         <p class="service-glass-description">
           {{ service.description }}
@@ -140,11 +143,11 @@
 
           <!-- PRICE -->
           <div class="premium-service-price-box">
-            {% if item.offer_price %}
+            {% if item.discount_price %}
               <span class="table-discount-badge">
-                {{ ((item.price - item.offer_price) / item.price * 100) | round | int }}% OFF
+                {{ ((item.price - item.discount_price) / item.price * 100) | round | int }}% OFF
               </span><br>
-              <span class="premium-service-price-new">₹{{ item.offer_price }}</span>
+              <span class="premium-service-price-new">₹{{ item.discount_price }}</span>
               <span class="premium-service-price-old">₹{{ item.price }}</span>
             {% else %}
               <span class="premium-service-price-new">₹{{ item.price }}</span>

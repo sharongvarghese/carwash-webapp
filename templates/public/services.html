@@ -53,11 +53,11 @@
 
           <!-- PRICE -->
           <div class="premium-service-price-box">
-            {% if service.offer_price %}
+            {% if service.discount_price %}
               <span class="table-discount-badge">
-                {{ ((service.price - service.offer_price) / service.price * 100) | round | int }}% OFF
+                {{ ((service.price - service.discount_price) / service.price * 100) | round | int }}% OFF
               </span><br>
-              <span class="premium-service-price-new">₹{{ service.offer_price }}</span>
+              <span class="premium-service-price-new">₹{{ service.discount_price }}</span>
               <span class="premium-service-price-old">₹{{ service.price }}</span>
             {% else %}
               <span class="premium-service-price-new">₹{{ service.price }}</span>
