@@ -1,5 +1,5 @@
 # models.py
-from datetime import datetime
+from datetime import datetime, date
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -43,7 +43,7 @@ class Package(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
-    total_uses = db.Column(db.Integer, nullable=False, default=0)      
+    included_uses = db.Column(db.Integer, nullable=False, default=0)      
     validity_days = db.Column(db.Integer, nullable=False, default=30)
     price = db.Column(db.Float, nullable=False)
     discount_price = db.Column(db.Float, nullable=True)
@@ -53,8 +53,8 @@ class Package(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-from extensions import db
-from datetime import datetime, date
+
+
 
 class PackagePurchase(db.Model):
     __tablename__ = "package_purchases"

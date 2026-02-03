@@ -22,7 +22,7 @@ class ServiceForm(FlaskForm):
 
 class PackageForm(FlaskForm):
     title = StringField("Title",validators=[DataRequired(), Length(max=120)])
-    total_uses = IntegerField("Total Uses",validators=[DataRequired(), NumberRange(min=1)])
+    included_uses = IntegerField("Total Uses",validators=[DataRequired(), NumberRange(min=1)])
     validity_days = IntegerField( "Validity (Days)",validators=[DataRequired(), NumberRange(min=1)])
     price = FloatField("Price",validators=[DataRequired()])
     discount_price = FloatField("Discount Price",validators=[Optional()])
