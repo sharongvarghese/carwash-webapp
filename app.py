@@ -5,8 +5,9 @@ from routes.public import public_bp
 from routes.admin import admin_bp
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-from datetime import datetime
 import pytz
+
+from sqlalchemy.exc import ProgrammingError  
 
 csrf = CSRFProtect()
 
@@ -20,6 +21,11 @@ def create_app():
     mail.init_app(app)
 
     Migrate(app, db)
+    with app.app_context():
+        try:
+            db.create_all()
+        except ProgrammingError:
+            pass
 
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
