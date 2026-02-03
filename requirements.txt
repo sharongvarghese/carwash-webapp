@@ -15,4 +15,4 @@ dnspython==2.8.0
 WTForms==3.2.1
 typing_extensions==4.15.0
 idna==3.11
-pytz
+pytz==2024.1
