@@ -6,8 +6,10 @@ from routes.admin import admin_bp
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
 import pytz
+import os
 
-from sqlalchemy.exc import ProgrammingError  
+from sqlalchemy.exc import ProgrammingError
+from models import AdminUser
 
 csrf = CSRFProtect()
 
@@ -21,10 +23,25 @@ def create_app():
     mail.init_app(app)
 
     Migrate(app, db)
+
+    # ✅ Render Free: create tables + admin (ENV based)
     with app.app_context():
         try:
             db.create_all()
         except ProgrammingError:
+            pass
+
+        try:
+            admin_username = os.environ.get("ADMIN_USERNAME")
+            admin_password = os.environ.get("ADMIN_PASSWORD")
+
+            if admin_username and admin_password:
+                if not AdminUser.query.filter_by(username=admin_username).first():
+                    admin = AdminUser(username=admin_username)
+                    admin.set_password(admin_password)
+                    db.session.add(admin)
+                    db.session.commit()
+        except Exception:
             pass
 
     app.register_blueprint(public_bp)
