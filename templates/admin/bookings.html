@@ -1,111 +1,773 @@
 {% extends "base.html" %}
+{% block body_class %}fixed-footer{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-bookings-panel.css') }}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
 
 {% block content %}
-<section class="admin-bookings">
+<div class="container-fluid px-3 px-md-4 py-4 py-md-5 mt-3 mt-md-4">
 
-  <header class="admin-header">
-    <div class="header-left">
-      <h1>
-        <i class="fas fa-calendar-check"></i>
-        <span class="header-text">Booking Management</span>
-      </h1>
-      <p class="subtitle">Manage, update, and track all customer bookings</p>
-    </div>
-    <div class="header-right">
-      <span class="total-count">
-        <span class="count-number">{{ bookings|length }}</span>
-        <span class="count-label">Bookings</span>
-      </span>
-    </div>
-  </header>
-
-  <div class="bookings-card">
-    {% if bookings %}
-    <div class="table-wrapper">
-      <table class="bookings-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Service</th>
-            <th>Schedule</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for b in bookings %}
-          <tr>
-            <td data-label="ID"><span class="mobile-label">ID:</span> #{{ b.id }}</td>
-
-            <td data-label="Customer">
-              <div class="customer-info">
-                <strong>{{ b.full_name }}</strong>
-                <span class="customer-phone">{{ b.phone }}</span>
-                <span class="customer-email">{{ b.email }}</span>
-              </div>
-            </td>
-
-            <td data-label="Service">
-              <span class="service-name">{{ b.service.name if b.service else 'N/A' }}</span>
-            </td>
-
-            <td data-label="Schedule">
-              <div class="schedule-info">
-                <span class="schedule-date">{{ b.date }}</span>
-                <small class="schedule-time">{{ b.time }}</small>
-              </div>
-            </td>
-
-            <td data-label="Status">
-              <span class="status-badge status-{{ b.status.lower() }}">
-                {{ b.status }}
-              </span>
-            </td>
-
-            <td data-label="Action">
-              <div class="action-group">
-                <form method="POST" action="{{ url_for('admin.update_booking_status', booking_id=b.id) }}" class="status-form">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                  <select name="status" onchange="this.form.submit()" class="status-select">
-                    <option disabled selected>Update</option>
-                    {% for s in ['Pending','Contacted','Confirmed','Completed','Cancelled'] %}
-                    <option value="{{ s }}" {% if b.status == s %}disabled{% endif %}>
-                      {{ s }}
-                    </option>
-                    {% endfor %}
-                  </select>
-                </form>
-
-                <form method="POST"
-                      action="{{ url_for('admin.delete_booking', booking_id=b.id) }}"
-                      onsubmit="return confirm('Delete this booking?');"
-                      class="delete-form">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                  <button class="delete-btn" type="submit" aria-label="Delete booking">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
-                </form>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-      <div class="empty-state">
-        <i class="fas fa-inbox"></i>
-        <p>No bookings available</p>
+  <!-- HEADER -->
+  <div class="header-section mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h2 class="section-title mb-2">
+          <i class="bi bi-calendar-check-fill me-2"></i>Booking Management
+        </h2>
+        <p class="text-muted mb-0 d-none d-md-block">Manage and track all customer bookings</p>
       </div>
-    {% endif %}
+
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-gold">
+          <i class="bi bi-arrow-left me-1"></i>
+          <span class="d-none d-sm-inline">Back to Dashboard</span>
+          <span class="d-inline d-sm-none">Back</span>
+        </a>
+        <button
+          type="button"
+          class="btn btn-gold"
+          id="deleteBtn"
+          style="display: none;">
+          <i class="bi bi-trash me-1"></i>
+          <span class="d-none d-sm-inline">Delete Selected</span>
+          <span class="d-inline d-sm-none">Delete</span>
+        </button>
+      </div>
+    </div>
   </div>
 
-</section>
+  <!-- STATS CARDS -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card glass-card text-center p-3">
+        <div class="stat-icon mb-2">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <h4 class="text-gold mb-1">{{ bookings|length }}</h4>
+        <p class="mb-0">Total Bookings</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card glass-card text-center p-3">
+        <div class="stat-icon mb-2">
+          <i class="bi bi-hourglass-split"></i>
+        </div>
+        <h4 class="text-warning mb-1">{{ bookings|selectattr('status', 'equalto', 'Pending')|list|length }}</h4>
+        <p class="mb-0">Pending</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card glass-card text-center p-3">
+        <div class="stat-icon mb-2">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <h4 class="text-info mb-1">{{ bookings|selectattr('status', 'equalto', 'Confirmed')|list|length }}</h4>
+        <p class="mb-0">Confirmed</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card glass-card text-center p-3">
+        <div class="stat-icon mb-2">
+          <i class="bi bi-check-all"></i>
+        </div>
+        <h4 class="text-success mb-1">{{ bookings|selectattr('status', 'equalto', 'Completed')|list|length }}</h4>
+        <p class="mb-0">Completed</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH & FILTER BAR -->
+  <div class="glass-card p-3 mb-4">
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <div class="search-box">
+          <i class="bi bi-search search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control search-input" 
+            placeholder="Search by name, email, phone...">
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <select id="statusFilter" class="form-select filter-select">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="contacted">Contacted</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <select id="serviceFilter" class="form-select filter-select">
+          <option value="">All Services</option>
+          {% for service in bookings|map(attribute='service')|unique %}
+            {% if service %}
+              <option value="{{ service.name }}">{{ service.name }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <button class="btn btn-outline-gold w-100" id="resetFilters">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKINGS TABLE -->
+  <form
+    method="POST"
+    action="{{ url_for('admin.delete_selected_bookings') }}"
+    id="deleteForm">
+    
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="bookings-container glass-card p-3 p-md-4">
+      
+      {% if bookings %}
+      
+      <!-- Desktop Table View -->
+      <div class="table-responsive table-dark d-none d-lg-block">
+        <table class="table bookings-table mb-0">
+          <thead>
+            <tr>
+              <th style="width: 40px;">
+                <input type="checkbox" id="selectAll" class="form-check-input">
+              </th>
+              <th style="width: 60px;">ID</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th class="text-end" style="width: 220px;">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="bookingsTableBody">
+            {% for b in bookings %}
+            <tr class="booking-row" 
+                data-status="{{ b.status.lower() }}" 
+                data-service="{{ b.service.name if b.service else '' }}"
+                data-search="{{ b.full_name|lower }} {{ b.email|lower }} {{ b.phone|lower }}">
+              
+              <td>
+                <input
+                  type="checkbox"
+                  name="selected_ids"
+                  value="{{ b.id }}"
+                  class="booking-checkbox form-check-input">
+              </td>
+
+              <td class="fw-bold text-gold">#{{ b.id }}</td>
+
+              <td>
+                <div class="customer-info">
+                  <div class="customer-name">{{ b.full_name }}</div>
+                  <div class="customer-contact">
+                    <small>
+                      <i class="bi bi-envelope me-1"></i>{{ b.email }}
+                    </small>
+                  </div>
+                  <div class="customer-contact">
+                    <small>
+                      <i class="bi bi-phone me-1"></i>{{ b.phone }}
+                    </small>
+                  </div>
+                </div>
+              </td>
+              
+              <td>
+                <span class="service-badge">
+                  <i class="bi bi-gear-fill me-1"></i>
+                  {{ b.service.name if b.service else 'N/A' }}
+                </span>
+              </td>
+              
+              <td>
+                <i class="bi bi-calendar3 me-1 text-gold"></i>
+                {{ b.date.strftime('%d %b %Y') if b.date is not string else b.date }}
+              </td>
+
+              <td>
+                <i class="bi bi-clock me-1 text-gold"></i>
+                {{ b.time }}
+              </td>
+
+              <td>
+                <span class="status-badge status-{{ b.status.lower() }}">
+                  {% if b.status == 'Pending' %}
+                    <i class="bi bi-hourglass-split me-1"></i>
+                  {% elif b.status == 'Contacted' %}
+                    <i class="bi bi-telephone-fill me-1"></i>
+                  {% elif b.status == 'Confirmed' %}
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                  {% elif b.status == 'Completed' %}
+                    <i class="bi bi-check-all me-1"></i>
+                  {% elif b.status == 'Cancelled' %}
+                    <i class="bi bi-x-circle-fill me-1"></i>
+                  {% endif %}
+                  {{ b.status }}
+                </span>
+              </td>
+
+              <td class="text-end">
+                <div class="action-buttons d-flex gap-1 justify-content-end">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-gold"
+                    data-bs-toggle="modal"
+                    data-bs-target="#bookingModal{{ b.id }}"
+                    title="View Details">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal{{ b.id }}"
+                    title="Edit Date/Time">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+
+                  <div class="dropdown">
+                    <button 
+                      class="btn btn-sm btn-gold dropdown-toggle" 
+                      type="button" 
+                      data-bs-toggle="dropdown"
+                      title="Update Status">
+                      <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                      {% for status in ['Pending','Contacted','Confirmed','Completed','Cancelled'] %}
+                        <li>
+                          <form method="POST" action="{{ url_for('admin.update_booking_status', booking_id=b.id) }}" class="m-0">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="status" value="{{ status }}">
+                            <button 
+                              type="submit" 
+                              class="dropdown-item {% if b.status == status %}active{% endif %}"
+                              {% if b.status == status %}disabled{% endif %}>
+                              {{ status }}
+                            </button>
+                          </form>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <form 
+                    method="POST"
+                    action="{{ url_for('admin.delete_booking', booking_id=b.id) }}"
+                    onsubmit="return confirm('Delete this booking permanently?');"
+                    class="m-0">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-danger" type="submit" title="Delete">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile/Tablet Card View -->
+      <div class="mobile-bookings d-lg-none" id="mobileBookingsContainer">
+        {% for b in bookings %}
+        <div class="booking-card glass-card mb-3 p-3" 
+             data-status="{{ b.status.lower() }}" 
+             data-service="{{ b.service.name if b.service else '' }}"
+             data-search="{{ b.full_name|lower }} {{ b.email|lower }} {{ b.phone|lower }}">
+          
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <input
+                type="checkbox"
+                name="selected_ids"
+                value="{{ b.id }}"
+                class="booking-checkbox form-check-input">
+              <span class="fw-bold text-gold">#{{ b.id }}</span>
+            </div>
+            <span class="status-badge status-{{ b.status.lower() }}">
+              {{ b.status }}
+            </span>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="customer-name mb-2">{{ b.full_name }}</h6>
+            <div class="customer-contact mb-1">
+              <i class="bi bi-envelope me-1"></i>
+              <a href="mailto:{{ b.email }}" class="text-decoration-none">{{ b.email }}</a>
+            </div>
+            <div class="customer-contact">
+              <i class="bi bi-phone me-1"></i>
+              <a href="tel:{{ b.phone }}" class="text-decoration-none">{{ b.phone }}</a>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-12">
+              <div class="info-pill">
+                <i class="bi bi-gear-fill me-1"></i>
+                {{ b.service.name if b.service else 'N/A' }}
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="info-pill">
+                <i class="bi bi-calendar3 me-1"></i>
+                {{ b.date.strftime('%d %b') if b.date is not string else b.date }}
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="info-pill">
+                <i class="bi bi-clock me-1"></i>
+                {{ b.time }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-gold flex-fill"
+              data-bs-toggle="modal"
+              data-bs-target="#bookingModal{{ b.id }}">
+              <i class="bi bi-eye-fill me-1"></i>View
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-info flex-fill"
+              data-bs-toggle="modal"
+              data-bs-target="#editModal{{ b.id }}">
+              <i class="bi bi-pencil-fill me-1"></i>Edit
+            </button>
+
+            <div class="dropdown flex-fill">
+              <button 
+                class="btn btn-sm btn-gold dropdown-toggle w-100" 
+                type="button" 
+                data-bs-toggle="dropdown">
+                <i class="bi bi-arrow-repeat me-1"></i>Status
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark w-100">
+                {% for status in ['Pending','Contacted','Confirmed','Completed','Cancelled'] %}
+                  <li>
+                    <form method="POST" action="{{ url_for('admin.update_booking_status', booking_id=b.id) }}" class="m-0">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="status" value="{{ status }}">
+                      <button 
+                        type="submit" 
+                        class="dropdown-item {% if b.status == status %}active{% endif %}"
+                        {% if b.status == status %}disabled{% endif %}>
+                        {{ status }}
+                      </button>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <form 
+              method="POST"
+              action="{{ url_for('admin.delete_booking', booking_id=b.id) }}"
+              onsubmit="return confirm('Delete this booking?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-sm btn-danger" type="submit">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- NO RESULTS MESSAGE -->
+      <div id="noResults" class="empty-state" style="display: none;">
+        <i class="bi bi-search"></i>
+        <p>No bookings match your search criteria</p>
+        <button class="btn btn-outline-gold btn-sm mt-2" id="clearFiltersBtn">
+          <i class="bi bi-x-circle me-1"></i>Clear Filters
+        </button>
+      </div>
+
+      {% else %}
+      <!-- EMPTY STATE -->
+      <div class="empty-state">
+        <i class="bi bi-calendar-x"></i>
+        <p>No bookings found</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </form>
+
+  <!-- EDIT DATE/TIME MODALS -->
+  {% for b in bookings %}
+  <div class="modal fade" id="editModal{{ b.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content booking-modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-gold">
+            <i class="bi bi-pencil-square me-2"></i>Edit Booking #{{ b.id }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form method="POST" action="{{ url_for('admin.update_booking_datetime', booking_id=b.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label text-gold">
+                <i class="bi bi-person me-2"></i>Customer
+              </label>
+              <input type="text" class="form-control-plaintext text-white" value="{{ b.full_name }}" readonly>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label text-gold">
+                <i class="bi bi-gear-fill me-2"></i>Service
+              </label>
+              <input type="text" class="form-control-plaintext text-white" value="{{ b.service.name if b.service else 'N/A' }}" readonly>
+            </div>
+
+            <hr class="divider">
+
+            <div class="mb-3">
+              <label for="editDate{{ b.id }}" class="form-label text-gold">
+                <i class="bi bi-calendar3 me-2"></i>Booking Date
+              </label>
+              <input 
+                type="date" 
+                class="form-control edit-input" 
+                id="editDate{{ b.id }}" 
+                name="date"
+                value="{{ b.date.strftime('%Y-%m-%d') if b.date is not string else b.date }}"
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label for="editTime{{ b.id }}" class="form-label text-gold">
+                <i class="bi bi-clock me-2"></i>Booking Time
+              </label>
+              <input 
+                type="time" 
+                class="form-control edit-input" 
+                id="editTime{{ b.id }}" 
+                name="time"
+                value="{{ b.time }}"
+                required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-gold">
+              <i class="bi bi-check-circle me-2"></i>Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- BOOKING DETAIL MODALS -->
+  {% for b in bookings %}
+  <div class="modal fade" id="bookingModal{{ b.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content booking-modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-gold">
+            <i class="bi bi-calendar-check me-2"></i>Booking #{{ b.id }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          
+          <!-- Customer Information -->
+          <div class="detail-section">
+            <h6 class="section-heading">
+              <i class="bi bi-person-circle me-2"></i>Customer Information
+            </h6>
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-person me-1"></i>Full Name
+                  </p>
+                  <p class="info-value">{{ b.full_name }}</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-telephone me-1"></i>Phone
+                  </p>
+                  <p class="info-value">
+                    <a href="tel:{{ b.phone }}" class="text-gold text-decoration-none">
+                      {{ b.phone }}
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-flag me-1"></i>Status
+                  </p>
+                  <p class="info-value">
+                    <span class="status-badge status-{{ b.status.lower() }}">
+                      {{ b.status }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <!-- Booking Details -->
+          <div class="detail-section">
+            <h6 class="section-heading">
+              <i class="bi bi-info-circle me-2"></i>Booking Details
+            </h6>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-gear-fill me-1"></i>Service
+                  </p>
+                  <p class="info-value">{{ b.service.name if b.service else 'N/A' }}</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-calendar3 me-1"></i>Date
+                  </p>
+                  <p class="info-value">
+                    {{ b.date.strftime('%d %B %Y') if b.date is not string else b.date }}
+                  </p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-clock me-1"></i>Time
+                  </p>
+                  <p class="info-value">{{ b.time }}</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="info-box">
+                  <p class="info-label">
+                    <i class="bi bi-calendar-plus me-1"></i>Booked On
+                  </p>
+                  <p class="info-value">
+                    {{ b.created_at.strftime('%d %b %Y, %I:%M %p') if b.created_at else 'N/A' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer flex-column flex-sm-row">
+          <a href="mailto:{{ b.email }}" class="btn btn-gold w-100 w-sm-auto">
+            <i class="bi bi-envelope-fill me-2"></i>Email
+          </a>
+          <a href="tel:{{ b.phone }}" class="btn btn-outline-gold w-100 w-sm-auto">
+            <i class="bi bi-telephone-fill me-2"></i>Call
+          </a>
+          <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<script>
+// ==========================================
+// SELECT ALL FUNCTIONALITY
+// ==========================================
+const selectAllCheckbox = document.getElementById('selectAll');
+const bookingCheckboxes = document.querySelectorAll('.booking-checkbox');
+
+if (selectAllCheckbox) {
+  selectAllCheckbox.addEventListener('change', function() {
+    const isDesktop = window.innerWidth >= 992;
+    const checkboxes = isDesktop 
+      ? document.querySelectorAll('#bookingsTableBody .booking-checkbox')
+      : document.querySelectorAll('#mobileBookingsContainer .booking-checkbox');
+    
+    checkboxes.forEach(cb => {
+      const container = cb.closest(isDesktop ? 'tr' : '.booking-card');
+      if (container && container.style.display !== 'none') {
+        cb.checked = this.checked;
+      }
+    });
+    toggleDeleteButton();
+  });
+}
+
+// ==========================================
+// TOGGLE DELETE BUTTON
+// ==========================================
+bookingCheckboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', toggleDeleteButton);
+});
+
+function toggleDeleteButton() {
+  const anyChecked = document.querySelectorAll('.booking-checkbox:checked').length > 0;
+  const deleteBtn = document.getElementById('deleteBtn');
+  if (deleteBtn) {
+    deleteBtn.style.display = anyChecked ? 'inline-block' : 'none';
+  }
+  
+  // Update select all state
+  const allVisible = Array.from(document.querySelectorAll('.booking-checkbox'))
+    .filter(cb => {
+      const container = cb.closest('tr, .booking-card');
+      return container && container.style.display !== 'none';
+    });
+  
+  const allVisibleChecked = allVisible.length > 0 && allVisible.every(cb => cb.checked);
+  if (selectAllCheckbox) {
+    selectAllCheckbox.checked = allVisibleChecked;
+    selectAllCheckbox.indeterminate = !allVisibleChecked && allVisible.some(cb => cb.checked);
+  }
+}
+
+// ==========================================
+// DELETE CONFIRMATION
+// ==========================================
+const deleteBtn = document.getElementById('deleteBtn');
+if (deleteBtn) {
+  deleteBtn.addEventListener('click', function() {
+    const checkedCount = document.querySelectorAll('.booking-checkbox:checked').length;
+    if (checkedCount === 0) {
+      alert('Please select bookings to delete.');
+      return;
+    }
+    
+    if (confirm(`Delete ${checkedCount} booking(s) permanently? This action cannot be undone.`)) {
+      document.getElementById('deleteForm').submit();
+    }
+  });
+}
+
+// ==========================================
+// FILTER FUNCTIONALITY
+// ==========================================
+const searchInput = document.getElementById('searchInput');
+const statusFilter = document.getElementById('statusFilter');
+const serviceFilter = document.getElementById('serviceFilter');
+const noResults = document.getElementById('noResults');
+
+function filterBookings() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const selectedStatus = statusFilter.value.toLowerCase();
+  const selectedService = serviceFilter.value;
+  
+  const isDesktop = window.innerWidth >= 992;
+  const containers = isDesktop 
+    ? document.querySelectorAll('.booking-row')
+    : document.querySelectorAll('.booking-card');
+  
+  let visibleCount = 0;
+
+  containers.forEach(container => {
+    const searchData = container.getAttribute('data-search');
+    const rowStatus = container.getAttribute('data-status');
+    const rowService = container.getAttribute('data-service');
+
+    const matchesSearch = !searchTerm || searchData.includes(searchTerm);
+    const matchesStatus = !selectedStatus || rowStatus === selectedStatus;
+    const matchesService = !selectedService || rowService === selectedService;
+
+    if (matchesSearch && matchesStatus && matchesService) {
+      container.style.display = '';
+      visibleCount++;
+    } else {
+      container.style.display = 'none';
+      const checkbox = container.querySelector('.booking-checkbox');
+      if (checkbox) checkbox.checked = false;
+    }
+  });
+
+  // Show/hide no results
+  const tableBody = document.getElementById('bookingsTableBody');
+  const mobileContainer = document.getElementById('mobileBookingsContainer');
+  
+  if (noResults) {
+    if (visibleCount === 0 && containers.length > 0) {
+      if (tableBody) tableBody.style.display = 'none';
+      if (mobileContainer) mobileContainer.style.display = 'none';
+      noResults.style.display = 'block';
+    } else {
+      if (tableBody) tableBody.style.display = '';
+      if (mobileContainer) mobileContainer.style.display = '';
+      noResults.style.display = 'none';
+    }
+  }
+
+  if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+  }
+  toggleDeleteButton();
+}
+
+if (searchInput) searchInput.addEventListener('input', filterBookings);
+if (statusFilter) statusFilter.addEventListener('change', filterBookings);
+if (serviceFilter) serviceFilter.addEventListener('change', filterBookings);
+
+// ==========================================
+// RESET FILTERS
+// ==========================================
+const resetBtn = document.getElementById('resetFilters');
+const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+function resetAllFilters() {
+  if (searchInput) searchInput.value = '';
+  if (statusFilter) statusFilter.value = '';
+  if (serviceFilter) serviceFilter.value = '';
+  filterBookings();
+}
+
+if (resetBtn) resetBtn.addEventListener('click', resetAllFilters);
+if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', resetAllFilters);
+
+// ==========================================
+// RESPONSIVE TABLE/CARD SWITCH
+// ==========================================
+let previousWidth = window.innerWidth;
+
+window.addEventListener('resize', function() {
+  const currentWidth = window.innerWidth;
+  
+  // Check if we crossed the 992px breakpoint
+  if ((previousWidth < 992 && currentWidth >= 992) || 
+      (previousWidth >= 992 && currentWidth < 992)) {
+    filterBookings(); // Re-apply filters on layout change
+  }
+  
+  previousWidth = currentWidth;
+});
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+  toggleDeleteButton();
+});
+</script>
+
 {% endblock %}

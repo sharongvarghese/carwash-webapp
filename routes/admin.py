@@ -376,55 +376,179 @@ def delete_package(package_id):
 
 
 
-# =========================
-# BOOKINGS MANAGEMENT
-# =========================
-@admin_bp.route("/bookings")
+# ============================================
+# MAIN BOOKINGS PAGE
+# ============================================
+@admin_bp.route('/bookings')
 @login_required
 def bookings():
-    bookings = Booking.query.order_by(Booking.created_at.desc()).all()
+    """Display all bookings with stats and filters"""
+    try:
+        # Get all bookings ordered by most recent
+        bookings = Booking.query.order_by(Booking.created_at.desc()).all()
+        
+        # Calculate statistics
+        total_bookings = len(bookings)
+        pending_count = len([b for b in bookings if b.status == 'Pending'])
+        contacted_count = len([b for b in bookings if b.status == 'Contacted'])
+        confirmed_count = len([b for b in bookings if b.status == 'Confirmed'])
+        completed_count = len([b for b in bookings if b.status == 'Completed'])
+        cancelled_count = len([b for b in bookings if b.status == 'Cancelled'])
+        
+        return render_template(
+            'admin/bookings.html',
+            bookings=bookings,
+            stats={
+                'total': total_bookings,
+                'pending': pending_count,
+                'contacted': contacted_count,
+                'confirmed': confirmed_count,
+                'completed': completed_count,
+                'cancelled': cancelled_count
+            }
+        )
+    except Exception as e:
+        flash(f'Error loading bookings: {str(e)}', 'danger')
+        return redirect(url_for('admin.dashboard'))
 
-    unread_booking_notifications = Notification.query.filter_by(
-        type="booking",
-        is_read=False
-    ).all()
 
-    for notification in unread_booking_notifications:
-        notification.is_read = True
-
-    if unread_booking_notifications:
-        db.session.commit()
-
-    return render_template("admin/bookings.html", bookings=bookings)
-
-
-@admin_bp.route("/bookings/status/<int:booking_id>", methods=["POST"])
+# ============================================
+# UPDATE BOOKING STATUS
+# ============================================
+@admin_bp.route('/bookings/<int:booking_id>/update-status', methods=['POST'])
 @login_required
 def update_booking_status(booking_id):
+    """Update the status of a booking"""
+    try:
+        booking = Booking.query.get_or_404(booking_id)
+        new_status = request.form.get('status')
+        
+        # Validate status
+        valid_statuses = ['Pending', 'Contacted', 'Confirmed', 'Completed', 'Cancelled']
+        if new_status not in valid_statuses:
+            flash('Invalid status selected', 'danger')
+            return redirect(url_for('admin.bookings'))
+        
+        # Update status
+        old_status = booking.status
+        booking.status = new_status
+        
+        # You can add timestamp tracking here if needed
+        # booking.status_updated_at = datetime.utcnow()
+        
+        db.session.commit()
+        
+        flash(f'Booking #{booking_id} status updated from {old_status} to {new_status}', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating booking status: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.bookings'))
+
+@admin_bp.route('/bookings/<int:booking_id>/update-datetime', methods=['POST'])
+@login_required
+def update_booking_datetime(booking_id):
+    """Update the date and time for a booking"""
+    from models import Booking, db  # Adjust import based on your project structure
+    
     booking = Booking.query.get_or_404(booking_id)
+    
+    try:
+        # Get the new date and time from the form
+        new_date_str = request.form.get('date')
+        new_time_str = request.form.get('time')
+        
+        if not new_date_str or not new_time_str:
+            flash('Date and time are required.', 'danger')
+            return redirect(url_for('admin.manage_bookings'))
+        
+        # Parse the date
+        new_date = datetime.strptime(new_date_str, '%Y-%m-%d').date()
+        
+        # Update the booking
+        booking.date = new_date
+        booking.time = new_time_str
+        
+        # Commit to database
+        db.session.commit()
+        
+        flash(f'Booking #{booking_id} updated successfully! New date: {new_date.strftime("%d %b %Y")}, Time: {new_time_str}', 'success')
+        
+    except ValueError as e:
+        flash(f'Invalid date or time format: {str(e)}', 'danger')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating booking: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.bookings'))
 
-    status = request.form.get("status")
 
-    valid_statuses = ['Pending', 'Contacted', 'Confirmed', 'Completed', 'Cancelled']
-    if status not in valid_statuses:
-        flash("Invalid status selected.", "error")
-        return redirect(url_for("admin.bookings"))
-
-    booking.status = status
-    db.session.commit()
-
-    flash("Booking status updated successfully!", "success")
-    return redirect(url_for("admin.bookings"))
-
-
-@admin_bp.route("/bookings/delete/<int:booking_id>", methods=["POST"])
+# ============================================
+# DELETE SINGLE BOOKING
+# ============================================
+@admin_bp.route('/bookings/<int:booking_id>/delete', methods=['POST'])
 @login_required
 def delete_booking(booking_id):
-    booking = Booking.query.get_or_404(booking_id)
-    db.session.delete(booking)
-    db.session.commit()
-    flash("Booking deleted successfully!", "success")
-    return redirect(url_for("admin.bookings"))
+    """Delete a single booking"""
+    try:
+        booking = Booking.query.get_or_404(booking_id)
+        
+        # Store info for flash message
+        customer_name = booking.full_name
+        
+        db.session.delete(booking)
+        db.session.commit()
+        
+        flash(f'Booking #{booking_id} ({customer_name}) deleted successfully', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting booking: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.bookings'))
+
+
+# ============================================
+# BULK DELETE BOOKINGS
+# ============================================
+@admin_bp.route('/bookings/delete-selected', methods=['POST'])
+@login_required
+def delete_selected_bookings():
+    """Delete multiple selected bookings"""
+    try:
+        selected_ids = request.form.getlist('selected_ids')
+        
+        if not selected_ids:
+            flash('No bookings selected for deletion', 'warning')
+            return redirect(url_for('admin.bookings'))
+        
+        # Convert to integers and validate
+        booking_ids = []
+        for id_str in selected_ids:
+            try:
+                booking_ids.append(int(id_str))
+            except ValueError:
+                continue
+        
+        if not booking_ids:
+            flash('Invalid booking IDs selected', 'danger')
+            return redirect(url_for('admin.bookings'))
+        
+        # Delete all selected bookings
+        deleted_count = Booking.query.filter(Booking.id.in_(booking_ids)).delete(synchronize_session=False)
+        db.session.commit()
+        
+        if deleted_count > 0:
+            flash(f'Successfully deleted {deleted_count} booking(s)', 'success')
+        else:
+            flash('No bookings were deleted', 'warning')
+            
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting bookings: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.bookings'))
 
 # ===============================
 # PACKAGE BOOKINGS MANAGEMENT
