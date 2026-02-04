@@ -531,9 +531,14 @@
           </p>
 
           <div class="social-icons mt-2">
-            <a href="https://wa.me/919544882626"><i class="bi bi-whatsapp"></i></a>
-            <a href="https://www.instagram.com/speed_n_shine_auto_spa/?hl=en"><i class="bi bi-instagram"></i></a>
+            <a href="https://wa.me/919544882626" target="_blank">
+              <i class="bi bi-whatsapp"></i>
+            </a>
+            <a href="https://www.instagram.com/speed_n_shine_auto_spa/?hl=en" target="_blank">
+              <i class="bi bi-instagram"></i>
+            </a>
           </div>
+
 
           <div class="map-inside-box mt-3">
            <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4163.553687850994!2d76.5288889!3d9.2494444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zOcKwMTQnNTguMCJOIDc2wrAzMSc0NC4wIkU!5e1!3m2!1sen!2sin!4v1770177368074!5m2!1sen!2sin" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -559,5 +564,25 @@
       submitBtn.value = "Sending...";
     });
   }
+   document.addEventListener("DOMContentLoaded", function () {
+    const contactForm = document.getElementById("contactForm");
+
+    const whatsappNumber = "919544882626"; // your WhatsApp number
+    const message = encodeURIComponent(
+      "Hello Speed & Shine Auto Spa, I want to know more about your services."
+    );
+
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+    contactForm.addEventListener("click", function () {
+      window.open(whatsappURL, "_blank");
+    });
+
+    // Optional: stop form submit completely
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      window.open(whatsappURL, "_blank");
+    });
+  });
 </script>
 {% endblock %}

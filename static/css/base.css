@@ -529,6 +529,44 @@ body {
   color: #aaa;
   text-decoration: line-through;
 }
+/* Social Icons Container */
+.social-icons {
+  display: flex;
+  gap: 18px;
+}
+
+/* Common icon styles */
+.social-icons a {
+  font-size: 40px;          /* ICON SIZE – increase if you want */
+  text-decoration: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* WhatsApp color */
+.social-icons a .bi-whatsapp {
+  color: #25D366;           /* Official WhatsApp green */
+}
+
+/* Instagram gradient color */
+.social-icons a .bi-instagram {
+  background: radial-gradient(
+    circle at 30% 110%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285AEB 90%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hover effect */
+.social-icons a:hover {
+  transform: scale(1.2);
+  opacity: 0.9;
+}
+
 
 /* ===============================
    TABLET (≤ 992px)
