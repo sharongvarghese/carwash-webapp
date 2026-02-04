@@ -529,25 +529,60 @@ body {
   color: #aaa;
   text-decoration: line-through;
 }
+
+/* ===============================
+   SOCIAL ICONS - IMPROVED MOBILE
+=============================== */
+
 /* Social Icons Container */
 .social-icons {
   display: flex;
-  gap: 18px;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
-/* Common icon styles */
+/* Common icon link styles */
 .social-icons a {
-  font-size: 40px;          /* ICON SIZE – increase if you want */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
   text-decoration: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
 }
 
-/* WhatsApp color */
+/* Icon sizing */
+.social-icons a i {
+  font-size: 1.8rem;
+  line-height: 1;
+  display: block;
+}
+
+/* WhatsApp specific */
 .social-icons a .bi-whatsapp {
-  color: #25D366;           /* Official WhatsApp green */
+  color: #25D366;
 }
 
-/* Instagram gradient color */
+.social-icons a:has(.bi-whatsapp):hover {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: #25D366;
+  transform: scale(1.15);
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* Instagram specific with gradient */
 .social-icons a .bi-instagram {
   background: radial-gradient(
     circle at 30% 110%,
@@ -559,14 +594,37 @@ body {
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Hover effect */
+.social-icons a:has(.bi-instagram):hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: #e6683c;
+  transform: scale(1.15);
+  box-shadow: 0 4px 20px rgba(230, 104, 60, 0.5);
+}
+
+.social-icons a:has(.bi-instagram):hover .bi-instagram {
+  background: #fff;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* General hover effect */
 .social-icons a:hover {
-  transform: scale(1.2);
-  opacity: 0.9;
+  transform: scale(1.15);
 }
 
+.social-icons a:active {
+  transform: scale(1.05);
+}
+
+/* Focus visible for accessibility */
+.social-icons a:focus-visible {
+  outline: 3px solid rgba(255, 215, 0, 0.6);
+  outline-offset: 3px;
+}
 
 /* ===============================
    TABLET (≤ 992px)
@@ -616,6 +674,22 @@ body {
 
   .package-preview-desc {
     font-size: 0.88rem;
+  }
+
+  /* Social icons - tablet size */
+  .social-icons {
+    gap: 1.3rem;
+  }
+
+  .social-icons a {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
+  }
+
+  .social-icons a i {
+    font-size: 1.75rem;
   }
 }
 
@@ -690,6 +764,24 @@ body {
   .package-preview-price {
     text-align: center;
   }
+
+  /* Social icons - larger on mobile */
+  .social-icons {
+    gap: 1.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .social-icons a {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    border-width: 2.5px;
+  }
+
+  .social-icons a i {
+    font-size: 2rem;
+  }
 }
 
 /* ===============================
@@ -738,6 +830,26 @@ body {
   .package-preview-price .new {
     font-size: 1.3rem;
   }
+
+  /* Social icons - MAXIMUM VISIBILITY on small mobile */
+  .social-icons {
+    gap: 2rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .social-icons a {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    border-width: 3px;
+  }
+
+  .social-icons a i {
+    font-size: 2.2rem;
+  }
 }
 
 /* ===============================
@@ -769,6 +881,11 @@ body {
 
   .common-card::after {
     display: none;
+  }
+
+  /* Keep social icons interactive on touch */
+  .social-icons a:hover {
+    transform: scale(1.05);
   }
 }
 
@@ -809,5 +926,43 @@ body {
 
   .package-preview-desc {
     font-size: 0.82rem;
+  }
+
+  /* Social icons - still clearly visible on tiny screens */
+  .social-icons {
+    gap: 1.5rem;
+  }
+
+  .social-icons a {
+    width: 58px;
+    height: 58px;
+    min-width: 58px;
+    min-height: 58px;
+  }
+
+  .social-icons a i {
+    font-size: 2rem;
+  }
+}
+
+/* ===============================
+   ACCESSIBILITY ENHANCEMENTS
+=============================== */
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .social-icons a {
+    border-width: 3px;
   }
 }
