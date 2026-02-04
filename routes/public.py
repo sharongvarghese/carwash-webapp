@@ -17,10 +17,16 @@ def home():
     services = Service.query.limit(4).all()
     packages = Package.query.limit(4).all()
     gallery_items = GalleryImage.query.order_by(GalleryImage.id.desc()).limit(4).all()
+
+    # Total gallery count
     total_gallery_count = GalleryImage.query.count()
 
     contact_form = ContactForm(prefix="contact")
+    
+    # ✅ UPDATED: Get approved reviews for homepage (limited to 4)
     reviews = Review.query.filter_by(is_approved=True).order_by(Review.created_at.desc()).limit(3).all()
+    
+    # ✅ NEW: Get total approved reviews count
     total_reviews_count = Review.query.filter_by(is_approved=True).count()
 
     return render_template(
@@ -30,8 +36,8 @@ def home():
         gallery_items=gallery_items,
         total_gallery_count=total_gallery_count,
         contact_form=contact_form,
-        reviews=reviews, 
-        total_reviews_count=total_reviews_count  
+        reviews=reviews,  # Pass reviews to template
+        total_reviews_count=total_reviews_count  # ✅ NEW: Pass total count
     )
 
 
@@ -133,8 +139,8 @@ def package_booking(package_id):
                 phone=form.phone.data.strip(),
                 email=form.email.data.strip().lower(),
                 package_id=form.package_id.data,
-                total_uses=package.total_uses,
-                remaining_uses=package.total_uses,
+                total_uses=package.included_uses,
+                remaining_uses=package.included_uses,
                 start_date=start_date,
                 expiry_date=expiry_date,
                 status="Active"
@@ -154,7 +160,7 @@ def package_booking(package_id):
             flash(
                 f"✅ Package '{package.title}' booked successfully! "
                 f"Valid until {expiry_date.strftime('%B %d, %Y')}. "
-                f"You have {package.total_uses} service sessions.", 
+                f"You have {package.included_uses} service sessions.", 
                 "success"
             )
             

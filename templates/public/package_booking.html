@@ -11,25 +11,8 @@
   <div class="booking-background-glow"></div>
 
   <div class="container py-5">
-    
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="row mb-4">
-          <div class="col-12">
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    {% endwith %}
 
-    <div class="row g-4 g-lg-5 align-items-start justify-content-center">
+    <div class="row g-5 align-items-start justify-content-center">
 
       <!-- LEFT: Package Summary -->
       <div class="col-12 col-lg-6 fade-up delay-100">
@@ -39,12 +22,10 @@
           <div class="checkout-image-wrap">
             {% if package.image_url %}
               <img src="{{ url_for('static', filename=package.image_url) }}"
-                   alt="{{ package.title }}"
-                   loading="lazy">
+                   alt="{{ package.title }}">
             {% else %}
               <img src="{{ url_for('static', filename='images/default-package.jpg') }}"
-                   alt="{{ package.title }}"
-                   loading="lazy">
+                   alt="{{ package.title }}">
             {% endif %}
           </div>
 
@@ -65,7 +46,7 @@
 
             <!-- FEATURES -->
             <ul class="checkout-features">
-              <li><i class="bi bi-check-circle-fill"></i> {{ package.total_uses }} service sessions</li>
+              <li><i class="bi bi-check-circle-fill"></i> {{ package.included_uses }} service sessions</li>
               <li><i class="bi bi-check-circle-fill"></i> Valid for {{ package.validity_days }} days</li>
               <li><i class="bi bi-check-circle-fill"></i> Interior & exterior cleaning</li>
               <li><i class="bi bi-check-circle-fill"></i> Premium quality service</li>
@@ -120,63 +101,62 @@
             {{ package_booking_form.package_id() }}
 
             <!-- FULL NAME -->
-            <div class="form-group-animated">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-person-fill booking-icon"></i>
               {{ package_booking_form.full_name(
-                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.full_name.errors else ''),
+                class_="form-control dark-input premium-input ps-5" + (' is-invalid' if package_booking_form.full_name.errors else ''),
                 placeholder="Full Name",
-                required=true,
-                autocomplete="name"
+                required=true
               ) }}
               {% if package_booking_form.full_name.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   {{ package_booking_form.full_name.errors[0] }}
                 </div>
               {% endif %}
+              <span class="input-glow"></span>
             </div>
 
             <!-- PHONE -->
-            <div class="form-group-animated">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-phone-fill booking-icon"></i>
               {{ package_booking_form.phone(
-                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.phone.errors else ''),
+                class_="form-control dark-input premium-input ps-5" + (' is-invalid' if package_booking_form.phone.errors else ''),
                 placeholder="Phone Number",
-                required=true,
-                autocomplete="tel"
+                required=true
               ) }}
               {% if package_booking_form.phone.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   {{ package_booking_form.phone.errors[0] }}
                 </div>
               {% endif %}
+              <span class="input-glow"></span>
             </div>
 
             <!-- EMAIL -->
-            <div class="form-group-animated">
+            <div class="form-group-animated mb-3">
               <i class="bi bi-envelope-fill booking-icon"></i>
               {{ package_booking_form.email(
-                class_="form-control dark-input premium-input" + (' is-invalid' if package_booking_form.email.errors else ''),
+                class_="form-control dark-input premium-input ps-5" + (' is-invalid' if package_booking_form.email.errors else ''),
                 placeholder="Email Address",
-                required=true,
-                autocomplete="email"
+                required=true
               ) }}
               {% if package_booking_form.email.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   {{ package_booking_form.email.errors[0] }}
                 </div>
               {% endif %}
+              <span class="input-glow"></span>
             </div>
 
             <!-- SUBMIT -->
             <button type="submit"
-                    class="btn btn-gold btn-lg booking-cta-btn">
+                    class="btn btn-gold w-100 btn-lg booking-cta-btn mt-4">
               <i class="bi bi-check-circle me-2"></i>
               Confirm Package Booking
             </button>
 
             <!-- Info Text -->
             <p class="text-center mt-3 mb-0" style="font-size: 0.85rem; color: #999;">
-              <i class="bi bi-info-circle me-1"></i>
               You'll receive booking confirmation via email
             </p>
 

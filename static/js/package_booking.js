@@ -5,34 +5,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ====================================================
-     AUTO-DISMISS FLASH MESSAGES
-  ==================================================== */
-  const flashMessages = document.querySelectorAll(".alert");
-  
-  flashMessages.forEach((alert) => {
-    // Auto-dismiss after 5 seconds
-    setTimeout(() => {
-      alert.style.transition = "opacity 0.5s ease-out";
-      alert.style.opacity = "0";
-      
-      // Remove from DOM after fade out
-      setTimeout(() => {
-        alert.remove();
-      }, 500);
-    }, 5000);
-    
-    // Allow manual close if there's a close button
-    const closeBtn = alert.querySelector(".btn-close");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        alert.style.transition = "opacity 0.5s ease-out";
-        alert.style.opacity = "0";
-        setTimeout(() => alert.remove(), 500);
-      });
-    }
-  });
-
-  /* ====================================================
      FORM VALIDATION & SUBMISSION
   ==================================================== */
   const bookingForm = document.querySelector(".booking-form");

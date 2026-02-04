@@ -387,6 +387,9 @@ def bookings():
         # Get all bookings ordered by most recent
         bookings = Booking.query.order_by(Booking.created_at.desc()).all()
         
+        # Get all available services for the edit dropdown
+        services = Service.query.all()
+        
         # Calculate statistics
         total_bookings = len(bookings)
         pending_count = len([b for b in bookings if b.status == 'Pending'])
@@ -398,6 +401,7 @@ def bookings():
         return render_template(
             'admin/bookings.html',
             bookings=bookings,
+            services=services,  # Add this line
             stats={
                 'total': total_bookings,
                 'pending': pending_count,
@@ -449,31 +453,54 @@ def update_booking_status(booking_id):
 @admin_bp.route('/bookings/<int:booking_id>/update-datetime', methods=['POST'])
 @login_required
 def update_booking_datetime(booking_id):
-    """Update the date and time for a booking"""
-    from models import Booking, db  # Adjust import based on your project structure
-    
+    """Update the date, time, and service for a booking"""
     booking = Booking.query.get_or_404(booking_id)
     
     try:
-        # Get the new date and time from the form
+        # Get the new values from the form
         new_date_str = request.form.get('date')
         new_time_str = request.form.get('time')
+        new_service_id = request.form.get('service_id')
         
         if not new_date_str or not new_time_str:
             flash('Date and time are required.', 'danger')
-            return redirect(url_for('admin.manage_bookings'))
+            return redirect(url_for('admin.bookings'))
         
-        # Parse the date
+        # Track what was updated
+        updates = []
+        
+        # Parse and update the date
         new_date = datetime.strptime(new_date_str, '%Y-%m-%d').date()
+        if booking.date != new_date:
+            booking.date = new_date
+            updates.append(f"Date: {new_date.strftime('%d %b %Y')}")
         
-        # Update the booking
-        booking.date = new_date
-        booking.time = new_time_str
+        # Update the time
+        if booking.time != new_time_str:
+            booking.time = new_time_str
+            updates.append(f"Time: {new_time_str}")
+        
+        # Update service if provided
+        if new_service_id:
+            new_service_id = int(new_service_id)
+            if booking.service_id != new_service_id:
+                service = Service.query.get(new_service_id)
+                if service:
+                    booking.service_id = new_service_id
+                    updates.append(f"Service: {service.name}")
+                else:
+                    flash('Invalid service selected.', 'warning')
+                    return redirect(url_for('admin.bookings'))
         
         # Commit to database
         db.session.commit()
         
-        flash(f'Booking #{booking_id} updated successfully! New date: {new_date.strftime("%d %b %Y")}, Time: {new_time_str}', 'success')
+        # Create appropriate flash message
+        if updates:
+            update_text = ', '.join(updates)
+            flash(f'Booking #{booking_id} updated successfully! Changes: {update_text}', 'success')
+        else:
+            flash(f'Booking #{booking_id} - No changes were made.', 'info')
         
     except ValueError as e:
         flash(f'Invalid date or time format: {str(e)}', 'danger')
